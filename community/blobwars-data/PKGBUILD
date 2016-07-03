@@ -1,0 +1,25 @@
+# $Id: PKGBUILD 161079 2016-02-10 20:57:48Z lcarlier $
+# Maintainer: Jaroslav Lichtblau <dragonlord@aur.archlinux.org>
+# Contributor: Allan McRae <allan@archlinux.org>
+# Contributor: geekitus
+
+pkgname=blobwars-data
+_pkgname=blobwars
+pkgver=2.00
+pkgrel=1
+pkgdesc="Platform action game featuring a blob wih lot of weapons - data files"
+arch=('any')
+url="http://sourceforge.net/projects/blobwars"
+license=('GPL')
+source=(http://downloads.sourceforge.net/project/${_pkgname}/${_pkgname}-${pkgver}.tar.gz)
+md5sums=('73baa49a41151140818cf14cb77d57b4')
+
+package() {
+  cd "${srcdir}/${_pkgname}-${pkgver}"
+
+  install -dm755 ${pkgdir}/usr/share/games/blobwars/
+  cp -r {data,gfx,sound,music} ${pkgdir}/usr/share/games/blobwars/
+  # fix world readable bit
+  find ${pkgdir}/usr/share/games/blobwars/. -type d -exec chmod 755 {} +
+  find ${pkgdir}/usr/share/games/blobwars/. -type f -exec chmod 644 {} +
+}

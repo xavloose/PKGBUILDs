@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 164653 2016-03-04 08:49:42Z fyan $
+# Maintainer: Felix Yan <felixonmars@gmail.com>
+# Contributor: Thomas Dziedzic < gostrc at gmail >
+
+pkgname=sunpinyin
+pkgver=2.0.3.20160226
+_commit=844ad0fe49751d6a09fdfe531668769b06c66459
+pkgrel=1
+arch=('i686' 'x86_64')
+pkgdesc="Statistical Language Model based pinyin IME by Sun"
+license=('LGPL')
+url="http://sunpinyin.googlecode.com"
+depends=('sqlite' 'make' 'gcc-libs')
+optdepends=('sunpinyin-data: Statistical language model data from open-gram project for sunpinyin')
+makedepends=('git' 'scons' 'intltool')
+source=("git://github.com/sunpinyin/sunpinyin.git#commit=$_commit")
+md5sums=("SKIP")
+
+prepare() {
+  cd "$srcdir/$pkgname"
+  sed -i -e "1s|python|python2|" python/*.py python/importer/*.py
+}
+
+build() {
+  cd "$srcdir/$pkgname"
+  scons \
+    --prefix=/usr
+}
+
+package() {
+  cd "$srcdir/$pkgname"
+  scons \
+    --prefix=/usr \
+    --install-sandbox="$pkgdir" \
+    install
+}

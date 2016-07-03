@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 161396 2016-02-12 07:33:52Z farseerfc $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Andreas Bilke <andreas@bilke>
+
+pkgname=pdfpc
+pkgver=4.0.2
+pkgrel=1
+pkgdesc='A presenter console with multi-monitor support for PDF files'
+arch=('i686' 'x86_64')
+url='https://pdfpc.github.io/'
+license=('GPL')
+depends=('gtk3' 'poppler-glib' 'libgee' 'gstreamer' 'gst-plugins-base')
+optdepends=('gst-plugins-good: more codecs for video playback support')
+makedepends=('cmake' 'vala')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/pdfpc/pdfpc/archive/v$pkgver.tar.gz")
+sha256sums=('591da2f984dd7714b0607aff450b99649f9a8caaf311a38be8f5e2e1e565be96')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    cmake  -DCMAKE_INSTALL_PREFIX="/usr/" -DSYSCONFDIR="/etc" .
+    make
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR="$pkgdir/" install
+}
+
+# vim:set ts=4 sw=4 et:

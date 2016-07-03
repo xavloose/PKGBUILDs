@@ -1,0 +1,33 @@
+# $Id: PKGBUILD 159653 2016-01-31 04:43:23Z bgyorgy $
+# Maintainer: Balló György <ballogyor+arch at gmail dot com>
+# Contributor: Anton Bazhenov <anton.bazhenov at gmail>
+# Contributor: JD Steffen <jd at steffennet dot org>
+
+pkgname=simutrans-pak64
+pkgver=120.1.2
+_pkgver=120-1-2
+pkgrel=2
+pkgdesc="Low resolution graphics set for Simutrans"
+arch=('any')
+url="http://simutrans.com/"
+license=('custom:Artistic')
+options=('!strip')
+source=(http://downloads.sourceforge.net/simutrans/simupak64-$_pkgver.zip
+        licence.txt)
+md5sums=('69b814607c50c03232ab2a89968fefdb'
+         '9cf3801b1349ac93b24c1515c9e5bb0a')
+
+package() {
+  cd "$srcdir"
+  chmod -R 644 simutrans
+
+  #data
+  mkdir -p "$pkgdir/usr/share/games/simutrans"
+  cp -r simutrans/pak "$pkgdir/usr/share/games/simutrans"
+
+  find "$pkgdir" -type f -exec chmod 644 {} \;
+  find "$pkgdir" -type d -exec chmod 755 {} \;
+
+  #license
+  install -Dm644 licence.txt "$pkgdir/usr/share/licenses/simutrans-pak64/licence.txt"
+}

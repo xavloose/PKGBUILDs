@@ -1,0 +1,24 @@
+# Maintainer: Levente Polyak <anthraxx[at]archlinux[dot]org>
+
+pkgname=valabind
+pkgver=0.10.0
+pkgrel=2
+pkgdesc="Tool to parse vala or vapi files to transform them into swig interface files, C++, NodeJS-ffi or GIR"
+url="http://radare.org"
+arch=('i686' 'x86_64')
+license=('GPL3')
+depends=('vala' 'swig' 'sh')
+source=(${pkgname}-${pkgver}.tar.gz::https://github.com/radare/${pkgname}/archive/${pkgver}.tar.gz)
+sha512sums=('8a1cb5d9c0960df0832d7c72a5204a24ec56f7ced9defe80636670502d6807db63af31fb3d0b0970bb35e27c907455270aa1b898ab1a8818373a271849fb388d')
+
+build() {
+  cd ${pkgname}-${pkgver}
+  make
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  make DESTDIR="${pkgdir}" install
+}
+
+# vim: ts=2 sw=2 et:

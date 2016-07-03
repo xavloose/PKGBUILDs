@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 142710 2015-10-01 17:00:34Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+
+pkgname=cgmanager
+pkgver=0.39
+pkgrel=2
+pkgdesc="Another daemon for managing control groups"
+arch=(i686 x86_64)
+url="https://linuxcontainers.org/"
+license=('GPL')
+depends=('libnih')
+makedepends=('help2man')
+source=("https://linuxcontainers.org/downloads/cgmanager/cgmanager-$pkgver.tar.gz")
+md5sums=('83ef00049944f1e444a3149afc668a1d')
+
+build() {
+	cd "$srcdir/$pkgname-$pkgver"
+#	./bootstrap.sh
+	./configure --prefix=/usr --sbindir=/usr/bin --libdir=/usr/lib \
+		--with-init-script=systemd
+	make
+}
+
+package() {
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir/" install
+	mv $pkgdir/lib/* $pkgdir/usr/lib/
+	rmdir $pkgdir/lib
+}

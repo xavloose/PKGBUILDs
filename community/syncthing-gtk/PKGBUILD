@@ -1,0 +1,30 @@
+# $Id: PKGBUILD 180297 2016-06-15 18:48:23Z jlichtblau $
+# Maintainer: Martin Wimpress <code@flexion.org>
+# Maintainer: Jaroslav Lichtblau <svetlemodry@archlinux.org>
+# Contributor: kozec <kozec at kozec dot com>
+
+pkgname=syncthing-gtk
+pkgver=0.9.0.3
+pkgrel=1
+epoch=1
+pkgdesc='GTK3 based GUI and notification area icon for Syncthing'
+arch=('any')
+url='https://github.com/syncthing/syncthing-gtk'
+license=('GPL2')
+depends=('gtk3' 'libnotify' 'python2-dateutil' 'python2-gobject' 'python2-pyinotify' 'python2-cairo' 'syncthing>=0.13')
+makedepends=('python2-setuptools')
+optdepends=('python2-nautilus: file manager integration for Nautilus'
+            'python2-caja: file manager integration for Caja'
+            'librsvg: to shown menu icons correctly if not using traditional window header')
+source=($pkgname-$pkgver.tar.gz::https://github.com/syncthing/$pkgname/archive/v$pkgver.tar.gz)
+sha256sums=('30981f018ce393f50ef44c5fdf2a9a97c71f1bb017bcd26e52a76eed02fb6a52')
+
+build() {
+  cd $pkgname-$pkgver
+  python2 setup.py build
+}
+
+package() {
+  cd $pkgname-$pkgver
+  python2 setup.py install --root="${pkgdir}" --optimize=1
+}

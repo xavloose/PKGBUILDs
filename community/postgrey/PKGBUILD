@@ -1,0 +1,46 @@
+# $Id: PKGBUILD 143406 2015-10-08 10:29:38Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: Sean Timothy Noonan <stnoonan@obsolescence.net>
+
+pkgname=postgrey
+pkgver=1.36
+pkgrel=2
+pkgdesc="a Postfix policy server implementing greylisting"
+arch=('any')
+url="http://postgrey.schweikert.ch/"
+options=(emptydirs)
+license=("GPL")
+depends=('perl-net-server' 'perl>=5.6.0' 'perl-berkeleydb' 'perl-io-multiplex'
+	 'db>=4.1' 'perl-netaddr-ip')
+optdepends=('postfix: the recommended MTA for use with postgrey'
+	    'exim: an alternative MTA'
+	    'perl-net-dns: for postgreyreport tool')
+backup=(etc/postfix/postgrey_whitelist_recipients
+	etc/postfix/postgrey_whitelist_clients)
+install=$pkgname.install
+source=($url/pub/$pkgname-$pkgver.tar.gz
+	postgrey.service
+	postgrey.tmpfiles
+	untaint.patch)
+md5sums=('eb4c9426347851d45cdb51e396745a66'
+         '8ad00f3c57eaa92e1f8a0ee71e620413'
+         '3236959f435c95db3a13f4c7dd235609'
+         '3f6a2b415187a8a092b2a7b57f362233')
+
+prepare() {
+  cd $srcdir/$pkgname-$pkgver
+  patch -p0 <$srcdir/untaint.patch
+}
+
+package() {
+  cd $srcdir/$pkgname-$pkgver
+  chown -R root:root .
+  mkdir -p $pkgdir/var/spool/postfix/postgrey
+  install -D -m 0755 postgrey $pkgdir/usr/bin/postgrey
+  install -D -m 0755 contrib/postgreyreport $pkgdir/usr/bin/postgreyreport
+  install -D -m 0644 postgrey_whitelist_recipients $pkgdir/etc/postfix/postgrey_whitelist_recipients
+  install -D -m 0644 postgrey_whitelist_clients $pkgdir/etc/postfix/postgrey_whitelist_clients
+
+  install -Dm0644 $srcdir/$pkgname.service $pkgdir/usr/lib/systemd/system/$pkgname.service
+  install -Dm0644 $srcdir/$pkgname.tmpfiles $pkgdir/usr/lib/tmpfiles.d/$pkgname.conf
+}

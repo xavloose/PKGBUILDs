@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 134888 2015-06-05 22:45:44Z demize $
+# Maintainer:  Bartłomiej Piotrowski <barthalion@gmail.com>
+# Contributor: Maciej Sitarz <macieks@freesco.pl>
+
+pkgname=hunspell-pl
+pkgver=20150428
+pkgrel=2
+pkgdesc='Polish dictionary for Hunspell'
+arch=('any')
+url='http://www.sjp.pl/slownik/ort/'
+license=('GPL')
+optdepends=('hunspell: the spell checking libraries and apps')
+source=(http://sjp.pl/slownik/ort/sjp-myspell-pl-$pkgver.zip)
+md5sums=('d6de61e0eac87ed9a12e8bbe123800bd')
+
+prepare() {
+  bsdtar -xf pl_PL.zip
+}
+
+package() {
+  install -dm755 "$pkgdir"/usr/share/hunspell
+  install -m644 pl_PL.aff "$pkgdir"/usr/share/hunspell
+  install -m644 pl_PL.dic "$pkgdir"/usr/share/hunspell
+
+    # the symlinks
+  install -dm755 "$pkgdir"/usr/share/myspell/dicts
+  pushd "$pkgdir"/usr/share/myspell/dicts
+  for file in "$pkgdir"/usr/share/hunspell/*; do
+    ln -sv /usr/share/hunspell/$(basename $file) .
+  done
+  popd
+
+  # docs
+  install -dm755 "$pkgdir"/usr/share/doc/$pkgname
+  install -m644 README_pl_PL.txt "$pkgdir"/usr/share/doc/$pkgname
+}

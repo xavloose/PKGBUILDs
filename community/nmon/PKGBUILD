@@ -1,0 +1,23 @@
+# $Id: PKGBUILD 175859 2016-05-20 10:14:22Z mtorromeo $
+# Maintainer: Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
+
+pkgname=nmon
+pkgver=16f
+pkgrel=1
+pkgdesc="AIX & Linux Performance Monitoring tool"
+arch=('i686' 'x86_64')
+url="http://nmon.sourceforge.net"
+license=('GPL')
+depends=('ncurses')
+source=("http://downloads.sourceforge.net/${pkgname}/lmon$pkgver.c")
+sha256sums=('280a371e17488f8a2c5e0c64273155789be6fa5b937ab5c465488e591bdc5cd9')
+
+build() {
+  cd ${srcdir}
+  cc -o nmon lmon$pkgver.c -g -O2 -D JFS -D GETUSER -Wall -D LARGEMEM -lncurses -lm -g -D X86
+}
+
+package() {
+  cd ${srcdir}
+  install -D -m 0755 nmon "${pkgdir}/usr/bin/nmon"
+}

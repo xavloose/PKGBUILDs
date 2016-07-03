@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 269581 2016-06-14 15:07:52Z arojas $
+# Maintainer:Antonio Rojas <arojas@archlinux.org>
+
+pkgname=plasma-pa
+pkgver=5.6.5
+pkgrel=1
+pkgdesc='Plasma applet for audio volume management using PulseAudio'
+arch=(i686 x86_64)
+url='https://www.kde.org/workspaces/plasmadesktop/'
+license=(LGPL)
+depends=(plasma-workspace pulseaudio)
+makedepends=(extra-cmake-modules kdoctools python)
+groups=(plasma)
+source=("http://download.kde.org/stable/plasma/$pkgver/$pkgname-$pkgver.tar.xz"{,.sig})
+sha256sums=('000a43b6c4c39ff67a28ee21089ea3389b33ab788121a32e0f716f28791d64a5'
+            'SKIP')
+validpgpkeys=('13C16D03EDE728514473AA73A506E6D4DD4D5088') # Jonathan Riddell
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../$pkgname-$pkgver \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DKDE_INSTALL_LIBDIR=lib \
+    -DBUILD_TESTING=OFF
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="$pkgdir" install
+}

@@ -1,0 +1,35 @@
+# $Id: PKGBUILD 268853 2016-06-02 16:05:19Z arojas $
+# Maintainer:Antonio Rojas <arojas@archlinux.org>
+
+pkgname=purpose
+pkgver=1.1
+pkgrel=2
+pkgdesc="Framework for providing abstractions to get the developer's purposes fulfilled"
+arch=(i686 x86_64)
+url='https://projects.kde.org/purpose'
+license=(LGPL)
+depends=(kaccounts-integration accounts-qml-module hicolor-icon-theme)
+makedepends=(extra-cmake-modules intltool python)
+optdepends=('kdeconnect: sharing to smartphone via KDE Connect')
+source=("http://download.kde.org/stable/$pkgname/$pkgname-$pkgver.tar.xz")
+md5sums=('9d97612738bb3d7b43ac6dcbcb864a4f')
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../$pkgname-$pkgver \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DKDE_INSTALL_LIBDIR=lib \
+    -DKDE_INSTALL_LIBEXECDIR=lib \
+    -DBUILD_TESTING=OFF
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="$pkgdir" install
+}

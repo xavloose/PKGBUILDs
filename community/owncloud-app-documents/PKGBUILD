@@ -1,0 +1,21 @@
+# $Id: PKGBUILD 103944 2014-01-13 20:31:53Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+
+pkgname=owncloud-app-documents
+epoch=1
+pkgver=9.0.3
+pkgrel=1
+pkgdesc="Documents app for owncloud"
+arch=('any')
+url="http://owncloud.org/"
+license=('GPL')
+depends=('owncloud')
+makedepends=()
+options=('!strip')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/owncloud/documents/archive/v$pkgver.tar.gz")
+md5sums=('3c504dcdf3f90d3c9017af2632c35ccb')
+
+package() {
+  install -d ${pkgdir}/usr/share/webapps/owncloud/apps
+  cp -a ${srcdir}/documents-$pkgver ${pkgdir}/usr/share/webapps/owncloud/apps/documents
+}

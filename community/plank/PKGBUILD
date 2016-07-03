@@ -1,0 +1,35 @@
+# $Id: PKGBUILD 179734 2016-06-12 20:29:19Z alucryd $
+# Maintainer: Maxime Gauduin <alucryd@archlinux.org>
+# Contributor: Ner0 <darkelfdarkelf666@yahoo.co.uk>
+# Contributor: dcelasun <dcelasun@gmail.com>
+
+pkgname=plank
+pkgver=0.11.2
+pkgrel=1
+pkgdesc='Elegant, simple, clean dock'
+arch=('i686' 'x86_64')
+url='https://launchpad.net/plank'
+license=('GPL3')
+depends=('atk' 'bamf' 'cairo' 'gdk-pixbuf2' 'glib2' 'glibc' 'gtk3'
+         'libgee' 'libwnck3' 'libx11' 'libxfixes' 'libxi' 'pango')
+makedepends=('gnome-common' 'intltool' 'vala')
+source=("https://launchpad.net/plank/1.0/${pkgver}/+download/plank-${pkgver}.tar.xz")
+sha256sums=('8c1cb3cf5b6c35b2aea56867f6ae64adec27e08a4ee90391bba19c1cdb40d2da')
+
+build() {
+  cd plank-${pkgver}
+
+  ./configure \
+    --prefix='/usr' \
+    --sysconfdir='/etc' \
+    --disable-apport
+  make
+}
+
+package() {
+  cd plank-${pkgver}
+
+  make DESTDIR="${pkgdir}" install
+}
+
+# vim: ts=2 sw=2 et:

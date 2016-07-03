@@ -1,0 +1,25 @@
+# $Id: PKGBUILD 180747 2016-06-22 14:12:44Z felixonmars $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Daniel Nagy <danielnagy at gmx de>
+
+pkgname=uglify-js
+pkgver=2.6.4
+pkgrel=1
+pkgdesc="JavaScript parser, mangler/compressor and beautifier toolkit"
+arch=('any')
+url='http://lisperator.net/uglifyjs'
+license=('BSD')
+depends=('nodejs')
+makedepends=('npm')
+source=(http://registry.npmjs.org/$pkgname/-/$pkgname-$pkgver.tgz)
+noextract=($pkgname-$pkgver.tgz)
+md5sums=('71fef0b6f7dc7f09ea3af98cd1038bbc')
+
+package() {
+  npm install -g --user root --prefix "$pkgdir"/usr "$srcdir"/$pkgname-$pkgver.tgz
+  rm -r "$pkgdir"/usr/etc
+  mkdir -p "$pkgdir/usr/share/licenses/$pkgname"
+  ln -s "../../../lib/node_modules/uglify-js/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/"
+}
+
+# vim:set ts=2 sw=2 et:

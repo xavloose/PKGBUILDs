@@ -1,0 +1,27 @@
+# $Id: PKGBUILD 267671 2016-05-10 21:33:45Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+
+pkgname=gnome-shell-extensions
+pkgver=3.20.1
+pkgrel=1
+pkgdesc="Extensions for GNOME shell, including classic mode"
+url="https://wiki.gnome.org/Projects/GnomeShell/Extensions"
+arch=(any)
+license=(GPL)
+depends=(gnome-shell)
+makedepends=(intltool)
+optdepends=('nautilus: gnome-classic session')
+groups=(gnome)
+source=(http://ftp.gnome.org/pub/GNOME/sources/$pkgname/${pkgver:0:4}/$pkgname-$pkgver.tar.xz)
+sha256sums=('bc432ec163c79794331290d7a9321bee184be077d348faf3b7a1639b672939a3')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr --libexecdir=/usr/lib/gnome-session --enable-extensions=all
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}

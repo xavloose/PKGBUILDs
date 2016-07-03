@@ -1,0 +1,60 @@
+# $Id: PKGBUILD 161930 2016-02-17 02:12:22Z bgyorgy $
+# Maintainer: Balló György <ballogyor+arch at gmail dot com>
+# Contributor: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+# Contributor: Angel Velasquez <angvp@archlinux.org> 
+# Contributor: Geoffroy Carrier <geoffroy.carrier@koon.fr>
+
+pkgbase=lxterminal
+pkgname=(lxterminal lxterminal-gtk3)
+pkgver=0.2.0
+pkgrel=2
+pkgdesc="VTE-based terminal emulator (part of LXDE)"
+arch=('i686' 'x86_64')
+license=('GPL2')
+url="http://lxde.org/"
+depends=('vte' 'vte3')
+makedepends=('intltool')
+install=$pkgbase.install
+source=(http://downloads.sourceforge.net/lxde/${pkgbase}-${pkgver}.tar.gz
+        gtk3.patch)
+md5sums=('e80ad1b6e26212f3d43908c2ad87ba4d'
+         '98abfec91bd55e96001f87b0e3fdbc22')
+
+prepare() {
+  cd $pkgbase-$pkgver
+  patch -Np1 -i ../gtk3.patch
+  autoreconf -fi
+}
+
+build() {
+  # GTK+ 2 version
+  [ -d gtk2 ] || cp -r $pkgbase-$pkgver gtk2
+  cd gtk2
+  ./configure --sysconfdir=/etc --prefix=/usr
+  make
+
+  cd "$srcdir"
+  # GTK+ 3 version
+  [ -d gtk3 ] || cp -r $pkgbase-$pkgver gtk3
+  cd gtk3
+  ./configure --sysconfdir=/etc --prefix=/usr --enable-gtk3
+  make
+}
+
+package_lxterminal() {
+  groups=('lxde')
+  depends=('vte')
+
+  cd gtk2
+  make DESTDIR="$pkgdir" install
+}
+
+package_lxterminal-gtk3() {
+  groups=('lxde-gtk3')
+  pkgdesc+=' (GTK+ 3 version)'
+  depends=('vte3')
+  conflicts=('lxterminal')
+
+  cd gtk3
+  make DESTDIR="$pkgdir" install
+}

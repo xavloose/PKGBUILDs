@@ -1,0 +1,51 @@
+# Maintainer: Levente Polyak <anthraxx[at]archlinux[dot]org>
+# Contributor: Vesa Kaihlavirta <vegai@iki.fi>
+# Contributor: Mark Rosenstand <mark@borkware.net>
+# Contributor: Giorgio Lando <patroclo7@gmail.com> (adjtimex patch)
+# Contributor: Alexander Rødseth <rodseth@gmail.com>
+
+pkgname=openntpd
+pkgver=6.0p1
+pkgrel=1
+pkgdesc='Free, easy to use implementation of the Network Time Protocol'
+url='http://www.openntpd.org/'
+arch=('i686' 'x86_64')
+license=('BSD')
+depends=('openssl')
+conflicts=('ntp')
+backup=('etc/ntpd.conf')
+install=${pkgname}.install
+source=(http://ftp.openbsd.org/pub/OpenBSD/OpenNTPD/${pkgname}-${pkgver}.tar.gz{,.asc}
+        openntpd.service)
+sha512sums=('a71c516dbe7596cbcb3a385112a59a82185b7e3d93a52eda695cea5a0a599ba7fbf58daa81da55d608255cb6950398123fa7d71663604a4c3bcbee949711296d'
+            'SKIP'
+            'c58d48de67cd1ce0df7ea60def26db38b9d7409b64d097639a4cde3f4774a4bcc1159f993f37c5c61781cab1e2d1b8a35005030b28b0c9f0f6e0f81053586dfa')
+validpgpkeys=('A1EB079B8D3EB92B4EBD3139663AF51BD5E4D8D5') # Brent Cook <bcook@openbsd.org>
+
+build() {
+  cd ${pkgname}-${pkgver}
+  autoreconf -fi
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --sbindir=/usr/bin \
+    --with-privsep-user=ntp \
+    --localstatedir=/var \
+    --with-adjtimex
+  make
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  make DESTDIR="${pkgdir}" install
+
+  rmdir "${pkgdir}/var/run"
+  install -d "${pkgdir}/var/lib/ntp"
+  install -Dm 644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
+  install -Dm 644 "${srcdir}/openntpd.service" "${pkgdir}/usr/lib/systemd/system/openntpd.service"
+
+  install -d "${pkgdir}/usr/lib/systemd/ntp-units.d"
+  echo ${pkgname}.service > "${pkgdir}/usr/lib/systemd/ntp-units.d/${pkgname}.list"
+}
+
+# vim: ts=2 sw=2 et:

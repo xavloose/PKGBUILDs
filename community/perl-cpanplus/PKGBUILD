@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 175691 2016-05-19 13:42:32Z fyan $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Florian Pritz <bluewind@xinu.at>
+
+pkgname=perl-cpanplus
+pkgver=0.9160
+pkgrel=1
+pkgdesc='Ameliorated interface to the CPAN'
+arch=('any')
+license=('PerlArtistic' 'GPL')
+options=(!emptydirs)
+depends=('perl' 'perl-log-message' 'perl-archive-extract' 'perl-term-ui' 'perl-log-message-simple'
+         'perl-module-pluggable' 'perl-object-accessor' 'perl-package-constants')
+url=https://metacpan.org/release/CPANPLUS
+source=("http://search.cpan.org/CPAN/authors/id/B/BI/BINGOS/CPANPLUS-$pkgver.tar.gz")
+md5sums=('3553c520142dbf677432168416edeafe')
+sha512sums=('15b6a3301192a6a44f1f9897e7a02e1760aaef4f55e7ac9d96bb32ae46c3e48cdcec75692f00e62ef5b8126aaba1949c98b44fd603c24e80310944f2d6e7d87b')
+_ddir="CPANPLUS-$pkgver"
+
+build() {
+  cd "$srcdir/$_ddir"
+  perl Makefile.PL INSTALLDIRS=vendor
+  make
+}
+
+check() {
+  cd "$srcdir/$_ddir"
+  make test
+}
+
+package() {
+  cd "$srcdir/$_ddir"
+  make install DESTDIR="$pkgdir"
+}
+
+# vim:set ts=2 sw=2 et:

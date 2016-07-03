@@ -1,0 +1,23 @@
+# $Id: PKGBUILD 175599 2016-05-17 21:48:07Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Maintainer: William Rea <sillywilly@gmail.com>
+# Contributor: Hans Janssen <hans@janserv.xs4all.nl>
+
+pkgname=flightgear-data
+pkgver=2016.2.1
+_pkgver=2016.2
+pkgrel=1
+pkgdesc="Base-Data for the opensource flight-simulator."
+arch=(any)
+license=('GPL')
+url="http://www.flightgear.org/"
+options=(!strip)
+source=("http://downloads.sourceforge.net/project/flightgear/release-${_pkgver}/FlightGear-${pkgver}-data.tar.bz2")
+md5sums=('f118026487513e16d0aad185d3818f7b')
+
+package() {
+  cd $srcdir
+  mkdir -p $pkgdir/usr/share/flightgear
+  mv fgdata/ $pkgdir/usr/share/flightgear/data
+  chown root:root $pkgdir/usr/share/flightgear/data
+}

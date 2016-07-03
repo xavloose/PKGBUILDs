@@ -1,0 +1,30 @@
+# $Id: PKGBUILD 181547 2016-06-28 19:20:50Z arodseth $
+# Maintainer: Alexander Rødseth <rodseth@gmail.com>
+# Contributor: Thomas Dziedzic <gostrc at gmail>
+# Contributor: Jose Valecillos <valecillosjg (at) gmail (dot) com>
+# Contributor: Kaos <gianlucaatlas (at) gmail (dot) com>
+# Contributor: Christopher Rogers <slaxemulator.gmail.com>
+
+pkgname=wordpress
+pkgver=4.5.3
+pkgrel=1
+pkgdesc='Blog tool and publishing platform'
+arch=('any')
+url='http://wordpress.org/'
+license=('GPL')
+depends=('php')
+optdepends=('apache: Web server to run wordpress'
+            'nginx: Web server to run wordpress'
+            'cherokee: Lightweight Web server to run wordpress'
+            'mysql: Database server')
+options=('emptydirs')
+install="$pkgname.install"
+source=("http://wordpress.org/$pkgname-$pkgver.tar.gz")
+sha256sums=('fd94288cd6fc657b2d8061737fcb121fc6acbe18acfcff80661e49fd2d3ee17c')
+
+package() {
+  install -d "$pkgdir/usr/share/webapps"
+  cp -r wordpress "$pkgdir/usr/share/webapps"
+}
+
+# vim:set ts=2 sw=2 et:

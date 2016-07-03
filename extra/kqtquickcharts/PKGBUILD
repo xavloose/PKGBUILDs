@@ -1,0 +1,33 @@
+# $Id: PKGBUILD 269729 2016-06-14 16:23:29Z arojas $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=kqtquickcharts
+pkgver=16.04.2
+pkgrel=1
+pkgdesc="A QtQuick plugin to render beautiful and interactive charts"
+url="https://edu.kde.org/"
+arch=('i686' 'x86_64')
+license=('GPL' 'LGPL' 'FDL')
+depends=('kdelibs')
+makedepends=('cmake' 'automoc4')
+source=("http://download.kde.org/stable/applications/${pkgver}/src/${pkgname}-${pkgver}.tar.xz")
+sha1sums=('f2707f3ee971f35be1cd2711db81bb7d5355d6d5')
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../${pkgname}-${pkgver} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DKDE4_BUILD_TESTS=OFF \
+    -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="${pkgdir}" install
+}

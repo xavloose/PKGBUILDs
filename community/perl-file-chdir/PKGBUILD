@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 166272 2016-03-12 11:10:22Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Maintainer: Charles Mauch <cmauch@gmail.com>
+# Contributor: Francois Charette <firmicus@gmx.net>
+
+pkgname=perl-file-chdir
+pkgver=0.1010
+pkgrel=1
+pkgdesc="a more sensible way to change directories "
+arch=('any')
+depends=('perl')
+url="http://search.cpan.org/dist/File-chdir"
+license=('GPL' 'PerlArtistic')
+options=('!emptydirs')
+source=(http://www.cpan.org/authors/id/D/DA/DAGOLDEN/File-chdir-$pkgver.tar.gz)
+md5sums=('aacfafa4a8f13d45be67451e0f9b483e')
+
+build() {
+  cd  $srcdir/File-chdir-$pkgver
+  PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+  make
+}
+
+package() {
+  cd  $srcdir/File-chdir-$pkgver
+  make install DESTDIR=$pkgdir
+  find $pkgdir -name '.packlist' -delete
+  find $pkgdir -name '*.pod' -delete
+}

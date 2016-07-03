@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 270470 2016-06-22 08:56:44Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Contributor: Ionut Biru <ibiru@archlinux.org>
+
+pkgname=gnome-screenshot
+pkgver=3.20.1
+pkgrel=1
+pkgdesc="Take pictures of your screen"
+url="https://git.gnome.org/browse/gnome-screenshot"
+arch=(i686 x86_64)
+license=(GPL2)
+depends=(dconf gtk3 libcanberra)
+makedepends=(intltool)
+groups=(gnome)
+source=(http://download.gnome.org/sources/$pkgname/${pkgver:0:4}/$pkgname-$pkgver.tar.xz)
+sha256sums=('06a89b6887146cdbbeb64adf11bdae21acf22b0422337041c66eedb21ef7e143')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}
+
+# vim:set ts=2 sw=2 et:

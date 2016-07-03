@@ -1,0 +1,32 @@
+# $Id: PKGBUILD 269798 2016-06-14 16:44:44Z arojas $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=kdeaccessibility-kmouth
+pkgver=16.04.2
+pkgrel=1
+arch=('i686' 'x86_64')
+pkgdesc='Speech Synthesizer Frontend'
+url='http://kde.org/applications/utilities/kmouth/'
+license=('GPL' 'FDL')
+groups=('kde-applications' 'kdeaccessibility')
+depends=('kdebase-runtime')
+makedepends=('cmake' 'automoc4')
+source=("http://download.kde.org/stable/applications/${pkgver}/src/kmouth-${pkgver}.tar.xz")
+sha1sums=('ff4a1d1377242b290b16a88ed1f020584443becf')
+
+build() {
+  cd "${srcdir}"
+  mkdir -p build
+  cd build
+  cmake ../kmouth-${pkgver} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DKDE4_BUILD_TESTS=OFF \
+    -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() {
+  cd $srcdir/build
+  make DESTDIR=$pkgdir install
+}

@@ -1,0 +1,24 @@
+# $Id: PKGBUILD 109957 2014-04-22 15:11:46Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+
+pkgname=x-docs-pdf
+pkgver=20140422
+pkgrel=1
+pkgdesc="X documentation"
+arch=(any)
+url="http://www.x.org/docs/"
+license=('custom')
+options=(docs)
+depends=('wget')
+source=('mirror.pl')
+md5sums=('2142a55988b7e4b4021ea347ba806d03')
+
+package() {
+  mkdir -p $pkgdir/usr/share/doc/X11 $pkgdir/usr/share/licenses/x-docs-pdf $srcdir/X11
+  cd $srcdir/X11
+  perl $srcdir/mirror.pl
+  cp -r $srcdir/X11 $pkgdir//usr/share/doc/
+  cat <<EOF >$pkgdir/usr/share/licenses/x-docs-pdf/COPYRIGHT
+  See PDF's first pages for copyright notes.
+EOF
+}

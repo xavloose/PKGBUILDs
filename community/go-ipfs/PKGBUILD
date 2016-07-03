@@ -1,0 +1,49 @@
+# $Id: PKGBUILD 175606 2016-05-18 09:30:27Z demize $
+# Maintainer: Anatol Pomozov
+# Contributor: kpcyrd <git@rxv.cc>
+# Contributor: Frederik “Freso” S. Olesen <freso.dk@gmail.com>
+# Contributor: Ian Naval <ianonavy@gmail.com>
+
+pkgname=go-ipfs
+pkgver=0.4.2
+pkgrel=1
+
+pkgdesc='A peer-to-peer hypermedia distribution protocol'
+url='http://ipfs.io/'
+arch=(i686 x86_64)
+license=(MIT)
+
+depends=(glibc)
+optdepends=('fuse: for mounting/advanced use')
+makedepends=(go git)
+
+source=(go-ipfs-$pkgver.tar.gz::https://github.com/ipfs/go-ipfs/archive/v$pkgver.tar.gz
+        ipfs.service)
+sha512sums=('48d07d09bb2192f09316def13facd05e8dd70edb75978f46ec45699ac9883330f2889ccf61463ca661531c4376f63d512307961333dcbdcd3fc266261b9ae676'
+            '1a6bc7fffc3c3640cda3f33c107424edd698c62bd8509731856b8827ea18be1a1845ef0d5ca15325d48d7d871a78daacc011ff9eacea926bc35899850990c1c6')
+
+prepare() {
+  export GOPATH="$PWD"/.gopath
+  mkdir -p "$GOPATH"/src/github.com/ipfs
+  ln -sf "$PWD"/go-ipfs-$pkgver "$GOPATH"/src/github.com/ipfs/go-ipfs
+
+  cd "$GOPATH"/src/github.com/ipfs/go-ipfs
+  make gx_check
+}
+
+build() {
+  export PATH="$PATH":"$PWD"/.gopath/bin
+  cd "$GOPATH"/src/github.com/ipfs/go-ipfs
+
+  make build
+}
+
+package() {
+  cd go-ipfs-$pkgver
+
+  install -Dm 755 cmd/ipfs/ipfs "$pkgdir/usr/bin/ipfs"
+  install -Dm 644  ../ipfs.service "$pkgdir/usr/lib/systemd/user/ipfs.service"
+  install -Dm 644 misc/completion/ipfs-completion.bash "$pkgdir/usr/share/bash-completion/completions/ipfs"
+  install -Dm 644 -t "$pkgdir/usr/share/licenses/$pkgname" LICENSE
+  install -Dm 644 -t "$pkgdir/usr/share/doc/$pkgname" README.md
+}

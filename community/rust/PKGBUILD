@@ -1,0 +1,42 @@
+# $Id: PKGBUILD 177371 2016-05-28 11:59:08Z arodseth $
+# Maintainer: Alexander F Rødseth <xyproto@archlinux.org>
+# Contributor: Daniel Micay <danielmicay@gmail.com>
+
+pkgname=rust
+epoch=1
+pkgver=1.9.0
+pkgrel=1
+arch=('x86_64' 'i686')
+pkgdesc='Systems programming language focused on safety, speed and concurrency'
+url='http://www.rust-lang.org/'
+license=('MIT' 'Apache')
+makedepends=('libffi' 'perl' 'python2' 'curl' 'jemalloc')
+source=("http://static.rust-lang.org/dist/rustc-$pkgver-src.tar.gz"{,.asc})
+sha256sums=('b19b21193d7d36039debeaaa1f61cbf98787e0ce94bd85c5cbe2a59462d7cfcd'
+            'SKIP')
+options=('staticlibs' '!strip')
+validpgpkeys=('108F66205EAEB0AAA8DD5E1C85AB96E6FA1BE5FE') # Rust Language (Tag and Release Signing Key) <rust-key@rust-lang.org>
+#gpg --keyserver hkp://keys.gnupg.net --recv-keys 108F66205EAEB0AAA8DD5E1C85AB96E6FA1BE5FE
+
+build() {
+  cd "rustc-$pkgver"
+
+  ./configure --prefix=/usr --disable-docs --release-channel=stable
+  make CFLAGS="$CFLAGS -fPIC -w"
+}
+
+package() {
+  cd "rustc-$pkgver"
+
+  make DESTDIR="$pkgdir" install
+
+  install -Dm644 LICENSE-APACHE \
+    "$pkgdir/usr/share/licenses/$pkgname/LICENSE-APACHE"
+  install -Dm644 LICENSE-MIT "$pkgdir/usr/share/licenses/$pkgname/LICENSE-MIT"
+
+  cd "$pkgdir/usr/lib"
+  rm rustlib/{components,manifest-rustc,rust-installer-version}
+  ln -sf rustlib/$CARCH-unknown-linux-gnu/lib/*.so .
+}
+
+# vim:set ts=2 sw=2 et:

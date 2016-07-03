@@ -1,0 +1,25 @@
+post_install() {
+	cat<<'EOF'
+Optional fzf keybindings have been placed here:
+
+    /usr/share/fzf
+
+To utilize, add the following to your bash config:
+
+    . /usr/share/fzf/key-bindings.bash
+
+Or for zsh, add the following to your config:
+
+    . /usr/share/fzf/key-bindings.zsh
+
+For fish, keybindings are in
+
+    /usr/share/fish/functions/fzf.fish
+
+Fish will source this by default.
+EOF
+}
+
+post_upgrade() {
+  echo "The keybindings have been moved to /usr/share/fzf"
+}

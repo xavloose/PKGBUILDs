@@ -1,0 +1,38 @@
+# $Id: PKGBUILD 132343 2015-04-27 19:07:01Z svenstaro $
+# Maintainer: Sven-Hendrik Haase <sh@lutzhaase.com>
+
+pkgname=vdrift-data
+_pkgname=vdrift
+pkgver=2014.10.20
+pkgrel=1
+epoch=2
+pkgdesc="An open source driving simulation made with drift racing in mind (data files)"
+arch=('any')
+url="http://vdrift.net/"
+license=('GPL')
+depends=('bullet' 'curl' 'sdl2_gfx' 'sdl2_image' 'glew' 'libvorbis')
+makedepends=('scons' 'boost' 'asio' 'mesa')
+source=(http://downloads.sourceforge.net/sourceforge/$_pkgname/$_pkgname-${pkgver//./-}.tar.bz2)
+md5sums=('524751fab341b36f59d0747ea52f0c41')
+
+build() {
+  cd vdrift
+
+  # build and install
+  scons $MAKEFLAGS \
+    "destdir"="$pkgdir" \
+    "release"=1 \
+    "force_feedback"=1 \
+    "prefix"=/usr \
+    "datadir"=share/$_pkgname/ \
+    "extbullet"=1
+}
+
+package() {
+  cd vdrift
+
+  scons install
+
+  rm -r "$pkgdir/usr/bin"
+}
+# vim: sw=2:ts=2 et:

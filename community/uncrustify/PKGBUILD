@@ -1,0 +1,24 @@
+# Maintainer: Pierre Neidhardt <ambrevar@gmail.com>
+# Contributor: Auguste Pop <auguste [at] gmail [dot] com>
+
+pkgname=uncrustify
+pkgver=0.63
+pkgrel=1
+pkgdesc="A source code beautifier"
+arch=("i686" "x86_64")
+url="http://uncrustify.sourceforge.net/"
+license=("GPL")
+depends=("gcc-libs")
+source=("http://downloads.sourceforge.net/$pkgname/$pkgname-$pkgver.tar.gz")
+md5sums=('791ffa57ac6a301d16463c1a97c77c0c')
+
+build() {
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr
+	make
+}
+
+package() {
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+}

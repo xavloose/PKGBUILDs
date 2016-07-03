@@ -1,0 +1,27 @@
+# $Id: PKGBUILD 174306 2016-05-08 11:12:43Z arojas $
+# Maintainer : speps <speps at aur dot archlinux dot org>
+# Contributor: Mateusz Herych <heniekk@gmail.com>
+# Contributor: Roman Kyrylych <Roman.Kyrylych@gmail.com>
+# Contributor: Ravi Desai <ravster3@hotmail.com>
+
+pkgname=gpa
+pkgver=0.9.9
+pkgrel=2
+pkgdesc="A graphical user interface for the GnuPG"
+arch=('i686' 'x86_64')
+url="https://www.gnupg.org/related_software/gpa/"
+license=('GPL3')
+depends=('gpgme' 'gtk2' 'desktop-file-utils')
+source=("ftp://ftp.gnupg.org/gcrypt/gpa/gpa-$pkgver.tar.bz2")
+md5sums=('017b585d64f865cf31680e40fbf02cc0')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir/" install
+}

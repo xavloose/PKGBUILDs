@@ -1,0 +1,37 @@
+# $Id: PKGBUILD 177532 2016-05-31 11:53:16Z idevolder $
+# Maintainer: BlackEagle <ike.devolder@gmail.com>>
+
+pkgname=kodi-addon-screensaver-pingpong
+_commit=f162213
+pkgver=20160523.f162213
+pkgrel=1
+pkgdesc="Ping-pong screensaver for Kodi"
+arch=('i686' 'x86_64')
+url='github.com/notspiff/screensaver.pingpong'
+license=('GPL')
+groups=('kodi-addons' 'kodi-addons-screensaver')
+depends=('kodi')
+makedepends=('git' 'cmake')
+source=("$pkgname::git://github.com/notspiff/screensaver.pingpong.git#commit=$_commit")
+sha256sums=('SKIP')
+
+pkgver() {
+	cd "$pkgname"
+	git log -1 --date=short --format="%cd.%h" | tr -d '-'
+}
+
+build() {
+	cd "$pkgname"
+	cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DBUILD_SHARED_LIBS=1 \
+		-DUSE_LTO=1
+	make
+}
+
+package() {
+	cd "$pkgname"
+	make DESTDIR="$pkgdir/" install
+}
+

@@ -1,0 +1,45 @@
+# $Id: PKGBUILD 179800 2016-06-13 06:45:58Z alucryd $
+# Maintainer: Maxime Gauduin <alucryd at gmail dot com>
+# Contributor: Ner0 <darkelfdarkelf666 at yahoo dot co dot uk>
+
+pkgname=granite
+pkgver=0.4
+pkgrel=1
+pkgdesc='An extension of GTK+ libraries'
+arch=('i686' 'x86_64')
+url='https://launchpad.net/granite'
+license=('LGPL3')
+depends=('cairo' 'gdk-pixbuf2' 'glib2' 'glibc' 'gtk3' 'hicolor-icon-theme'
+         'libgee' 'pango')
+makedepends=('cmake' 'gobject-introspection' 'vala')
+provides=('libgranite.so')
+source=("https://launchpad.net/granite/${pkgver}/loki-alpha1/+download/granite-${pkgver}.tar.xz")
+sha256sums=('73066f393d4c0aa637046e6fa0d6130a2612f277b9e493366f2f99267d85c5d9')
+
+prepare() {
+  cd granite-${pkgver}
+
+  sed '/demo/d' -i CMakeLists.txt
+
+  if [[ -d build ]]; then
+    rm -rf build
+  fi
+  mkdir build
+}
+
+build() {
+  cd granite-${pkgver}/build
+
+  cmake .. \
+    -DCMAKE_INSTALL_PREFIX='/usr' \
+    -DCMAKE_INSTALL_LIBDIR='/usr/lib'
+  make granite pot
+}
+
+package() {
+  cd granite-${pkgver}/build
+
+  make DESTDIR="${pkgdir}" install
+}
+
+# vim: ts=2 sw=2 et:

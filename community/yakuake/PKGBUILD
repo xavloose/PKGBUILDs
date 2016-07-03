@@ -1,0 +1,31 @@
+# $Id: PKGBUILD 172133 2016-04-27 17:56:25Z fyan $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+# Contributor: James Rayner <iphitus@gmail.com>
+# Contributor: leeghoofd <abcdefg@solcon.nl>
+
+pkgname=yakuake
+pkgver=3.0.2
+pkgrel=3
+pkgdesc="A drop-down terminal emulator based on KDE konsole technology"
+arch=('i686' 'x86_64')
+url='http://yakuake.kde.org/'
+license=('GPL')
+depends=('konsole' 'knewstuff')
+makedepends=('extra-cmake-modules' 'python')
+source=("http://download.kde.org/stable/${pkgname}/${pkgver}/src/${pkgname}-${pkgver}.tar.xz")
+md5sums=('6c5eaea40770283078dad6fa288615c5')
+
+build() {
+  mkdir build
+  cd build
+  cmake ../${pkgname}-${pkgver} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="${pkgdir}" install
+}

@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 269885 2016-06-14 17:09:34Z arojas $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Maintainer: Antonio Rojas <arojas@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=kdenetwork-filesharing
+pkgver=16.04.2
+pkgrel=1
+pkgdesc='Properties dialog plugin to share a directory with the local network'
+url='https://www.kde.org/applications/internet/'
+arch=(i686 x86_64)
+license=(GPL LGPL FDL)
+groups=(kde-applications kdenetwork)
+depends=(kio)
+makedepends=(extra-cmake-modules kdoctools python)
+optdepends=('samba: folder sharing')
+source=("http://download.kde.org/stable/applications/$pkgver/src/$pkgname-$pkgver.tar.xz")
+sha1sums=('e4a677d3495b1bc1cee5fd36fbfb02cd580db0f4')
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../$pkgname-$pkgver \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DBUILD_TESTING=OFF \
+    -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="$pkgdir" install
+}

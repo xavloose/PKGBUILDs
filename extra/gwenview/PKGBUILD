@@ -1,0 +1,40 @@
+# $Id: PKGBUILD 269862 2016-06-14 17:03:31Z arojas $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=gwenview
+pkgver=16.04.2
+pkgrel=1
+pkgdesc="A fast and easy to use image viewer for KDE"
+url='http://kde.org/applications/graphics/gwenview/'
+arch=('i686' 'x86_64')
+license=('GPL' 'LGPL' 'FDL')
+groups=('kde-applications' 'kdegraphics')
+depends=('kactivities' 'baloo' 'kdelibs4support' 'libkipi' 'libkdcraw')
+optdepends=('qt5-imageformats: support for tiff, webp, and more image formats'
+            'kimageformats: support for dds, xcf, exr, psd, and more image formats')
+makedepends=('extra-cmake-modules' 'kdoctools' 'python' 'kdesignerplugin')
+replaces=('kdegraphics-gwenview')
+conflicts=('kdegraphics-gwenview')
+source=("http://download.kde.org/stable/applications/$pkgver/src/$pkgname-$pkgver.tar.xz")
+sha1sums=('3d8d9cbe763e52a6ee3a1ec34f8e825fa5c5b4cb')
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../$pkgname-$pkgver \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DKDE_INSTALL_LIBDIR=lib \
+    -DGWENVIEW_SEMANTICINFO_BACKEND="Baloo" \
+    -DBUILD_TESTING=OFF
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="$pkgdir" install
+}

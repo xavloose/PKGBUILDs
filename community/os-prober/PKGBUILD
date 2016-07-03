@@ -1,0 +1,49 @@
+# $Id: PKGBUILD 166137 2016-03-11 15:02:38Z tredaelli $
+# Maintainer: Timothy Redaelli <timothy.redaelli@gmail.com>
+# Contributor: darkcoder <mario_vazq@hotmail.com>
+
+pkgname=os-prober
+pkgver=1.71
+pkgrel=1
+pkgdesc="Utility to detect other OSes on a set of drives"
+url="http://joey.kitenet.net/code/os-prober/"
+arch=('i686' 'x86_64')
+license=('GPL3')
+depends=('sh')
+source=(ftp://ftp.debian.org/debian/pool/main/o/${pkgname}/${pkgname}_${pkgver}.tar.xz)
+md5sums=('7c1a149d076ac10af31043ffb33ba658')
+sha256sums=('5d6141e02b58e82194422b97d683d61c7ff78175d89c2f055f5d2e7a363bdd20')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+
+  # adjust lib dir to allow detection of 64-bit distros
+  sed -i -e "s:/lib/ld\*\.so\*:/lib*/ld*.so*:g" os-probes/mounted/common/90linux-distro
+
+  rm -f Makefile
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+
+  make newns
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+
+  install -Dm755 linux-boot-prober "$pkgdir"/usr/bin/linux-boot-prober
+  install -Dm755 os-prober "$pkgdir"/usr/bin/os-prober
+  install -Dm755 newns "$pkgdir"/usr/lib/os-prober/newns
+  install -Dm755 common.sh $pkgdir/usr/share/os-prober/common.sh  
+
+  for dir in os-probes os-probes/mounted os-probes/init linux-boot-probes linux-boot-probes/mounted; do
+    install -dm755 "$pkgdir/usr/lib/$dir"
+    install -m755 -t "$pkgdir/usr/lib/$dir" "$dir"/common/*
+    [[ -d "$dir"/x86 ]] && cp -r "$dir"/x86/* "$pkgdir/usr/lib/$dir"
+  done
+
+  install -Dm755 os-probes/mounted/powerpc/20macosx "$pkgdir"/usr/lib/os-probes/mounted/20macosx
+
+  install -dm755 "$pkgdir"/var/lib/os-prober
+}

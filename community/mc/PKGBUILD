@@ -1,0 +1,57 @@
+# $Id: PKGBUILD 174451 2016-05-09 17:52:06Z schuay $
+# Maintainer: schuay <jakob.gruber@gmail.com>
+# Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
+
+pkgname=mc
+pkgver=4.8.17
+pkgrel=1
+pkgdesc="Midnight Commander is a text based filemanager/shell that emulates Norton Commander"
+arch=('i686' 'x86_64')
+url="http://www.ibiblio.org/mc/"
+license=('GPL')
+depends=('e2fsprogs' 'glib2' 'gpm' 'libssh2' 'slang')
+makedepends=('libxt' 'libx11' 'unzip')
+optdepends=('aspell: spelling corrections'
+            'cabextract: ucab extfs'
+            'cdparanoia: audio extfs'
+            'cdrkit: iso9660 extfs'
+            'cvs: CVS support'
+            'gawk: hp48+ extfs'
+            'mtools: a+ extfs'
+            'p7zip: support for 7zip archives'
+            'perl: needed by several extfs scripts'
+            'python2-boto: s3+ extfs'
+            'python2-pytz: s3+ extfs'
+            'samba: VFS support'
+            'unace: uace extfs'
+            'unarj: uarj extfs'
+            'unrar: urar extfs'
+            'zip: uzip extfs')
+backup=('etc/mc/edit.indent.rc'
+        'etc/mc/filehighlight.ini'
+        'etc/mc/mc.ext'
+        'etc/mc/mc.keymap'
+        'etc/mc/mc.menu'
+        'etc/mc/mcedit.menu'
+        'etc/mc/sfs.ini')
+options=('!emptydirs')
+source=("http://ftp.midnight-commander.org/${pkgname}-${pkgver}.tar.xz")
+sha256sums=('0447bdddc0baa81866e66f50f9a545d29d6eebb68b0ab46c98d8fddd2bf4e44d')
+
+build() {
+  export PYTHON=/usr/bin/python2
+
+  cd ${pkgname}-${pkgver}
+  ./configure \
+      --prefix=/usr \
+      --libexecdir=/usr/lib \
+      --sysconfdir=/etc \
+      --enable-vfs-smb \
+      --with-x
+  make
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  make DESTDIR="${pkgdir}" install
+}

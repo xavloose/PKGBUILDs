@@ -1,0 +1,39 @@
+# $Id: PKGBUILD 169159 2016-03-31 17:55:58Z alucryd $
+# Maintainer: Maxime Gauduin <alucryd@archlinux.org>
+# Contributor: jtts <jussaar@mbnet.fi>
+# Contributor: josephgbr <rafael.f.f1@gmail.com>
+
+pkgname=lib32-libgusb
+pkgver=0.2.9
+pkgrel=2
+pkgdesc='GObject wrapper for libusb1'
+arch=('x86_64')
+url='https://github.com/hughsie/libgusb'
+license=('LGPL2.1')
+depends=('lib32-glib2' 'lib32-glibc' 'lib32-libusb' 'libgusb')
+makedepends=('gcc-multilib' 'gobject-introspection' 'python2')
+source=("http://people.freedesktop.org/~hughsient/releases/libgusb-${pkgver}.tar.xz")
+sha256sums=('7320bdcd0ab1750d314fa86f48bd2cc186b9e33332314403779af9772fedde14')
+
+build() {
+  cd libgusb-${pkgver}
+
+  export CC='gcc -m32'
+  export CXX='g++ -m32'
+  export PKG_CONFIG_PATH='/usr/lib32/pkgconfig'
+
+  ./configure \
+    --prefix='/usr' \
+    --libdir='/usr/lib32' \
+    --disable-static
+  make
+}
+
+package() {
+  cd libgusb-${pkgver}
+
+  make DESTDIR="${pkgdir}" install
+  rm -rf "${pkgdir}"/usr/{bin,include,share}
+}
+
+# vim: ts=2 sw=2 et:

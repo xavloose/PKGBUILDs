@@ -1,0 +1,39 @@
+# $Id: PKGBUILD 264782 2016-04-12 21:55:33Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+
+pkgname=gnome-session
+pkgver=3.20.1
+pkgrel=1
+pkgdesc="The GNOME Session Handler"
+arch=(i686 x86_64)
+license=(GPL LGPL)
+depends=(systemd dconf gsettings-desktop-schemas gtk3 gnome-desktop
+         json-glib libgl libsm libxtst systemd)
+makedepends=(intltool mesa gtk-doc xtrans)
+options=('!emptydirs')
+install=gnome-session.install
+url="http://www.gnome.org"
+groups=(gnome)
+source=(http://download.gnome.org/sources/$pkgname/${pkgver:0:4}/$pkgname-$pkgver.tar.xz
+        timeout.patch)
+sha256sums=('2ae9f53dc74f851222fbefbe0dc08db0a78cc76ceeb156f92ebd4d40fd038913'
+            '9eaf31857b41db417475c3b14adc11b10c8226ed76978cdf96dd648fa6e505fc')
+
+prepare() {
+  cd $pkgname-$pkgver
+
+  # Increase timeout, for slow machines
+  patch -Np1 -i ../timeout.patch
+}
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr --sysconfdir=/etc \
+      --localstatedir=/var --libexecdir=/usr/lib/gnome-session \
+      --disable-schemas-compile --enable-systemd --disable-gconf
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}

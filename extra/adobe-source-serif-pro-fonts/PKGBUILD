@@ -1,0 +1,23 @@
+# $Id: PKGBUILD 229430 2015-01-16 12:32:09Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+
+pkgname=adobe-source-serif-pro-fonts
+pkgver=1.017
+pkgrel=1
+pkgdesc="A set of serif OpenType fonts designed to complement Source Sans Pro"
+arch=(any)
+url="http://adobe-fonts.github.io/source-serif-pro/"
+license=(custom)
+depends=(fontconfig)
+install=fonts.install
+source=(https://github.com/adobe-fonts/source-serif-pro/archive/${pkgver}R.tar.gz)
+sha256sums=('2f4f75b53983a399472e6972829de4e9a4aac76ad70bd111688e50c97d240212')
+
+package() {
+  cd source-serif-pro-${pkgver}R
+  install -d "$pkgdir/usr/share/fonts/adobe-source-serif-pro"
+  install -t "$pkgdir/usr/share/fonts/adobe-source-serif-pro" -m644 OTF/*.otf
+  install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+# vim:set ts=2 sw=2 et:

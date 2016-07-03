@@ -1,0 +1,37 @@
+# $Id: PKGBUILD 112967 2014-06-10 14:54:25Z fyan $
+# Maintainer: Felix Yan <felixonmars@gmail.com>
+# Contributor: Leewings Ng <osideal@gmail.com>
+# Contributor: Hiroshi Yui <hiroshiyui@gmail.com>
+
+pkgname=ibus-table-chinese
+pkgver=1.8.2
+pkgrel=1
+pkgdesc="Some table-based input method of tables engines for IBus"
+arch=('any')
+url="http://code.google.com/p/ibus/"
+license=('GPL3')
+depends=('ibus-table')
+makedepends=('cmake' 'git')
+source=("git+https://github.com/definite/ibus-table-chinese.git#tag=$pkgver"
+        "git+http://git.fedorahosted.org/git/cmake-fedora.git")
+sha1sums=('SKIP'
+          'SKIP')
+
+prepare() {
+  cd $pkgname
+  git submodule init
+  git config submodule."cmake-fedora".url "$srcdir/cmake-fedora"
+  git submodule update
+}
+
+build() {
+  cd $pkgname
+  cmake . -DCMAKE_INSTALL_PREFIX='/usr' -DLIBEXEC_DIR='/usr/lib'
+  make
+}
+
+package() {
+  cd $pkgname
+  make DESTDIR="$pkgdir/" install
+}
+

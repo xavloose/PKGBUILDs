@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 267221 2016-05-08 20:56:43Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Contributor: Jan de Groot <jgc@archlinux.org>
+
+pkgname=four-in-a-row
+pkgver=3.20.1
+pkgrel=1
+pkgdesc="Make lines of the same color to win"
+url="https://wiki.gnome.org/Apps/Four-in-a-row"
+arch=(i686 x86_64)
+license=(GPL3)
+depends=(gtk3 libcanberra librsvg)
+makedepends=(intltool itstool gobject-introspection)
+options=(!emptydirs)
+groups=(gnome-extra)
+source=(https://download.gnome.org/sources/$pkgname/${pkgver:0:4}/$pkgname-$pkgver.tar.xz)
+sha256sums=('3f3689fbbc25a91deb4af277cdc20e8db0e5aecfd17dc1376ad4b8d993ab7cf7')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
+      --disable-schemas-compile
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}

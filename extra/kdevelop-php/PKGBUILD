@@ -1,0 +1,49 @@
+# $Id: PKGBUILD 258547 2016-01-24 10:19:57Z arojas $
+# Maintainer: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=kdevelop-php
+pkgver=1.7.3
+_pkgver=4.7.3
+pkgrel=1
+pkgdesc="PHP language and documentation plugin for KDevelop"
+arch=('i686' 'x86_64')
+url="http://www.kdevelop.org/"
+license=('GPL')
+depends=('kdevelop')
+makedepends=('cmake' 'automoc4' 'kdevelop-pg-qt')
+replaces=('kdevelop-php-docs')
+conflicts=('kdevelop-php-docs')
+source=(http://download.kde.org/stable/kdevelop/${_pkgver}/src/${pkgname}-{,docs-}${pkgver}.tar.bz2)
+sha1sums=('e518207915a290e312f21ed13bead83d98f54c27'
+          '3514116a25775d39650a5dbf4fd495abda042f40')
+
+prepare() {
+  mkdir build
+  mkdir build-docs
+}
+
+build() {
+  cd build
+  cmake ../${pkgname}-${pkgver} \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=Release
+  make
+  cd ../
+
+  # kdevelop-php-docs
+  cd build-docs
+  cmake ../${pkgname}-docs-${pkgver} \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=Release
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="${pkgdir}" install
+  cd ../
+
+  # kdevelop-php-docs
+  cd build-docs
+  make DESTDIR="${pkgdir}" install
+}

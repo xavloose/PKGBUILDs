@@ -1,0 +1,38 @@
+# $Id: PKGBUILD 163311 2016-02-24 12:47:34Z alucryd $
+# Maintainer: Maxime Gauduin <alucryd@archlinux.org>
+# Contributor: Lucky <archlinux@builds.lucky.li>
+# Contributor: Farhad Shahbazi <farhad@enthusiasm.cc>
+
+pkgname=puddletag
+pkgver=1.1.1
+pkgrel=1
+pkgdesc='A tag editor for GNU/Linux'
+url='http://puddletag.sourceforge.net'
+license=('GPL')
+arch=('any')
+depends=('chromaprint' 'mutagen' 'python2-configobj' 'python2-musicbrainz2'
+         'python2-pyparsing' 'python2-pyqt4')
+optdepends=('python2-pillow: FLAC cover art'
+            'quodlibet: QuodLibet library support')
+source=("https://github.com/keithgg/puddletag/releases/download/${pkgver}/puddletag-${pkgver}.tar.gz")
+sha256sums=('0e944800ac37a854418ebfead1ae2e9d9c218db99fcdfe31c1bdb2fb803dc6ac')
+
+prepare() {
+  cd puddletag-${pkgver}
+
+  sed -i 's|^#!.*python$|#!/usr/bin/python2|' $(grep -rl '^#!.*python')
+}
+
+build() {
+  cd puddletag-${pkgver}
+
+  python2 setup.py config
+}
+
+package() {
+  cd puddletag-${pkgver}
+
+  python2 setup.py install --root="${pkgdir}" --optimize='1'
+}
+
+# vim: ts=2 sw=2 et:

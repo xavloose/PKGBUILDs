@@ -1,0 +1,27 @@
+# $Id: PKGBUILD 270404 2016-06-20 21:03:31Z heftig $
+# Contributor: Ionut Biru <ibiru@archlinux.org>
+
+pkgname=libgxps
+pkgver=0.2.4
+pkgrel=1
+pkgdesc="XPS Documents library"
+url="https://wiki.gnome.org/Projects/libgxps"
+arch=(i686 x86_64)
+license=(GPL2)
+depends=(cairo libarchive libjpeg-turbo libtiff lcms2)
+makedepends=(gobject-introspection gtk-doc)
+source=(http://download.gnome.org/sources/$pkgname/${pkgver:0:3}/$pkgname-$pkgver.tar.xz)
+sha256sums=('e9d6aa02836d9d4823a51705d3e1dee6fc4bce11d72566024042cfaac56ec7a4')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/usr --disable-static --enable-gtk-doc
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}
+
+# vim:set ts=2 sw=2 et:

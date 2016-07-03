@@ -1,0 +1,42 @@
+# $Id: PKGBUILD 169069 2016-03-31 11:26:38Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Maintainer : Gergely Imreh <imrehgATgmailDOTcom>
+# Contributor : dschauer <dschauerATgmailDOTcom>
+# Contributor : Stefan Husmann <stefan-husmann@t-online.de>
+# Contributor : Jeremy Cowgar <jeremy@cowgar.com>
+
+pkgname=tcc
+pkgver=0.9.26
+pkgrel=3
+_commit=80343ab7d829c21c65f8f9a14dd20158d028549f
+pkgdesc="Tiny C Compiler"
+arch=('i686' 'x86_64')
+url="http://bellard.org/tcc/"
+license=('LGPL')
+makedepends=('gcc' 'git')
+options=('docs' 'staticlibs')
+#source=(http://download.savannah.nongnu.org/releases/tinycc/${pkgname}-${pkgver}.tar.bz2)
+source=("$pkgname-$pkgver::git://repo.or.cz/tinycc.git#commit=${_commit}")
+md5sums=('SKIP')
+
+build() {
+  cd ${srcdir}/${pkgname}-${pkgver}
+  unset CFLAGS
+  unset LDFLAGS
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd ${srcdir}/${pkgname}-${pkgver}
+  make tccdir=${pkgdir}/usr/lib/tcc libdir=${pkgdir}/usr/lib \
+    mandir=${pkgdir}/usr/share/man bindir=${pkgdir}/usr/bin \
+    includedir=${pkgdir}/usr/include \
+    docdir=${pkgdir}/usr/share/doc/tcc \
+    install
+
+  make clean
+  make CFLAGS="-fPIC"
+  ld -shared -soname libtcc.so -o libtcc.so *.o
+  install -D -m 755 libtcc.so "${pkgdir}/usr/lib/libtcc.so"
+}

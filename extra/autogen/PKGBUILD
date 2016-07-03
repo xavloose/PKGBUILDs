@@ -1,0 +1,28 @@
+# $Id: PKGBUILD 269277 2016-06-10 10:20:05Z jgc $
+# Maintainer: Jan de Groot <jgc@archlinux.org>
+# Contributor: Arjan Timmerman <arjan@soufly.nl>
+# Contributor: Tor Krill
+
+pkgname=autogen
+pkgver=5.18.10
+pkgrel=1
+pkgdesc="A tool designed to simplify the creation and maintenance of programs that contain large amounts of repetitious text"
+arch=('i686' 'x86_64')
+url="http://www.gnu.org/software/autogen/"
+license=('GPL3')
+depends=('guile' 'libxml2')
+source=(http://ftp.gnu.org/gnu/${pkgname}/rel{$pkgver}/${pkgname}-${pkgver}.tar.xz{,.sig})
+md5sums=('a9e91d1c30d27541c600e340f666a985'
+         'SKIP')
+validpgpkeys=('44A088E295C3A722C450590EC9EF76DEB74EE762') # Bruce Korb <bkorb@gnu.org>
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+} 

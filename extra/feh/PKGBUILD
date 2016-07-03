@@ -1,0 +1,30 @@
+# $Id: PKGBUILD 270590 2016-06-24 15:26:26Z bisson $
+# Maintainer: Gaetan Bisson <bisson@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+# Contributor: dorphell <dorphell@archlinux.org>
+# Contributor: Tom Newsom <Jeepster@gmx.co.uk>
+
+pkgname=feh
+pkgver=2.16.1
+pkgrel=1
+pkgdesc='Fast and light imlib2-based image viewer'
+url='http://feh.finalrewind.org/'
+license=('custom:MIT')
+arch=('i686' 'x86_64')
+depends=('imlib2' 'curl' 'libxinerama' 'libexif')
+optdepends=('imagemagick: support more file formats')
+makedepends=('libxt')
+validpgpkeys=('781BB7071C6BF648EAEB08A1100D5BFB5166E005')
+source=("${url}${pkgname}-${pkgver}.tar.bz2"{,.asc})
+sha1sums=('c8a3f44b3ebd0d62e4d38238c8cc2097d818a310' 'SKIP')
+
+build() {
+	cd "${srcdir}/${pkgname}-${pkgver}"
+	make PREFIX=/usr exif=1 help=1 stat64=1
+}
+
+package() {
+	cd "${srcdir}/${pkgname}-${pkgver}"
+	make PREFIX=/usr DESTDIR="${pkgdir}" install
+	install -Dm644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

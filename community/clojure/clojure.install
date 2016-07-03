@@ -1,0 +1,5 @@
+post_install() {
+  echo 'Relogin or source /etc/profile.d/clojure.sh'
+}
+
+# vim:set ts=2 sw=2 et:

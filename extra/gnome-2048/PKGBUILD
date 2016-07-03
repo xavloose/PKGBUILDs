@@ -1,0 +1,31 @@
+# $Id: PKGBUILD 267248 2016-05-09 00:52:56Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+
+pkgname=gnome-2048
+pkgver=3.20.2
+pkgrel=1
+pkgdesc="Obtain the 2048 tile"
+url="https://wiki.gnome.org/Apps/2048"
+arch=(x86_64 i686)
+license=(GPL3)
+depends=(clutter-gtk libgee libgames-support)
+makedepends=(intltool vala itstool)
+groups=(gnome-extra)
+options=(!emptydirs)
+source=(https://download.gnome.org/sources/$pkgname/${pkgver:0:4}/$pkgname-$pkgver.tar.xz)
+sha256sums=('232655263d640fc02f780edd1b00e7be28f93562b834c375ba3a2933a8567bdd')
+
+prepare() {
+  cd $pkgname-$pkgver
+}
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}

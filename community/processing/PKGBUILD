@@ -1,0 +1,39 @@
+# $Id: PKGBUILD 181622 2016-06-29 19:43:37Z arodseth $
+# Maintainer: Alexander F Rødseth <xyproto@archlinux.org>
+
+pkgname=processing
+pkgver=3.1.1
+pkgrel=2
+arch=('x86_64' 'i686')
+pkgdesc='Programming environment for creating images, animations and interactions'
+url='http://www.processing.org/'
+license=('GPL' 'LGPL')
+makedepends=('gendesk')
+depends=('libgl' 'libxxf86vm')
+optdepends=('gstreamer0.10-good-plugins: video plugins')
+options=('!strip')
+source_x86_64=("http://download.$pkgname.org/$pkgname-$pkgver-linux64.tgz")
+source_i686=("http://download.$pkgname.org/$pkgname-$pkgver-linux32.tgz")
+md5sums_x86_64=('dfed139710ac8f1c276f444ac29e745a')
+md5sums_i686=('85dab8a70f99ed8b290077d0eb0dde58')
+
+prepare() {
+  gendesk -n --pkgname="$pkgname" --pkgdesc="$pkgdesc"
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+
+  install -d "$pkgdir/usr/bin/" "$pkgdir/usr/share/$pkgname/"
+  cp -r * "$pkgdir/usr/share/$pkgname/"
+  ln -s "/usr/share/$pkgname/$pkgname" "$pkgdir/usr/bin/$pkgname"
+  ln -s "/usr/share/$pkgname/$pkgname-java" "$pkgdir/usr/bin/$pkgname-java"
+
+  # Desktop icon / application shortcut
+  install -Dm644 "lib/icons/pde-128.png" \
+    "$pkgdir/usr/share/pixmaps/$pkgname.png"
+  install -Dm644 "$srcdir/$pkgname.desktop" \
+    "$pkgdir/usr/share/applications/$pkgname.desktop"
+}
+
+# vim:set ts=2 sw=2 et:

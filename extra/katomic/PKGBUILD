@@ -1,0 +1,37 @@
+# $Id: PKGBUILD 269828 2016-06-14 16:53:49Z arojas $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Maintainer: Antonio Rojas <arojas@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=katomic
+pkgver=16.04.2
+pkgrel=1
+pkgdesc="A fun and educational game built around molecular geometry"
+url="http://kde.org/applications/games/katomic/"
+arch=('i686' 'x86_64')
+license=('GPL' 'LGPL' 'FDL')
+groups=('kde-applications' 'kdegames')
+depends=('libkdegames' 'hicolor-icon-theme')
+makedepends=('extra-cmake-modules' 'python' 'kdoctools')
+conflicts=('kdegames-katomic')
+replaces=('kdegames-katomic')
+source=("http://download.kde.org/stable/applications/${pkgver}/src/katomic-${pkgver}.tar.xz")
+sha1sums=('1989cce95e0fcb3a62ec3954305bfbf74a331b7e')
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../$pkgname-$pkgver \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DBUILD_TESTING=OFF \
+    -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="${pkgdir}" install
+}

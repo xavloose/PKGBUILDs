@@ -1,0 +1,38 @@
+# $Id: PKGBUILD 154050 2015-12-21 19:10:20Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: Darwin Bautista <djclue917@gmail.com>
+# Contributor: Mark Lee <mark@markelee.com>
+
+pkgname=linphone
+pkgver=3.9.1
+pkgrel=1
+pkgdesc="A Voice-over-IP phone"
+arch=('i686' 'x86_64')
+url="http://www.linphone.org/index.php/eng"
+license=('GPL')
+depends=('alsa-lib' 'ffmpeg' 'gtk2' 'speex' 'libv4l' 'libglade' 'v4l-utils'
+	 'libpulse' 'libxv' 'mediastreamer' 'ortp' 'bzrtp' 'bcg729' 'libsoup'
+	 'belle-sip')
+makedepends=('pkg-config' 'perl-xml-parser' 'intltool' 'sgmltools-lite')
+optdepends=('pulseaudio')
+options=('!emptydirs')
+source=("http://download-mirror.savannah.gnu.org/releases/${pkgname}/3.9.x/sources/${pkgname}-$pkgver.tar.gz")
+md5sums=('c1c3a63b7ee963360e0e89cf5e5ff406')
+
+build() {
+  cd $pkgname-$pkgver
+  export PKG_CONFIG=/usr/bin/pkg-config
+  unset SGML_CATALOG_FILES
+  ./configure --prefix=/usr --disable-static --enable-ipv6 --enable-video \
+	--enable-alsa --enable-pulseaudio --disable-artsc --disable-strict \
+	--libexecdir=/usr/lib/$pkgname \
+	--enable-external-mediastreamer \
+	--enable-external-ortp \
+	--enable-zrtp
+  make
+}
+
+package() {
+  cd $srcdir/$pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}

@@ -1,0 +1,24 @@
+# $Id: PKGBUILD 150340 2015-12-08 16:20:52Z jlichtblau $
+# Maintainer: Eric Bélanger <eric@archlinux.org>
+# Maintainer: Jaroslav Lichtblau <svetlemodry@archlinux.org>
+
+pkgname=colordiff
+pkgver=1.0.16
+pkgrel=1
+pkgdesc="A Perl script wrapper for 'diff' that produces the same output but with pretty 'syntax' highlighting"
+arch=('any')
+url="http://www.colordiff.org/"
+license=('GPL')
+depends=('perl' 'diffutils')
+backup=('etc/colordiffrc' 'etc/colordiffrc-lightbg')
+source=(http://www.colordiff.org/${pkgname}-${pkgver}.tar.gz{,.sig})
+sha256sums=('eaf1cfe17dd0e820d38a0b24b0a402eba68b32e9bf9e7791ca2d1831029f138b'
+            'SKIP')
+validpgpkeys=('CF3A93EF01E616C5AE7A1D2745E1E473378BB197') #Dave Ewart <davee@sungate.co.uk>
+
+package() {
+  cd ${pkgname}-${pkgver}
+
+  make DESTDIR="${pkgdir}" INSTALL_DIR=/usr/bin MAN_DIR=/usr/share/man/man1 install
+  install -m644 colordiffrc-lightbg "${pkgdir}/etc/colordiffrc-lightbg"
+}

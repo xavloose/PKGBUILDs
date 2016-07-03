@@ -1,0 +1,63 @@
+# $Id: PKGBUILD 263207 2016-03-28 12:40:36Z daniel $
+# Maintainer: Daniel Isenmann <daniel@archlinux.org>
+# Contributor: Brice Carpentier <brice@dlfp.org>
+
+pkgname=mono
+pkgver=4.4.0.40
+_pkgver=4.4.0
+pkgrel=2
+pkgdesc="Free implementation of the .NET platform including runtime and compiler"
+arch=(i686 x86_64)
+license=('GPL' 'LGPL2.1' 'MPL' 'custom:MITX11')
+url="http://www.mono-project.com/"
+depends=('zlib' 'libgdiplus>=3.8' 'sh' 'python' 'ca-certificates')
+provides=('monodoc')
+conflicts=('monodoc')
+install="${pkgname}.install"
+source=(http://download.mono-project.com/sources/mono/${pkgname}-${pkgver}.tar.bz2
+        mono.binfmt.d
+	mono_context.patch
+	tls_fix.patch)
+md5sums=('f9765c947421ec96ab30aa73f0f4659f'
+         'b9ef8a65fea497acf176cca16c1e2402'
+         '9325e50a3fde354229c507801622b64b'
+         'f354f332a66014743e1dfd0bde058ba7')
+
+build() {
+  cd "${srcdir}"/${pkgname}-${_pkgver}
+	
+  # build mono
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --bindir=/usr/bin \
+    --sbindir=/usr/bin \
+    --with-mcs-docs=no 
+  patch -p1 < ../tls_fix.patch
+  make
+
+  # build jay
+  cd "${srcdir}"/${pkgname}-${_pkgver}/mcs/jay
+  make
+}
+
+package() {
+  cd "${srcdir}"/${pkgname}-${_pkgver}
+  make DESTDIR="${pkgdir}" install
+
+  # install jay
+  pushd "${srcdir}"/${pkgname}-${_pkgver}/mcs/jay
+  make DESTDIR="${pkgdir}" prefix=/usr INSTALL=../../install-sh install
+  popd
+
+  # install binfmt conf file and pathes
+  install -D -m644 "${srcdir}"/mono.binfmt.d "${pkgdir}"/usr/lib/binfmt.d/mono.conf
+
+  #install license
+  mkdir -p "${pkgdir}"/usr/share/licenses/${pkgname}
+  install -m644 mcs/MIT.X11 "${pkgdir}"/usr/share/licenses/${pkgname}/
+
+  #fix .pc file to be able to request mono on what it depends, fixes #go-oo build
+  sed -i -e "s:#Requires:Requires:" "${pkgdir}"/usr/lib/pkgconfig/mono.pc
+  sed -i -e "s:/2.0/:/4.5/:g" "${pkgdir}"/usr/lib/pkgconfig/mono-nunit.pc
+}

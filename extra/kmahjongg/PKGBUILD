@@ -1,0 +1,43 @@
+# $Id: PKGBUILD 261475 2016-03-15 10:26:40Z arojas $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Maintainer: Antonio Rojas <arojas@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=kmahjongg
+pkgver=16.04.2
+pkgrel=2
+pkgdesc="A tile matching game for one or two players"
+url="http://kde.org/applications/games/kmahjongg/"
+arch=(i686 x86_64)
+license=(GPL LGPL FDL)
+groups=(kde-applications kdegames)
+depends=(libkmahjongg libkdegames hicolor-icon-theme)
+makedepends=(extra-cmake-modules kdoctools python)
+conflicts=(kdegames-kmahjongg)
+replaces=(kdegames-kmahjongg)
+source=("http://download.kde.org/stable/applications/$pkgver/src/$pkgname-$pkgver.tar.xz"
+        kdebug-361132.patch::"https://quickgit.kde.org/?p=kmahjongg.git&a=commitdiff&h=22600c69&o=plain")
+sha1sums=('5978655c460d59390de41cd238da494aeefba909'
+          '9a31ef3a1d3ed761b8d2dce191166b30df82c90d')
+
+prepare() {
+  mkdir -p build
+
+  cd $pkgname-$pkgver
+# Fix infinite loop after KDE4 migration http://bugs.kde.org/show_bug.cgi?id=361132
+  patch -p1 -i ../kdebug-361132.patch
+}
+
+build() {
+  cd build
+  cmake ../$pkgname-$pkgver \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DBUILD_TESTING=OFF \
+    -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="$pkgdir" install
+}

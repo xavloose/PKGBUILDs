@@ -1,0 +1,33 @@
+# $Id: PKGBUILD 269706 2016-06-14 16:20:10Z arojas $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=kdeedu-data
+pkgver=16.04.2
+pkgrel=1
+pkgdesc="Common data for KDE Edu applications"
+url="http://kde.org/applications/education"
+arch=('any')
+license=('GPL' 'LGPL' 'FDL')
+depends=('hicolor-icon-theme')
+makedepends=('extra-cmake-modules' 'qt5-base')
+conflicts=('libkdeedu<14')
+source=("http://download.kde.org/stable/applications/${pkgver}/src/$pkgname-${pkgver}.tar.xz")
+sha1sums=('4fa5a6cbdce451e5bfa0dd5219b2bef0d8f70409')
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../$pkgname-${pkgver} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() {
+  cd "${srcdir}"/build
+  make DESTDIR="${pkgdir}" install
+}

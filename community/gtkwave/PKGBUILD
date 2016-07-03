@@ -1,0 +1,38 @@
+# $Id: PKGBUILD 177777 2016-06-03 00:35:33Z kkeen $
+# Maintainer: Kyle Keen <keenerd@gmail.com>
+# Contributor: Thomas Dziedzic < gostrc at gmail >
+# Contributor: Jared Casper <jaredcasper@gmail.com>
+
+pkgname=gtkwave
+pkgver=3.3.72
+pkgrel=3
+pkgdesc='A wave viewer which reads LXT, LXT2, VZT, GHW and VCD/EVCD files'
+arch=('i686' 'x86_64')
+url='http://gtkwave.sourceforge.net'
+license=('GPL' 'MIT')
+depends=('bzip2' 'xz' 'gtk2' 'desktop-file-utils')
+makedepends=('gperf')
+install='gtkwave.install'
+source=("http://gtkwave.sourceforge.net/gtkwave-${pkgver}.tar.gz")
+md5sums=('12455510beb3f816777081567fcbe735')
+
+build() {
+  cd "$srcdir/gtkwave-$pkgver"
+
+  ./configure \
+    --prefix=/usr \
+    --disable-tcl \
+    --disable-mime-update
+
+  make CFLAGS="-D_LARGEFILE64_SOURCE -O"
+}
+
+package() {
+  cd "$srcdir/gtkwave-$pkgver"
+
+  make DESTDIR="${pkgdir}" install
+
+  install -D -m644 "$srcdir/gtkwave-$pkgver/LICENSE.TXT" \
+    "$pkgdir/usr/share/licenses/gtkwave/LICENSE.TXT"
+}
+

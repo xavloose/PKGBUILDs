@@ -1,0 +1,25 @@
+# $Id: PKGBUILD 203220 2014-01-05 19:29:10Z tpowa $
+# Maintainer: Tobias Powalowski <tpowa@archlinux.org>
+
+pkgname=claws-mail-themes
+pkgver=20131119
+pkgrel=1
+pkgdesc="Claws Mail's themes"
+arch=('any')
+url="http://www.claws-mail.org/themes.php"
+license=('CCPL')
+depends=('claws-mail')
+source=("http://www.claws-mail.org/themes/$pkgname-$pkgver.tar.gz")
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+  ./autogen.sh
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "$srcdir/$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}
+md5sums=('124c63d1ca9e350d1802709b41251ca5')

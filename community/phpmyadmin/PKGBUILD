@@ -1,0 +1,30 @@
+# $Id: PKGBUILD 180813 2016-06-23 13:38:41Z spupykin $
+# Maintainer:
+# Contributor: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+# Contributor: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: tobias <tobias@archlinux.org>
+# Contributor: Manolis Tzanidakis <manolis@archlinux.org>
+# Contributor: Simon Lackerbauer <calypso "at" strpg.org>
+
+pkgname=phpmyadmin
+pkgver=4.6.3
+pkgrel=1
+pkgdesc='PHP and hence web-based tool to administrate MySQL over the WWW'
+arch=('any')
+url='http://www.phpmyadmin.net'
+license=('GPL')
+depends=('mariadb-clients' 'php')
+backup=(etc/webapps/phpmyadmin/config.inc.php)
+source=(https://files.phpmyadmin.net/phpMyAdmin/$pkgver/phpMyAdmin-$pkgver-all-languages.tar.xz)
+md5sums=('53c7a6a577d10de04a5dd21a05018542')
+
+package() {
+  _instdir="$pkgdir"/usr/share/webapps/phpMyAdmin
+  mkdir -p "$_instdir" "$pkgdir"/etc/webapps/phpmyadmin
+  cd "$_instdir"
+
+  cp -ra "$srcdir"/phpMyAdmin-$pkgver-all-languages/* .
+
+  ln -s /etc/webapps/phpmyadmin/config.inc.php "$_instdir"/config.inc.php
+  cp "$_instdir"/config.sample.inc.php "$pkgdir"/etc/webapps/phpmyadmin/config.inc.php
+}

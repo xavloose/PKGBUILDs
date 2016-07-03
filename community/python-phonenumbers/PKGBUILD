@@ -1,0 +1,48 @@
+# $Id: PKGBUILD 181648 2016-06-30 14:40:21Z felixonmars $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+
+pkgname=python-phonenumbers
+pkgname=(python-phonenumbers python2-phonenumbers)
+pkgver=7.4.4
+pkgrel=1
+pkgdesc="Python version of Google's common library for parsing, formatting, storing and validating international phone numbers"
+arch=('any')
+url="https://github.com/daviddrysdale/python-phonenumbers"
+license=('Apache')
+makedepends=("python-setuptools" "python2-setuptools" "git")
+source=("git+https://github.com/daviddrysdale/python-phonenumbers.git#tag=release-$pkgver")
+sha512sums=('SKIP')
+
+prepare() {
+  cp -a python-phonenumbers{,-py2}
+}
+
+build() {
+  cd "$srcdir"/python-phonenumbers
+  python setup.py build
+
+  cd "$srcdir"/python-phonenumbers-py2
+  python2 setup.py build
+}
+
+check() {
+  cd "$srcdir"/python-phonenumbers
+  python setup.py test
+
+  cd "$srcdir"/python-phonenumbers-py2
+  python2 setup.py test
+}
+
+package_python-phonenumbers() {
+  depends=('python')
+
+  cd python-phonenumbers
+  python setup.py install -O1 --root "$pkgdir"
+}
+
+package_python2-phonenumbers() {
+  depends=('python2')
+
+  cd python-phonenumbers-py2
+  python2 setup.py install -O1 --root "$pkgdir"
+}

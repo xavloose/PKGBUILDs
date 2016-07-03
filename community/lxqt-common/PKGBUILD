@@ -1,0 +1,38 @@
+# $Id: PKGBUILD 172412 2016-04-28 13:05:37Z jleclanche $
+# Maintainer: Jerome Leclanche <jerome@leclan.ch>
+
+pkgname=lxqt-common
+pkgver=0.10.0
+pkgrel=4
+pkgdesc="Common data to run a LXQt session."
+arch=("any")
+groups=("lxqt")
+url="http://lxqt.org"
+license=("LGPL2.1")
+depends=("qt5-svg" "hicolor-icon-theme" "xdg-utils" "ttf-font")
+makedepends=("cmake" "liblxqt" "qt5-tools")
+source=(
+	"https://downloads.lxqt.org/lxqt/$pkgver/$pkgname-$pkgver.tar.xz"
+	"https://downloads.lxqt.org/lxqt/$pkgver/$pkgname-$pkgver.tar.xz.asc"
+)
+sha256sums=(
+	"7b12f2fe7a42f5ea0c9f596eeb87ca3c97cc0b706121ceede64480e8480ec9d1"
+	"SKIP"
+)
+validpgpkeys=("169704C6FB490C6892C7F23C37E0AF1FDA48F373")
+
+
+build() {
+	mkdir -p build
+	cd build
+	# Build with LC_ALL=en_US.UTF-8 to work around lxqt#957 (FS#48754)
+	# Remove in 0.11
+	LC_ALL=en_US.UTF-8 cmake "$srcdir/$pkgname-$pkgver" \
+		-DCMAKE_INSTALL_PREFIX=/usr
+	LC_ALL=en_US.UTF-8 make
+}
+
+package() {
+	cd build
+	make DESTDIR="$pkgdir" install
+}

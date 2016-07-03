@@ -1,0 +1,48 @@
+# $Id: PKGBUILD 172701 2016-04-29 11:38:12Z jlichtblau $
+# Maintainer: Jaroslav Lichtblau <svetlemodry@archlinux.org>
+
+pkgname=esmska
+pkgver=1.9
+pkgrel=2
+pkgdesc="Program for sending SMS over the Internet"
+arch=('any')
+url="https://github.com/kparal/esmska"
+license=('AGPL' 'custom')
+depends=('java-runtime' 'desktop-file-utils')
+makedepends=('apache-ant')
+changelog=$pkgname.changelog
+source=($pkgname-$pkgver.tar.gz::https://github.com/kparal/$pkgname/archive/v$pkgver.tar.gz)
+sha256sums=('f9dfcf0a16ec97c34bae04a1ccee23b2a034a7dd5ce1e4661d9d6b08b297b9ca')
+
+build() {
+  cd "${srcdir}"/$pkgname-$pkgver
+
+  ant clean jar
+}
+
+package() {
+  cd "${srcdir}"/$pkgname-$pkgver/dist
+
+  install -d "${pkgdir}"/usr/share/java/$pkgname
+  cp -a * "${pkgdir}"/usr/share/java/$pkgname
+
+#.desktop + icon files
+  install -D -m644 "${srcdir}"/$pkgname-$pkgver/resources/$pkgname.desktop \
+    "${pkgdir}"/usr/share/applications/$pkgname.desktop
+  install -D -m644 "${srcdir}"/$pkgname-$pkgver/include/icons/$pkgname.png \
+    "${pkgdir}"/usr/share/pixmaps/$pkgname.png
+
+#executable file
+  install -d "${pkgdir}"/usr/bin
+  ln -s /usr/share/java/$pkgname/$pkgname.sh \
+    "${pkgdir}"/usr/bin/$pkgname
+
+#licenses
+  install -D -m644 "${srcdir}"/$pkgname-$pkgver/include/license/license.txt \
+    "${pkgdir}"/usr/share/licenses/$pkgname/LICENSE
+  install -D -m644 "${srcdir}"/$pkgname-$pkgver/include/license/gnu-agpl.txt \
+    "${pkgdir}"/usr/share/licenses/$pkgname/AGPL
+
+#removing unneeded
+  rm "${pkgdir}"/usr/share/java/$pkgname/$pkgname.exe
+}

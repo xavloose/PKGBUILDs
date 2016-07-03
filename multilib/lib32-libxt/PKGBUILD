@@ -1,0 +1,39 @@
+# $Id: PKGBUILD 133793 2015-05-19 09:11:40Z bluewind $
+#Maintainer: Jan de Groot <jgc@archlinux.org>
+
+_pkgbasename=libxt
+pkgname=lib32-$_pkgbasename
+pkgver=1.1.5
+pkgrel=1
+pkgdesc="X11 toolkit intrinsics library (32-bit)"
+arch=('x86_64')
+url="http://xorg.freedesktop.org/"
+license=('custom')
+depends=('lib32-libsm' 'lib32-libx11' $_pkgbasename)
+makedepends=('xorg-util-macros' 'gcc-multilib')
+options=('!libtool')
+source=(${url}/releases/individual/lib/libXt-${pkgver}.tar.bz2{,.sig})
+sha256sums=('46eeb6be780211fdd98c5109286618f6707712235fdd19df4ce1e6954f349f1a'
+            'SKIP')
+validpgpkeys=('4A193C06D35E7C670FA4EF0BA2FB9E081F2D130E') #Alan Coopersmith <alan.coopersmith@oracle.com>
+
+build() {
+  cd "${srcdir}/libXt-${pkgver}"
+
+  export CC="gcc -m32"
+  export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+
+  ./configure --prefix=/usr --sysconfdir=/etc --disable-static --libdir=/usr/lib32
+  make
+}
+
+package() {
+  cd "${srcdir}/libXt-${pkgver}"
+
+  make DESTDIR="${pkgdir}" install
+
+  rm -rf "${pkgdir}"/usr/{include,share}
+
+  mkdir -p "$pkgdir/usr/share/licenses"
+  ln -s $_pkgbasename "$pkgdir/usr/share/licenses/$pkgname" 
+}

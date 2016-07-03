@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 257442 2016-01-01 23:50:43Z arojas $
+# Maintainer: Antonio Rojas <arojas@archlinux.org>
+
+pkgname=noto-fonts-emoji
+_pkgver=2015-12-24
+_commit=941712
+pkgver=${_pkgver//-}
+pkgrel=1
+pkgdesc="Google Noto emoji fonts"
+arch=(any)
+url="https://www.google.com/get/noto/"
+license=(Apache)
+depends=(fontconfig)
+makedepends=(cairo optipng python2-fonttools nototools imagemagick zopfli python2-setuptools)
+install=$pkgname.install
+#source=("https://github.com/googlei18n/noto-emoji/archive/v$_pkgver-license-apache.tar.gz")
+source=("https://github.com/googlei18n/noto-emoji/archive/$_commit.zip")
+md5sums=('ee5c7ba995682b98a9f9b55e5eb7c7d5')
+
+prepare() {
+  cd noto-emoji-*
+  find -name '*.py' | xargs sed -e 's|/usr/bin/env python|/usr/bin/env python2|' -i
+  sed -e 's|python|python2|g' -e 's|ttx "$<"|ttx2 "$<"|g' -i Makefile
+  ln -rs add_emoji_gsub.py third_party/color_emoji/
+}
+
+build() {
+  cd noto-emoji-*
+  make
+}
+
+package() {
+  cd noto-emoji-*
+  mkdir -p "$pkgdir"/usr/share/fonts/noto
+  install -m644 NotoColorEmoji.ttf fonts/NotoEmoji-Regular.ttf "$pkgdir"/usr/share/fonts/noto
+}

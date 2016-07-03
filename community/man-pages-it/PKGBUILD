@@ -1,0 +1,25 @@
+# $Id: PKGBUILD 179677 2016-06-11 11:33:51Z arojas $
+# Maintainer: Giovanni Scafora <giovanni@archlinux.org>
+# Contributor: Alessio 'mOLOk' Bolognino <themolok@gmail.com>
+
+pkgname=man-pages-it
+pkgver=4.06
+pkgrel=1
+pkgdesc="Italian man pages"
+arch=('any')
+url="http://www.pluto.it/ildp/man/index.html"
+license=('GPL')
+depends=('man-pages')
+options=('!emptydirs')
+source=("ftp://ftp.pluto.it/pub/pluto/ildp/man/$pkgname-$pkgver.tar.xz")
+md5sums=('67f88487605e622e850be306db1aa8b6')
+
+package() {
+  cd ${srcdir}/${pkgname}-${pkgver}
+
+  make MANDIR=${pkgdir}/usr/share/man/it
+  make MANDIR=${pkgdir}/usr/share/man/it install
+
+  # remove conflicts with other man pages
+  rm -f $pkgdir/usr/share/man/it/man5/passwd.5*
+}

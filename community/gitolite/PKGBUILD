@@ -1,0 +1,27 @@
+# $Id: PKGBUILD 173523 2016-05-03 06:59:27Z eworm $
+# Maintainer:  Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+# Maintainer:  Christian Hesse <mail@eworm.de>
+# Contributor: Jon Eyolfson <jon@eyolfson.com>
+
+pkgname=gitolite
+pkgver=3.6.5
+pkgrel=2
+pkgdesc='An access control layer on top of git'
+url='https://github.com/sitaramc/gitolite'
+arch=('any')
+license=('GPL2')
+depends=('git' 'perl')
+install=gitolite.install
+source=($pkgname-$pkgver.tar.gz::$url/archive/v${pkgver}.tar.gz)
+sha256sums=('15f367591cc6782cde8b0b8c2206ada5714e83998b96de61838d64ff0878f876')
+
+prepare() {
+  cd $pkgname-$pkgver/src
+  echo "$pkgver" > VERSION
+}
+
+package() {
+  install -d "$pkgdir"/usr/{bin,lib/gitolite}
+  cp -a $pkgname-$pkgver/src/* "$pkgdir"/usr/lib/gitolite
+  ln -s /usr/lib/gitolite/gitolite "$pkgdir"/usr/bin/
+}

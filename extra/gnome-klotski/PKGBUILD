@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 267235 2016-05-08 21:19:46Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Contributor: Jan de Groot <jgc@archlinux.org>
+
+pkgname=gnome-klotski
+pkgver=3.20.2
+pkgrel=1
+pkgdesc="Slide blocks to solve the puzzle"
+url="https://wiki.gnome.org/Apps/Klotski"
+arch=(i686 x86_64)
+license=(GPL)
+depends=(gtk3 librsvg libgames-support)
+makedepends=(intltool itstool gobject-introspection)
+options=(!emptydirs)
+groups=(gnome-extra)
+source=(https://download.gnome.org/sources/$pkgname/${pkgver:0:4}/$pkgname-$pkgver.tar.xz)
+sha256sums=('5c517534da14bb9b8c90dd76b8c7169557a6876318780677a0e451f982028493')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
+      --disable-schemas-compile
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}

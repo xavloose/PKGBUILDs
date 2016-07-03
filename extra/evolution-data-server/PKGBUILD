@@ -1,0 +1,34 @@
+# $Id: PKGBUILD 269970 2016-06-14 20:51:12Z heftig $
+# Maintainer: Jan de Groot <jgc@archlinux.org>
+
+pkgname=evolution-data-server
+pkgver=3.20.3
+pkgrel=1
+pkgdesc="Centralized access to appointments and contacts"
+url="https://wiki.gnome.org/Apps/Evolution"
+arch=(i686 x86_64)
+depends=(gnome-online-accounts nss krb5 libgweather libical db libgdata libphonenumber webkitgtk)
+makedepends=(intltool gperf gobject-introspection vala gtk-doc boost)
+license=(GPL)
+source=(http://ftp.gnome.org/pub/gnome/sources/$pkgname/${pkgver:0:4}/$pkgname-$pkgver.tar.xz)
+sha256sums=('910360685d832c97f617f02aa5a8eb10a9c0d7d7d5a8758b50aa6b88a60bee48')
+
+build() {
+  cd "$pkgname-$pkgver"
+
+  ./configure --prefix=/usr --sysconfdir=/etc \
+      --localstatedir=/var --with-openldap=yes \
+      --libexecdir=/usr/lib/evolution-data-server \
+      --with-krb5=/usr --with-libdb=/usr --with-phonenumber=/usr \
+      --enable-vala-bindings --disable-uoa \
+      --enable-gtk-doc
+
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

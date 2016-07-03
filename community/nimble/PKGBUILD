@@ -1,0 +1,41 @@
+# $Id: PKGBUILD 178679 2016-06-08 20:23:02Z arodseth $
+# Maintainer: Alexander F Rødseth <xyproto@archlinux.org>
+
+pkgname=nimble
+pkgver=0.7.4
+pkgrel=1
+epoch=1
+pkgdesc='Package manager for the Nim programming language'
+arch=('x86_64' 'i686')
+url='https://github.com/nim-lang/nimble'
+license=('BSD')
+makedepends=('nim' 'git')
+depends=('glibc')
+source=("git://github.com/nim-lang/nimble.git#tag=v$pkgver")
+md5sums=('SKIP')
+
+prepare() {
+  cd "$pkgname"
+
+  git clone -b v0.14.0 --depth 1 git://github.com/nim-lang/nim vendor/nim
+}
+
+build() {
+  cd "$pkgname"
+
+  nim c -d:release src/nimble
+}
+
+package() {
+  cd "$pkgname"
+
+  install -Dm755 src/nimble "$pkgdir/usr/bin/nimble"
+  install -Dm644 license.txt "$pkgdir/usr/share/licenses/$pkgname/license.txt"
+
+  # Nimble looks for nimscriptapi.nim in /usr/bin/nimblepkg/, of all places.
+  cp -r src/nimblepkg "$pkgdir/usr/share/$pkgname"
+  ln -s "/usr/share/$pkgname" "$pkgdir/usr/bin/nimblepkg"
+}
+
+# getver: github.com/nim-lang/nimble
+# vim:set ts=2 sw=2 et:

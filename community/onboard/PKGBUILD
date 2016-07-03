@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 181448 2016-06-27 20:53:19Z bgyorgy $
+# Maintainer: Balló György <ballogyor+arch at gmail dot com>
+
+pkgname=onboard
+pkgver=1.2.0
+pkgrel=4
+pkgdesc="On-screen keyboard useful on tablet PCs or for mobility impaired users"
+arch=('i686' 'x86_64')
+url="https://launchpad.net/onboard"
+license=('GPL')
+depends=('libxkbfile' 'libcanberra' 'hunspell' 'python-cairo' 'python-dbus' 'python-gobject' 'gtk3' 'iso-codes' 'librsvg' 'gsettings-desktop-schemas' 'desktop-file-utils' 'dconf')
+makedepends=('python-distutils-extra')
+optdepends=('mousetweaks: hover click with mouse')
+source=(http://launchpad.net/$pkgname/${pkgver%.*}/$pkgver/+download/$pkgname-$pkgver.tar.gz
+        gcc6.diff)
+md5sums=('cc5f65d9148c5c0d60fdb537e8569dd0'
+         'ce982d54eb07ad44b8f502b3a399eb05')
+
+prepare() {
+  cd $pkgname-$pkgver
+  # Remove unused dependency (FS#48838)
+  sed -i '/AppIndicator3/d' Onboard/Version.py
+  
+  # build fixes
+  patch -Np1 -i $srcdir/gcc6.diff
+}
+
+build() {
+  cd $pkgname-$pkgver
+  python3 setup.py build
+}
+
+package() {
+  cd $pkgname-$pkgver
+  python3 setup.py install --root=$pkgdir --optimize=1
+}

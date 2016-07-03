@@ -1,0 +1,31 @@
+# $Id: PKGBUILD 267262 2016-05-09 19:43:08Z heftig $
+# Maintainer: Jan de Groot  <jgc@archlinux.org>
+
+pkgname=libgweather
+pkgver=3.20.1
+pkgrel=1
+pkgdesc="Location and timezone database and weather-lookup library"
+url="https://wiki.gnome.org/Projects/LibGWeather"
+arch=(i686 x86_64)
+license=(LGPL)
+depends=(libsoup gtk3 geocode-glib)
+makedepends=(intltool gobject-introspection vala)
+options=(!emptydirs)
+source=(https://download.gnome.org/sources/$pkgname/${pkgver:0:4}/$pkgname-$pkgver.tar.xz)
+sha256sums=('81eb829fab6375cc9a4d448ae0f790e48f9720e91eb74678b22264cfbc8938d0')
+
+build() {
+  cd "$pkgname-$pkgver"
+
+  ./configure --prefix=/usr --sysconfdir=/etc \
+      --localstatedir=/var --disable-static
+
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

@@ -1,0 +1,20 @@
+# $Id: PKGBUILD 105655 2014-02-13 02:01:09Z kkeen $
+# Maintainer: Kyle Keen <keenerd@gmail.com>
+pkgname=aurphan
+pkgver=20140212
+pkgrel=1
+pkgdesc="Finds packages in need of maintainers, bug fixes and patches.  Adopt today!"
+arch=('any')
+url="http://kmkeen.com/aurphan/"
+license=('GPL')
+depends=('bash' 'curl' 'jshon' 'expac')
+makedepends=()
+source=(http://kmkeen.com/$pkgname/$pkgname-$pkgver.tar.gz)
+md5sums=('c1e5e3b370d99159565745b4f520aa22')
+
+package() {
+  cd "$srcdir/$pkgname"
+  install -Dm755 $pkgname "$pkgdir/usr/bin/$pkgname"
+  install -Dm644 $pkgname.1 "$pkgdir/usr/share/man/man1/$pkgname.1"
+}
+

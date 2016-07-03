@@ -1,0 +1,40 @@
+# $Id: PKGBUILD 154565 2015-12-26 16:52:59Z alucryd $
+# Maintainer: Maxime Gauduin <alucryd@archlinux.org>
+# Contributor: Cravix <dr.neemous@gmail.com>
+
+pkgname=python2-pygame-sdl2
+pkgver=6.99.8
+pkgrel=1
+pkgdesc='Reimplementation of portions of the pygame API using SDL2'
+arch=('i686' 'x86_64')
+url='https://github.com/renpy/pygame_sdl2'
+license=('LGPL2.1' 'zlib')
+depends=('python2' 'sdl2_image' 'sdl2_mixer' 'sdl2_ttf')
+makedepends=('cython2')
+source=("http://www.renpy.org/dl/${pkgver}/pygame_sdl2-for-renpy-${pkgver}.tar.bz2"
+        'cython.patch')
+sha256sums=('cf6c5acd21af92554c404a24d66af9292f126e10d0d8eea1f7d44432e80b0942'
+            'fe2ec4d84444ee72c3607ac9e02bf309f069c2b289b5f3d43483db145d741b01')
+
+prepare() {
+  cd pygame-sdl2-for-renpy-${pkgver}
+
+  patch -Np1 -i ../cython.patch
+}
+
+build() {
+  cd pygame-sdl2-for-renpy-${pkgver}
+
+  python2 setup.py build
+}
+
+package() {
+  cd pygame-sdl2-for-renpy-${pkgver}
+
+  python2 setup.py install --root="${pkgdir}" --prefix='/usr' --optimize='1'
+
+  install -dm 755 "${pkgdir}"/usr/share/licenses/python2-pygame-sdl2
+  install -m 644 COPYING.ZLIB "${pkgdir}"/usr/share/licenses/python2-pygame-sdl2/
+}
+
+# vim: ts=2 sw=2 et:

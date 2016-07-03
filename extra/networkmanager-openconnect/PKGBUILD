@@ -1,0 +1,30 @@
+# $Id: PKGBUILD 267809 2016-05-11 13:57:24Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Contributor: Ionut Biru <ibiru@archlinux.org>
+
+pkgname=networkmanager-openconnect
+pkgver=1.2.2
+pkgrel=1
+pkgdesc="NetworkManager VPN plugin for OpenConnect"
+url="https://wiki.gnome.org/Projects/NetworkManager"
+arch=(i686 x86_64)
+license=(GPL)
+depends=(libnm-gtk libsecret openconnect)
+makedepends=(intltool python)
+install=networkmanager-openconnect.install
+source=(http://ftp.gnome.org/pub/GNOME/sources/NetworkManager-openconnect/${pkgver::3}/NetworkManager-openconnect-${pkgver}.tar.xz)
+sha256sums=('522979593e21b4e884112816708db9eb66148b3491580dacfad53472b94aafec')
+
+build() {
+  cd NetworkManager-openconnect-$pkgver
+  ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
+    --libexecdir=/usr/lib/networkmanager \
+    --enable-more-warnings=yes \
+    --disable-static
+  make
+}
+
+package() {
+  cd NetworkManager-openconnect-$pkgver
+  make DESTDIR="$pkgdir" install
+}

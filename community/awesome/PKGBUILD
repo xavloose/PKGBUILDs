@@ -1,0 +1,49 @@
+# Maintainer: Levente Polyak <anthraxx[at]archlinux[dot]org>
+# Contributor: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+# Contributor: Sébastien Luttringer
+# Contributor: xduugu
+# Contributor: Ronald van Haren <ronald.archlinux.org>
+# Contributor: Vesa Kaihlavirta
+
+pkgname=awesome
+pkgver=3.5.9
+pkgrel=1
+pkgdesc='Highly configurable framework window manager'
+url='http://awesome.naquadah.org/'
+arch=('i686' 'x86_64')
+license=('GPL2')
+depends=('cairo' 'dbus' 'gdk-pixbuf2' 'imlib2' 'libxdg-basedir' 'lua' 'lua-lgi'
+         'pango' 'startup-notification' 'xcb-util-cursor' 'xcb-util-keysyms'
+         'xcb-util-wm' 'xorg-xmessage')
+makedepends=('asciidoc' 'cmake' 'docbook-xsl' 'doxygen' 'imagemagick' 'ldoc' 'xmlto')
+optdepends=('rlwrap: readline support for awesome-client'
+            'dex: autostart your desktop files'
+            'vicious: widgets for the Awesome window manager')
+provides=('notification-daemon')
+backup=('etc/xdg/awesome/rc.lua')
+source=(${pkgname}-${pkgver}.tar.xz::http://awesome.naquadah.org/download/awesome-${pkgver}.tar.xz)
+sha512sums=('6a4c679b293e8cd85d1f7e13f6dea704cbb267e42b9260496a54b657a66d6148aae51521d802d61baaeb23df0d4a8ad0b28d9dc922ea5da2a347b4251cce5e25')
+
+prepare() {
+  cd ${pkgname}-${pkgver}
+  mkdir -p build
+}
+
+build() {
+  cd ${pkgname}-${pkgver}/build
+  cmake .. \
+    -DCMAKE_BUILD_TYPE=RELEASE \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DSYSCONFDIR=/etc \
+    -DLUA_LIBRARY=/usr/lib/liblua.so.5.3
+  make
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  install -Dm 644 awesome.desktop "${pkgdir}/usr/share/xsessions/awesome.desktop"
+  make -C build DESTDIR="${pkgdir}" install
+}
+
+# vim: ts=2 sw=2 et:

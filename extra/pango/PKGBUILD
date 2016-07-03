@@ -1,0 +1,37 @@
+# $Id: PKGBUILD 264773 2016-04-12 21:49:12Z heftig $ 
+# Maintainer: Jan de Groot <jgc@archlinux.org>
+
+pkgname=pango
+pkgver=1.40.1
+pkgrel=1
+pkgdesc="A library for layout and rendering of text"
+arch=('i686' 'x86_64')
+license=('LGPL')
+depends=('libthai' 'cairo' 'libxft' 'harfbuzz')
+makedepends=('harfbuzz' 'fontconfig' 'cairo' 'libxft' 'libthai' 'gobject-introspection' 'help2man')
+checkdepends=('ttf-dejavu')
+install=pango.install
+source=(http://download.gnome.org/sources/${pkgname}/${pkgver:0:4}/${pkgname}-${pkgver}.tar.xz)
+url="http://www.pango.org/"
+sha256sums=('e27af54172c72b3ac6be53c9a4c67053e16c905e02addcf3a603ceb2005c1a40')
+
+build() {
+  cd ${pkgname}-${pkgver}
+
+  rm -f pango-view/pango-view.1.in
+
+  ./configure --prefix=/usr --sysconfdir=/etc \
+      --localstatedir=/var --with-included-modules=basic-fc
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+  make
+}
+
+check() {
+  cd ${pkgname}-${pkgver}
+  make -k check || :
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  make -j1 DESTDIR="${pkgdir}" install
+}

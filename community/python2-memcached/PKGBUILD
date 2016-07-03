@@ -1,0 +1,38 @@
+# $Id: PKGBUILD 166207 2016-03-12 08:00:13Z arodseth $
+# Maintainer: Alexander F Rødseth <xyproto@archlinux.org>
+# Contributor: Angel Velasquez <angvp@archlinux.org>
+# Contributor: Geoffroy Carrier <geoffroy.carrier@aur.archlinux.org>
+# Contributor: Nathan Jones <nathanj@insightbb.com>
+
+pkgname=python2-memcached
+pkgdesc='Python interface to memcached'
+pkgver=1.57
+pkgrel=1
+url='https://github.com/linsomniac/python-memcached'
+arch=('any')
+license=('PSF')
+depends=('python2-six')
+makedepends=('python2-setuptools' 'git' 'python2-six')
+source=("git://github.com/linsomniac/python-memcached#tag=release-$pkgver")
+md5sums=('SKIP')
+
+prepare() {
+  cd 'python-memcached'
+
+  sed -i 's:/env python:/python2:' memcache.py
+}
+
+package() {
+  cd 'python-memcached'
+
+  python2 setup.py install --root=$pkgdir --optimize=1
+}
+
+check() {
+  cd 'python-memcached'
+
+  python2 setup.py check
+}
+
+# getver: -u 2 github.com/linsomniac/python-memcached/blob/master/ChangeLog
+# vim:set ts=2 sw=2 et:

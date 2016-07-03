@@ -1,0 +1,28 @@
+# $Id: PKGBUILD 181661 2016-07-01 06:23:38Z eworm $
+# Maintainer: Christian Hesse <arch@eworm.de>
+# Contributor:  TDY <tdy@gmx.com>
+# Contributor: Marc St-Laurent <mstlaurent@canada.com>
+
+pkgname=xfmpc
+pkgver=0.2.3
+pkgrel=1
+pkgdesc="A graphical GTK+ MPD client focusing on low footprint"
+arch=('i686' 'x86_64')
+url="http://goodies.xfce.org/projects/applications/xfmpc/"
+license=('GPL')
+depends=('libxfce4ui' 'libmpd')
+makedepends=('intltool')
+source=("http://archive.xfce.org/src/apps/${pkgname}/${pkgver%.*}/${pkgname}-${pkgver}.tar.bz2")
+sha256sums=('4189c0c82b66b758a6d5bc651493b675d3d46329e5f1a76ff26c448125f4fcb0')
+
+build() {
+	cd "${srcdir}/${pkgname}-${pkgver}"
+	./configure --prefix=/usr
+	make
+}
+
+package() {
+	cd "${srcdir}/${pkgname}-${pkgver}"
+	make DESTDIR="${pkgdir}" install
+}
+

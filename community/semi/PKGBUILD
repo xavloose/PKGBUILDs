@@ -1,0 +1,24 @@
+# $Id: PKGBUILD 114396 2014-07-01 15:27:47Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: Norberto Lopes <shelika@mail.telepac.pt>
+
+pkgname=semi
+pkgver=1.14.6
+pkgrel=4
+pkgdesc="A library to provide MIME feature for GNU Emacs."
+arch=(any)
+url="https://github.com/wanderlust/semi"
+license=('GPL')
+depends=('emacs' 'emacs-apel>=10.7' 'flim>=1.6.0')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/wanderlust/semi/archive/semi-${pkgver//./_}.tar.gz")
+md5sums=('47ce862aa4892fdd60e133bdb5d304db')
+
+build() {
+  cd $srcdir/semi-semi-${pkgver//./_}
+  make
+}
+
+package() {
+  cd $srcdir/semi-semi-${pkgver//./_}
+  make install PREFIX=$pkgdir/usr
+}

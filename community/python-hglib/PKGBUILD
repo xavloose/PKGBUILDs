@@ -1,0 +1,42 @@
+# $Id: PKGBUILD 178044 2016-06-06 18:59:09Z jlichtblau $
+# Maintainer: Jaroslav Lichtblau <svetlemodry@archlinux.org>
+# Contributor: Erik Johnson <palehose at gmail dot com>
+# Contributor: Jelle van der Waa <jelle@archlinux.org>
+
+pkgbase=python-hglib
+pkgname=('python2-hglib' 'python-hglib')
+pkgver=2.1
+pkgrel=1
+arch=('any')
+url="https://pypi.python.org/pypi/python-hglib"
+license=('MIT')
+makedepends=('python2' 'mercurial' 'python')
+checkdepends=('python-nose' 'python2-nose')
+source=("https://pypi.python.org/packages/source/p/python-hglib/${pkgbase}-${pkgver}.tar.gz")
+sha256sums=('aef394edeeea89803f9764a441423da3efffefaae9cf0eca6ee38cdb4ac00d73')
+
+prepare() {
+  cp -rf "${pkgbase}-${pkgver}" "${pkgbase}-${pkgver}-2"
+}
+
+check() {
+  cd "${srcdir}/${pkgbase}-${pkgver}"
+  python test.py
+
+  cd "${srcdir}/${pkgbase}-${pkgver}-2"
+  python2 test.py
+}
+
+package_python2-hglib() {
+  pkgdesc="A library with a fast, convenient interface to Mercurial. It uses Mercurial's command server for communication with hg."
+  depends=('python2' 'mercurial')
+  cd "${srcdir}/${pkgbase}-${pkgver}-2"
+  python2 setup.py install --root=${pkgdir} --optimize=1
+}
+
+package_python-hglib() {
+  pkgdesc="A library with a fast, convenient interface to Mercurial. It uses Mercurial's command server for communication with hg."
+  depends=('python' 'mercurial')
+  cd "${srcdir}/${pkgbase}-${pkgver}"
+  python setup.py install --root=${pkgdir} --optimize=1
+}

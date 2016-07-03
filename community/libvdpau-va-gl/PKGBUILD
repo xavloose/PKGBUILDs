@@ -1,0 +1,25 @@
+# $Id: PKGBUILD 181478 2016-06-28 09:05:37Z arojas $
+# Maintainer:  Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+# Contributor: Behem0th <grantipak@gmail.com>
+
+pkgname=libvdpau-va-gl
+pkgver=0.4.0
+pkgrel=1
+pkgdesc='VDPAU driver with OpenGL/VAAPI backend'
+arch=('i686' 'x86_64')
+url='https://github.com/i-rinat/libvdpau-va-gl'
+license=('LGPL3')
+depends=('libvdpau' 'libva' 'libgl' 'ffmpeg' 'glu')
+makedepends=('cmake')
+source=($pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz)
+md5sums=('638244652a702d0262039890904f37ce')
+
+build() {
+  cd $pkgname-$pkgver
+  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() {
+  make -C $pkgname-$pkgver DESTDIR="$pkgdir" install
+}

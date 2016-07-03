@@ -1,0 +1,39 @@
+# $Id: PKGBUILD 180552 2016-06-20 18:21:27Z eworm $
+# Maintainer: Christian Hesse <mail@eworm.de>
+# Contributor: mathieu.clabaut <mathieu.clabaut@gmail.com>
+# Contributor: Buce <dmbuce@gmail.com>
+# Contributor: Danie Roux <accounts@danieroux.com>
+
+pkgname=etckeeper
+pkgver=1.18.4
+pkgrel=1
+pkgdesc='collection of tools to let /etc be stored in a git, hg or bzr repository'
+arch=('any')
+url='http://kitenet.net/~joey/code/etckeeper/'
+license=('GPL2')
+depends=('git')
+makedepends=('mercurial' 'bzr')
+optdepends=('mercurial: use mercurial for version control'
+	'bzr: use bazaar for version control')
+backup=('etc/etckeeper/etckeeper.conf')
+source=("git://git.kitenet.net/etckeeper#tag=${pkgver}")
+sha256sums=('SKIP')
+
+build() {
+	cd "${srcdir}/etckeeper/"
+
+	# fix python
+	sed -i '/^PYTHON=/c PYTHON=python2' Makefile
+	sed -i '1s/python/python2/' zypper-etckeeper.py
+
+	# We want pacman :D
+	sed -i -e "/^LOWLEVEL_PACKAGE_MANAGER/c LOWLEVEL_PACKAGE_MANAGER=pacman" \
+		-e "/^HIGHLEVEL_PACKAGE_MANAGER/c HIGHLEVEL_PACKAGE_MANAGER=pacman" etckeeper.conf
+}
+
+package() {
+	cd "${srcdir}/etckeeper/"
+
+	make DESTDIR=${pkgdir} install
+}
+

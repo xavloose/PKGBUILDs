@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 172721 2016-04-29 13:35:03Z jlichtblau $
+# Maintainer: Jaroslav Lichtblau <svetlemodry@archlinux.org>
+# Contributor: Stéphane Gaudreault <stephane@archlinux.org>
+# Contributor: Thomas Dziedzic < gostrc at gmail >
+# Contributor: Thomas Baechler <thomas@archlinux.org>
+
+pkgname=ginac
+pkgver=1.6.7
+pkgrel=1
+pkgdesc="C++ library for symbolic calculations"
+arch=('i686' 'x86_64')
+url='http://www.ginac.de/'
+license=('GPL')
+depends=('cln')
+makedepends=('transfig' 'doxygen' 'texlive-bin' 'python')
+source=(http://www.ginac.de/$pkgname-$pkgver.tar.bz2)
+sha256sums=('cea5971b552372017ea654c025adb44d5f1b3e3ce0a739da2fe95189572b85db')
+
+build() {
+  cd "${srcdir}"/$pkgname-$pkgver
+
+  ./configure --prefix=/usr --disable-static
+  make
+}
+
+check() {
+  cd "${srcdir}"/$pkgname-$pkgver
+
+  make check
+}
+
+package() {
+  cd "${srcdir}"/$pkgname-$pkgver
+
+  make DESTDIR="${pkgdir}" install
+}

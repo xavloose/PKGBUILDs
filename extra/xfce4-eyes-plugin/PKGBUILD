@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 268266 2016-05-17 21:48:03Z foutrelis $
+# Maintainer: Evangelos Foutras <evangelos@foutrelis.com>
+# Contributor: AndyRTR <andyrtr@archlinux.org>
+# Contributor: Aurelien Foret <orelien@chez.com>
+
+pkgname=xfce4-eyes-plugin
+pkgver=4.4.5
+pkgrel=1
+pkgdesc="A rolling eyes (following mouse pointer) plugin for the Xfce panel"
+arch=('i686' 'x86_64')
+url="http://goodies.xfce.org/projects/panel-plugins/xfce4-eyes-plugin"
+license=('GPL2')
+groups=('xfce4-goodies')
+depends=('xfce4-panel' 'hicolor-icon-theme')
+makedepends=('intltool' 'perl-xml-parser')
+source=(http://archive.xfce.org/src/panel-plugins/$pkgname/${pkgver%.*}/$pkgname-$pkgver.tar.bz2)
+sha256sums=('648f7a1738d852af9482d11330b8ab33901f05256984de73d8cea4d7d7311937')
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --libexecdir=/usr/lib \
+    --localstatedir=/var \
+    --disable-static
+  make
+}
+
+package() {
+  cd "$srcdir/$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}
+
+# vim:set ts=2 sw=2 et:

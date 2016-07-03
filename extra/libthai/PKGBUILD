@@ -1,0 +1,27 @@
+# $Id: PKGBUILD 261020 2016-03-06 10:39:59Z jgc $
+# Maintainer: Jan de Groot <jgc@archlinux.org>
+# Contributor: Chaiwat Suttipongsakul <cwt114@gmail.com>
+
+pkgname=libthai
+pkgver=0.1.24
+pkgrel=1
+pkgdesc="Thai language support routines"
+url="http://linux.thai.net/projects/libthai"
+arch=('i686' 'x86_64')
+license=('LGPL')
+depends=('libdatrie')
+makedepends=('pkgconfig')
+options=('!emptydirs')
+source=(http://linux.thai.net/pub/thailinux/software/${pkgname}/${pkgname}-${pkgver}.tar.xz)
+md5sums=('e4f676b657e75d075c6cba9a231fd7b0')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  ./configure --prefix=/usr --disable-static
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}

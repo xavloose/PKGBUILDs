@@ -1,0 +1,55 @@
+# $Id: PKGBUILD 176160 2016-05-23 19:27:52Z arodseth $
+# Maintainer: Alexander F Rødseth <xyproto@archlinux.org>
+# Contributor: Timm Preetz <timm@preetz.us>
+# Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
+# Contributor: Ben Wolsieffer <benwolsieffer@gmail.com>
+
+pkgname=netbeans
+pkgver=8.1
+_subver=201510222201
+pkgrel=3
+pkgdesc='IDE for Java, HTML5, PHP, Groovy, C and C++'
+arch=('any')
+url='http://netbeans.org/'
+license=('CDDL')
+# classpath is not needed, see FS#38567 (Oracle JDK does not need atk either)
+depends=('java-environment' 'ttf-font' 'libxtst' 'giflib' 'atk')
+backup=('usr/share/netbeans/etc/netbeans.conf')
+makedepends=('gendesk' 'setconf')
+optdepends=('php: for developing programs in php'
+            'groovy: for developing programs in groovy'
+            'lib32-glibc')
+options=('!strip')
+# http://dlc-cdn.sun.com/netbeans/8.1/final/zip/
+source=("http://download.netbeans.org/netbeans/$pkgver/final/zip/netbeans-$pkgver-$_subver.zip"
+        'https://cdn.rawgit.com/ComFreek/chocolatey-packages/779f5c96f817ed1fa0d76fd90841873dc6c0ba74/icons/netbeans.png')
+sha256sums=('b960957edca0bb14cacadf348ef92b5ac233eec73fa25dda72ef365bc5084ea9'
+            '048112cc3be78f41bf6eca8f664f3e92e97fc68df904ce87a7e0156a18d80c7e')
+
+prepare() {
+  gendesk -f -n --pkgname "$pkgname" --pkgdesc "$pkgdesc" \
+    --custom "StartupWMClass=NetBeans IDE $pkgver" --name "NetBeans" \
+    --exec 'netbeans %f' --startupnotify true
+  setconf "$pkgname/bin/$pkgname" basedir "/usr/share/$pkgname"
+}
+
+package() {
+  mkdir -p "$pkgdir/usr/"{bin,share/applications}
+
+  # Binary file
+  install -Dm755 "$pkgname/bin/$pkgname" "$pkgdir/usr/bin/$pkgname"
+
+  # Resources
+  cp -r "$pkgname" "$pkgdir/usr/share/"
+
+  # Desktop shortcut and icon
+  install -Dm644 "$pkgname.desktop" \
+    "$pkgdir/usr/share/applications/$pkgname.desktop"
+  install -Dm644 "$pkgname.png" "$pkgdir/usr/share/pixmaps/$pkgname.png"
+
+  # Cleanup of directory that contains the binary file and .exe-files
+  rm -r "$pkgdir/usr/share/$pkgname/bin"
+}
+
+# getver: netbeans.org
+# vim:set ts=2 sw=2 et:

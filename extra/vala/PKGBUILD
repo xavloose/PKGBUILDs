@@ -1,0 +1,32 @@
+# $Id: PKGBUILD 270400 2016-06-20 20:59:53Z heftig $
+# Maintainer : Ionut Biru <ibiru@archlinux.org>
+# Contributor: Timm Preetz <timm@preetz.us>
+
+pkgname=vala
+pkgver=0.32.1
+pkgrel=1
+pkgdesc="Compiler for the GObject type system"
+arch=('i686' 'x86_64')
+url="https://wiki.gnome.org/Projects/Vala"
+license=('LGPL')
+depends=('glib2')
+makedepends=('libxslt')
+checkdepends=('dbus' 'libx11' 'gobject-introspection')
+source=(https://download.gnome.org/sources/$pkgname/${pkgver:0:4}/$pkgname-$pkgver.tar.xz)
+sha256sums=('dd0d47e548a34cfb1e4b04149acd082a86414c49057ffb79902eb9a508a161a9')
+
+build() {
+    cd $pkgname-$pkgver
+    ./configure --prefix=/usr --enable-vapigen
+    make
+}
+
+check() {
+    cd $pkgname-$pkgver
+#    make check
+}
+
+package() {
+    cd $pkgname-$pkgver
+    make DESTDIR="$pkgdir" install
+}

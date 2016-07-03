@@ -1,0 +1,47 @@
+# $Id$
+# Maintainer: Alexandre Filgueira <alexfilgueira@antergos.com>
+# Contributor: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+
+pkgname=cinnamon-session
+pkgver=3.0.1
+pkgrel=1
+pkgdesc="The Cinnamon Session Handler"
+arch=(i686 x86_64)
+license=(GPL LGPL)
+depends=(dbus-glib cinnamon-desktop libsm libcanberra)
+makedepends=(intltool mesa json-glib xtrans gnome-common)
+options=('!emptydirs')
+url="https://github.com/linuxmint/cinnamon-session"
+source=(${pkgname}-${pkgver}.tar.gz::https://github.com/linuxmint/cinnamon-session/archive/${pkgver}.tar.gz
+        timeout.patch)
+sha256sums=('d8935747bc8aa70518e70a7d338eaf9109b5307d8a44d49dc57e0f15d69e9c89'
+            'ef421a14814c7858490b3a806568ab4ec8a0dc21d390e94f801771c1261bb24a')
+
+prepare() {
+  cd $pkgname-$pkgver
+
+  # Increase timeout, for slow machines
+  patch -Np1 -i ../timeout.patch
+
+  # Support new libsystemd (which replaces libsystemd-login)
+  sed -i 's/libsystemd-login/libsystemd/' configure.ac
+}
+
+build() {
+  cd $pkgname-$pkgver
+  
+  CFLAGS="${CFLAGS} -Wno-error=format-nonliteral" ./autogen.sh \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --libexecdir=/usr/lib/cinnamon-session \
+    --disable-schemas-compile \
+    --disable-gconf
+    
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}

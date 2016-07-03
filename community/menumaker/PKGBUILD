@@ -1,0 +1,34 @@
+# $Id: PKGBUILD 138919 2015-08-29 11:36:39Z jlichtblau $
+# Maintainer: Jaroslav Lichtblau <svetlemodry@archlinux.org>
+# Contributor: Allan McRae <allan@archlinux.org>
+# Contributor: Ben <contrasutra@myrealbox.com>
+# Contributor: Lukasz Fidosz <virhilo@gmail.com>
+
+pkgname=menumaker
+pkgver=0.99.9
+pkgrel=1
+pkgdesc="Heuristics-driven menu generator for Deskmenu, FluxBox, IceWM, OpenBox, WindowMaker and XFCE"
+arch=('any')
+url="http://menumaker.sourceforge.net/"
+license=('BSD')
+depends=('python')
+options=('!makeflags')
+source=(http://downloads.sourceforge.net/$pkgname/$pkgname-$pkgver.tar.gz)
+sha256sums=('653361fa8d739e0adba788f187ae2545e0a9c510fd7544c31b7fbc25e87e0e2f')
+
+build() {
+  cd "${srcdir}"/${pkgname}-${pkgver}
+
+  ./configure --prefix=/usr --infodir=/usr/share/info
+  make
+}
+
+package() {
+  cd "${srcdir}"/${pkgname}-${pkgver}
+
+  make DESTDIR="${pkgdir}" install
+  rm -rf "${pkgdir}"/usr/share/info
+
+#license
+  install -Dm644 COPYING "${pkgdir}"/usr/share/licenses/${pkgname}/license
+}

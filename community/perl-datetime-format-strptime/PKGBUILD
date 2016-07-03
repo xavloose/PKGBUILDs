@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 166246 2016-03-12 11:07:20Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: Caleb Cushing <xenoterracide@gmail.com>
+
+pkgname=perl-datetime-format-strptime
+pkgver=1.64
+pkgrel=1
+pkgdesc="Parse and Format DateTimes using Strptime"
+arch=('any')
+license=('PerlArtistic' 'GPL')
+options=('!emptydirs')
+depends=('perl-datetime>=0.72' 'perl-datetime-locale>=0.45'
+	 'perl-datetime-timezone>=0.79' 'perl-params-validate>=0.64')
+url="http://search.cpan.org/dist/DateTime-Format-Strptime"
+source=("http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/DateTime-Format-Strptime-${pkgver}.tar.gz")
+md5sums=('4599cb0b80e4b3bb2d22848b0e540321')
+
+build() {
+  export PERL_MM_USE_DEFAULT=1
+  cd "${srcdir}/DateTime-Format-Strptime-${pkgver}"
+  perl Makefile.PL INSTALLDIRS=vendor
+  make
+}
+
+package() {
+  cd "${srcdir}/DateTime-Format-Strptime-${pkgver}"
+  make DESTDIR="$pkgdir" install
+  find "$pkgdir" -name .packlist -o -name perllocal.pod -delete
+}

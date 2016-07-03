@@ -1,0 +1,24 @@
+# $Id: PKGBUILD 206035 2014-02-16 04:07:15Z eric $
+# Maintainer: Eric Bélanger <eric@archlinux.org>
+
+pkgname=di
+pkgver=4.35
+pkgrel=1
+pkgdesc="A disk information utility, displaying everything (and more) that your df command does"
+arch=('i686' 'x86_64')
+url="http://www.gentoo.com/di/"
+license=('ZLIB')
+depends=('glibc')
+source=(http://www.gentoo.com/di/${pkgname}-${pkgver}.tar.gz)
+sha1sums=('989b03afb0bc40d4dbdcc8e2b6889cf2cf8e2852')
+
+build() {
+  cd ${pkgname}-${pkgver}
+  make
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  make INSTALL_DIR="${pkgdir}/usr" install
+  install -D -m644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

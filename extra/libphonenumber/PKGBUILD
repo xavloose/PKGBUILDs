@@ -1,0 +1,34 @@
+# $Id: PKGBUILD 270763 2016-06-28 11:16:35Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+
+pkgname=libphonenumber
+pkgver=7.4.3
+pkgrel=1
+pkgdesc="Google's common library for parsing, formatting, and validating international phone numbers"
+arch=(i686 x86_64)
+depends=(icu protobuf boost-libs)
+makedepends=(boost cmake gtest)
+url="https://github.com/googlei18n/libphonenumber"
+license=("Apache")
+source=("$url/archive/$pkgname-$pkgver.tar.gz")
+sha256sums=('cf437788c958bda714124371fab2ffb484e7262674d3093c1d71cb29771375c2')
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake -DCMAKE_INSTALL_PREFIX=/usr ../$pkgname-$pkgname-$pkgver/cpp
+  make
+}
+
+check() {
+  cd build
+  make tests
+}
+
+package() {
+  cd build
+  make DESTDIR="$pkgdir" install
+}

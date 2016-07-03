@@ -1,0 +1,30 @@
+# $Id: PKGBUILD 174302 2016-05-08 10:31:16Z jlichtblau $
+# Maintainer: Jaroslav Lichtblau <svetlemodry@archlinux.org>
+# Contributor: Geoffroy Carrier <geoffroy.carrier@koon.fr>
+# Contributor: William Rea <sillywilly@gmail.com>
+# Contributor: aeolist <aeolist@hotmail.com>
+
+pkgname=synbak
+pkgver=3.4
+pkgrel=1
+pkgdesc="Meant to unify several backup methods in a single application while supplying a powerful reporting system"
+arch=('any')
+url='http://www.initzero.it/products/opensource/synbak'
+license=('GPL')
+depends=('bc' 'netcat')
+changelog=$pkgname.changelog
+source=(http://www.initzero.it/products/opensource/${pkgname}/download/${pkgname}-${pkgver}.tar.gz)
+sha256sums=('6399fa796c3aa282b49c1226efa1edd84354ae55e1d400408df2a23e6a0c9cf1')
+
+build() {
+  cd ${pkgname}-${pkgver}
+
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+
+  make DESTDIR="${pkgdir}" install
+}

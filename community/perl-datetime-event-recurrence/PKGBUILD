@@ -1,0 +1,26 @@
+# $Id: PKGBUILD 166242 2016-03-12 11:06:47Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Maintainer: Charles Mauch <cmauch@gmail.com>
+
+pkgname=perl-datetime-event-recurrence
+pkgver=0.18
+pkgrel=1
+pkgdesc="Perl/CPAN Module DateTime::Event::Recurrence"
+arch=("any")
+url="http://search.cpan.org/dist/DateTime-Event-Recurrence"
+license=("GPL" "PerlArtistic")
+source=("http://www.cpan.org/authors/id/F/FG/FGLOCK/DateTime-Event-Recurrence-$pkgver.tar.gz")
+md5sums=('72e7ca5d7af50824f54a2a43b3e6d6f1')
+
+build() {
+  cd $srcdir/DateTime-Event-Recurrence-$pkgver
+  PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+  make
+}
+
+package() {
+  cd $srcdir/DateTime-Event-Recurrence-$pkgver
+  make install DESTDIR=$pkgdir
+  find $pkgdir -name '.packlist' -delete
+  find $pkgdir -name '*.pod' -delete
+}

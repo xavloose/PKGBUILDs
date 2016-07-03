@@ -1,0 +1,35 @@
+# $Id: PKGBUILD 270435 2016-06-21 18:40:41Z bpiotrowski $
+# Maintainer: Ionut Biru <ibiru@archlinux.org>
+# Maintainer: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+
+pkgname=libva-intel-driver
+pkgver=1.7.1
+pkgrel=1
+pkgdesc='VA-API implementation for Intel G45 and HD Graphics family'
+arch=('i686' 'x86_64')
+url='http://freedesktop.org/wiki/Software/vaapi'
+license=('MIT')
+depends=('libva')
+replaces=('libva-driver-intel')
+source=(http://freedesktop.org/software/vaapi/releases/$pkgname/$pkgname-$pkgver.tar.bz2)
+md5sums=('91368b4647a628e8b1fe24438dd51598')
+
+prepare() {
+  cd $pkgname-$pkgver
+
+  # Only relevant if intel-gpu-tools is installed,
+  # since then the shaders will be recompiled
+  sed -i '1s/python$/&2/' src/shaders/gpp.py
+}
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+  install -Dm644 COPYING "$pkgdir"/usr/share/licenses/$pkgname/COPYING
+}

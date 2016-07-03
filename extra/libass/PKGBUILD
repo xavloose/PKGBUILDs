@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 260312 2016-02-27 15:32:50Z alucryd $
+# Maintainer: Giovanni Scafora <giovanni@archlinux.org>
+# Maintainer: Maxime Gauduin <alucryd@archlinux.org>
+# Contributor: G_Syme <demichan@mail.upb.de>
+
+pkgname=libass
+pkgver=0.13.2
+pkgrel=1
+pkgdesc="A portable library for SSA/ASS subtitles rendering"
+arch=('i686' 'x86_64')
+url="https://github.com/libass/libass/"
+license=('BSD')
+depends=('fribidi' 'fontconfig')
+makedepends=('pkg-config' 'yasm')
+provides=('libass.so')
+source=("https://github.com/${pkgname}/${pkgname}/releases/download/${pkgver}/${pkgname}-${pkgver}.tar.xz")
+md5sums=('1c8cbd5751aeb192bda04a65d0464fd9')
+
+build() {
+  cd ${pkgname}-${pkgver}
+
+  ./configure \
+    --prefix='/usr' \
+    --enable-harfbuzz \
+    --enable-fontconfig
+  make
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+
+  make DESTDIR="${pkgdir}" install
+  install -D -m644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}
+
+# vim: ts=2 sw=2 et:

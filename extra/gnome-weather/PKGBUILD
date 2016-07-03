@@ -1,0 +1,26 @@
+# $Id: PKGBUILD 267264 2016-05-09 19:44:48Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+
+pkgname=gnome-weather
+pkgver=3.20.1
+pkgrel=1
+pkgdesc="Access current weather conditions and forecasts"
+url="https://wiki.gnome.org/Apps/Weather"
+arch=(any)
+license=(GPL)
+depends=(gtk3 gjs libgweather geoclue2)
+makedepends=(intltool gobject-introspection)
+groups=(gnome-extra)
+source=(http://ftp.gnome.org/pub/GNOME/sources/${pkgname}/${pkgver:0:4}/${pkgname}-${pkgver}.tar.xz)
+sha256sums=('e310ecd56f396ac0e8e5652ac8b63258720034e23afbf32fbb2d509f25bbb2b6')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}

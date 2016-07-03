@@ -1,0 +1,33 @@
+# $Id: PKGBUILD 172247 2016-04-27 22:57:50Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor:  Gour <gour@mail.inet.hr>
+
+pkgname=emms
+epoch=1
+pkgver=4.0
+pkgrel=2
+pkgdesc="The Emacs Multimedia System"
+url="http://www.gnu.org/software/emms/"
+arch=('any')
+license=('GPL3')
+depends=('emacs')
+makedepends=('git')
+install=${pkgname}.install
+source=(http://ftp.gnu.org/gnu/emms/emms-$pkgver.tar.gz)
+#source=(git://git.sv.gnu.org/emms.git)
+md5sums=('351ce69d2d213d26d4629932f729615c')
+
+build() {
+  cd $srcdir/$pkgname-$pkgver
+  sed -i \
+    -e "s|/usr/local|/usr|g" \
+    -e "s|/info|/share/info|g" \
+    Makefile
+  make
+}
+
+package() {
+  cd $srcdir/$pkgname-$pkgver
+  mkdir -p $pkgdir/usr/share/{man/man1,info}
+  make DESTDIR=$pkgdir install INSTALLINFO=/usr/bin/true
+}

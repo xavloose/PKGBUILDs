@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 268540 2016-05-24 21:08:16Z heftig $
+# Maintainer: Andreas Radke <andyrtr@archlinux.org>
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Contributor: Jan de Groot <jgc@archlinux.org>
+# Contributor: M Rawash <mrawash@gmail.com>
+
+pkgname=xf86-input-wacom
+pkgver=0.33.0
+pkgrel=1
+pkgdesc="X.Org Wacom tablet driver"
+arch=(i686 x86_64)
+url="http://linuxwacom.sourceforge.net/"
+license=(GPL)
+depends=(libxi libxinerama libxrandr systemd)
+makedepends=('xorg-server-devel' 'X-ABI-XINPUT_VERSION=22.1' 'resourceproto' 'scrnsaverproto')
+conflicts=('xorg-server<1.18' 'X-ABI-XINPUT_VERSION<22.1' 'X-ABI-XINPUT_VERSION>=23')
+source=(http://downloads.sourceforge.net/project/linuxwacom/$pkgname/$pkgname-$pkgver.tar.bz2)
+sha1sums=('3744a2f77010c2726be28e056039810067912543')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}

@@ -1,0 +1,24 @@
+# $Id: PKGBUILD 174527 2016-05-10 07:54:35Z mtorromeo $
+# Maintainer: Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
+
+pkgname=nodejs-less
+pkgver=2.7.1
+pkgrel=1
+pkgdesc="A standalone compiler for the LESS CSS language."
+arch=('any')
+url="http://lesscss.org/"
+license=('Apache')
+depends=('nodejs')
+makedepends=('npm')
+conflicts=('lessc')
+provides=("lessc=$pkgver")
+replaces=('lessc')
+source=("https://registry.npmjs.org/less/-/less-$pkgver.tgz")
+
+package() {
+    npm install -g --user root --prefix "$pkgdir"/usr "$srcdir"/less-$pkgver.tgz
+    rm -r "$pkgdir"/usr/etc
+    chmod -R go-w "$pkgdir"/usr
+}
+
+sha256sums=('100f21710426e20842ffea64bf7990dbfbc67de890bfbd4cb8d53cf1700dfdc2')

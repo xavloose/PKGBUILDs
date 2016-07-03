@@ -1,0 +1,35 @@
+# $Id: PKGBUILD 269869 2016-06-14 17:05:31Z arojas $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Maintainer: Antonio Rojas <arojas@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=libkgeomap
+pkgver=16.04.2
+pkgrel=1
+pkgdesc="A wrapper around world map components for browsing and arranging photos on a map"
+url="https://www.kde.org/applications/graphics/"
+arch=(i686 x86_64)
+license=(GPL LGPL FDL)
+depends=(marble)
+makedepends=(extra-cmake-modules python)
+source=("http://download.kde.org/stable/applications/$pkgver/src/$pkgname-$pkgver.tar.xz")
+sha1sums=('49e709ea4c9b5fb2b093582a7a82c070064dc42c')
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../$pkgname-$pkgver \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DBUILD_TESTING=OFF \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=lib
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="$pkgdir" install
+}

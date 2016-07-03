@@ -1,0 +1,28 @@
+# $Id: PKGBUILD 172243 2016-04-27 22:57:25Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: Stefano Esposito <ragnarok@email.it>
+
+pkgname=emacs-php-mode
+pkgver=1.17.0
+pkgrel=2
+license=("GPL")
+pkgdesc="PHP mode for emacs"
+url="https://github.com/ejmr/php-mode"
+arch=('any')
+depends=('emacs')
+options=(docs zipman)
+install=emacs-php-mode.install
+source=("$pkgname-$pkgver.tar.gz::https://github.com/ejmr/php-mode/archive/v$pkgver.tar.gz")
+md5sums=('cbe7f8d1d163df1ba2c6962aed6af904')
+
+build() {
+  cd $srcdir/php-mode-$pkgver
+  make
+}
+
+package() {
+  cd $srcdir/php-mode-$pkgver
+  install -D -m644 php-mode.el $pkgdir/usr/share/emacs/site-lisp/php-mode.el
+  install -dm0755 $pkgdir/usr/share/emacs/site-lisp/php-mode
+  cp -a skeleton $pkgdir/usr/share/emacs/site-lisp/php-mode/skeleton
+}

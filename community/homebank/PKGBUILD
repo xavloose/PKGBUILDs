@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 176103 2016-05-22 18:31:13Z jlichtblau $
+# Maintainer: Jaroslav Lichtblau <svetlemodry@archlinux.org>
+# Contributor: William Rea <sillywilly@gmail.com>
+
+pkgname=homebank
+pkgver=5.0.8
+pkgrel=1
+pkgdesc="Free, easy, personal accounting for everyone"
+arch=('i686' 'x86_64')
+url="http://homebank.free.fr/"
+license=('GPL')
+depends=('desktop-file-utils' 'gtk3' 'hicolor-icon-theme' 'libofx' 'librsvg' 'perl-xml-parser' 'shared-mime-info')
+makedepends=('intltool')
+changelog=$pkgname.changelog
+source=(http://homebank.free.fr/public/$pkgname-$pkgver.tar.gz)
+sha256sums=('9bdf10b0d94c92d5216462fb110bba34cd2a1b01d38d2c6b629db81a0513a310')
+
+build() {
+  cd "${srcdir}"/$pkgname-$pkgver
+
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "${srcdir}"/$pkgname-$pkgver
+
+  make DESTDIR="${pkgdir}" install
+}

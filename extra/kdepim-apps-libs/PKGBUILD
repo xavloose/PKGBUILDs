@@ -1,0 +1,34 @@
+# Maintainer: Antonio Rojas <arojas@archlinux.org>
+
+pkgname=kdepim-apps-libs
+pkgver=16.04.2
+pkgrel=1
+pkgdesc="KDE PIM mail related libraries"
+arch=(i686 x86_64)
+url="https://community.kde.org/KDE_PIM"
+license=(LGPL)
+depends=(libkleo pimcommon grantleetheme kdewebkit)
+makedepends=(extra-cmake-modules kdoctools python boost qt5-tools kdesignerplugin)
+conflicts=('libkdepim<16')
+source=("http://download.kde.org/stable/applications/$pkgver/src/$pkgname-$pkgver.tar.xz")
+md5sums=('e4617a614f3ab6a61839bbbccff93b88')
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../$pkgname-$pkgver \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DKDE_INSTALL_LIBDIR=lib \
+    -DKDE_INSTALL_USE_QT_SYS_PATHS=ON \
+    -DBUILD_TESTING=OFF
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="$pkgdir" install
+}

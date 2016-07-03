@@ -1,0 +1,22 @@
+# $Id: PKGBUILD 173934 2016-05-06 15:06:31Z fyan $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+
+pkgname=browserify
+pkgdesc='browser-side require() the node way'
+pkgver=13.0.1
+pkgrel=1
+arch=('any')
+url='http://browserify.org/'
+license=('MIT' 'BSD')
+depends=('nodejs')
+makedepends=('npm' 'git')
+source=(http://registry.npmjs.org/$pkgname/-/$pkgname-$pkgver.tgz)
+noextract=($pkgname-$pkgver.tgz)
+sha256sums=('e0e03899b9963d468f74cafc8f12e8d4c50c32146e0d0ab84f0f41b4c79458b7')
+
+package() {
+  npm install -g --user root --prefix "$pkgdir"/usr "$srcdir"/$pkgname-$pkgver.tgz
+  rm -r "$pkgdir"/usr/etc
+  mkdir -p "$pkgdir/usr/share/licenses/$pkgname"
+  ln -s "../../../lib/node_modules/$pkgname/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/"
+}

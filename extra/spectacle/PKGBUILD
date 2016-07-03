@@ -1,0 +1,37 @@
+# $Id: PKGBUILD 269871 2016-06-14 17:06:06Z arojas $
+# Maintainer: Antonio Rojas <arojas@archlinux.org>
+
+pkgname=spectacle
+pkgver=16.04.2
+pkgrel=1
+pkgdesc="KDE screenshot capture utility"
+arch=(i686 x86_64)
+url='https://www.kde.org/applications/graphics/'
+license=(GPL)
+depends=(xcb-util-cursor libkscreen libkipi purpose)
+makedepends=(extra-cmake-modules kdoctools python)
+conflicts=(kdegraphics-ksnapshot kscreengenie)
+replaces=(kdegraphics-ksnapshot kscreengenie)
+groups=(kde-applications kdegraphics)
+source=("http://download.kde.org/stable/applications/$pkgver/src/$pkgname-$pkgver.tar.xz")
+md5sums=('ed7f14c07c9c9598ba36b6382510db5e')
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../$pkgname-$pkgver \
+   -DCMAKE_INSTALL_PREFIX=/usr \
+   -DCMAKE_BUILD_TYPE=Release \
+   -DCMAKE_INSTALL_LIBDIR=lib \
+   -DBUILD_TESTING=OFF
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="$pkgdir" install
+}
+

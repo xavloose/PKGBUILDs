@@ -1,0 +1,34 @@
+# $Id: PKGBUILD 181688 2016-07-01 14:36:35Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Maintainer: Abhishek Dasgupta <abhidg@gmail.com>
+# Contributor: Gabor Nyekhelyi (n0gabor) <n0gabor@vipmail.hu>
+
+pkgname=pitivi
+pkgver=0.96
+pkgrel=1
+pkgdesc="Editor for audio/video projects using the GStreamer framework"
+arch=('i686' 'x86_64')
+url="http://www.pitivi.org/"
+license=('LGPL')
+depends=('gtk3' 'gst-editing-services' 'gst-plugins-good' 'gst-python'
+         'libnotify' 'python-gobject' 'python-numpy' 'python-cairo'
+         'desktop-file-utils' 'python-matplotlib' 'gst-plugins-bad'
+         'python-dbus')
+makedepends=('intltool' 'itstool')
+optdepends=('frei0r-plugins: additional video effects, clip transformation feature'
+            'gst-libav: additional multimedia codecs'
+            'gst-plugins-ugly: additional multimedia codecs'
+            'gnome-desktop: file thumbnails provided by GNOME'\''s thumbnailers')
+source=(http://ftp.gnome.org/pub/GNOME/sources/$pkgname/$pkgver/$pkgname-$pkgver.tar.xz)
+md5sums=('035228f8fa10a5600dcf852581b9d5e0')
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+  ./configure --prefix=/usr --disable-static
+  make
+}
+
+package() {
+  cd "$srcdir/$pkgname-$pkgver"
+  make DESTDIR="$pkgdir/" install
+}

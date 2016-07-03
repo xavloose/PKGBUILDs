@@ -1,0 +1,49 @@
+# $Id: PKGBUILD 270626 2016-06-25 07:39:36Z arojas $
+# Maintainer: Ronald van Haren <ronald@archlinux.org>
+# Contributor: Chirantan Ekbote <chirantan.ekbote at gmail.com>
+# Contributor: Kringel
+
+pkgname=eigen
+pkgver=3.2.8
+pkgrel=4
+pkgdesc="Lightweight C++ template library for vector and matrix math, a.k.a. linear algebra."
+arch=('any')
+url='http://eigen.tuxfamily.org'
+license=('GPL3' 'LGPL2.1' 'BSD' 'custom:MPL2' 'custom:MINPACK')
+makedepends=('cmake' 'pkg-config' 'freeglut' 'gcc-fortran' 'qt4' 'fftw')
+optdepends=('qt4: for example programs')
+replaces=('eigen3')
+provides=('eigen3')
+source=("${pkgname}-${pkgver}.tar.bz2::http://bitbucket.org/eigen/eigen/get/${pkgver}.tar.bz2"
+        eigen-install-cmake-files.patch::"https://bitbucket.org/eigen/eigen/commits/1d71b13/raw/"       
+        eigen-install-cmake-files-2.patch::"https://bitbucket.org/eigen/eigen/commits/21fbecc/raw/")
+sha1sums=('64f4aef8012a424c7e079eaf0be71793ab9bc6e0'
+          'fa1040b91d815d5d8da5e52ee2c1fcd446a664e4'
+          '13bdd23ecd341188e4a76b8c3e00de294a438d05')
+
+prepare() {
+  cd eigen-eigen-*
+  # Install cmake files
+  patch -p1 -i ../eigen-install-cmake-files.patch
+  patch -p1 -i ../eigen-install-cmake-files-2.patch
+  sed -e 's|set ( EIGEN_INCLUDE_DIR ${INCLUDE_INSTALL_DIR} )|set ( EIGEN_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/${INCLUDE_INSTALL_DIR}" )|' \
+   -i CMakeLists.txt
+}
+
+build() {
+	mkdir -p build
+	cd build
+	cmake ../eigen-eigen-* \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_INSTALL_PREFIX=/usr
+}
+
+package() {
+	cd build
+	make DESTDIR="$pkgdir" install
+
+	# install custom licenses
+	install -Dm644 ../eigen-eigen-*/COPYING.MPL2 "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+        install -Dm644 ../eigen-eigen-*/COPYING.BSD "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+        install -Dm644 ../eigen-eigen-*/COPYING.MINPACK "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

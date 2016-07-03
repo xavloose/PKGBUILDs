@@ -1,0 +1,31 @@
+# Maintainer: Balló György <ballogyor+arch at gmail dot com>
+# Contributor: Konrad <konrad AT knauber DOT name>
+
+pkgname=pinta
+pkgver=1.6
+pkgrel=1
+pkgdesc="Drawing/editing program modeled after Paint.NET. It's goal is to provide a simplified alternative to GIMP for casual users"
+arch=('any')
+url="http://pinta-project.com/"
+license=('MIT')
+depends=('gtk-sharp-2' 'mono-addins' 'desktop-file-utils')
+makedepends=('intltool')
+install=$pkgname.install
+source=(https://github.com/PintaProject/Pinta/releases/download/$pkgver/$pkgname-$pkgver.tar.gz)
+md5sums=('8a33ca030748c88f28ac624334ddf2cd')
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+
+  ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var
+  make
+}
+
+package() {
+  cd "$srcdir/$pkgname-$pkgver"
+
+  make DESTDIR="$pkgdir/" install
+
+  install -dm755 "$pkgdir"/usr/share/licenses/$pkgname
+  install -m644 license-*.txt readme.md "$pkgdir"/usr/share/licenses/$pkgname/
+}

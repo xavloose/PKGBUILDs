@@ -1,0 +1,27 @@
+# $Id: PKGBUILD 172358 2016-04-27 23:20:39Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Maintainer: Kevin Piche <kevin@archlinux.org>
+# Contributor: Ben <contrasutra@myrealbox.com>
+
+pkgname=xpad
+pkgver=4.8.0
+pkgrel=2
+pkgdesc="Stickies-like notes program"
+arch=(i686 x86_64)
+depends=('gtk3' 'libsm' 'librsvg' 'gtksourceview3')
+makedepends=('intltool')
+url="https://launchpad.net/xpad"
+license=('GPL')
+source=(http://launchpad.net/xpad/trunk/${pkgver}/+download/xpad-$pkgver.tar.bz2)
+md5sums=('edb3c9b109bf3f7d5006264eecdbf79f')
+
+build() {
+  cd $srcdir/$pkgname-$pkgver
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd $srcdir/$pkgname-$pkgver
+  make DESTDIR=$pkgdir install helpdir=/usr/share/xpad/help
+}

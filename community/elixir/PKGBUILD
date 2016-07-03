@@ -1,0 +1,31 @@
+# $Id: PKGBUILD 181492 2016-06-28 11:49:46Z spupykin $
+# Maintainer: Sergej Pupykin <arch+pub@sergej.pp.ru>
+# Old maintainer: Gilbert Kennen <gilbert firewatcher org>
+
+pkgname=elixir
+pkgver=1.3.1
+pkgrel=1
+pkgdesc="a functional meta-programming aware language built on top of the Erlang VM"
+url="http://elixir-lang.org"
+arch=('any')
+license=('Apache' 'custom:EPL')
+depends=('erlang-nox')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/elixir-lang/elixir/tarball/v${pkgver}")
+md5sums=('5558e1fe9e51dba1ae13be563108a662')
+
+build() {
+  cd "${srcdir}/"elixir-lang*
+  make
+}
+
+check() {
+  cd "${srcdir}/"elixir-lang*
+  make test_erlang
+}
+
+package() {
+  cd "${srcdir}/"elixir-lang*
+  mkdir -p "${pkgdir}/usr/share/licenses/${pkgname}"
+  install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}"
+  make DESTDIR=$pkgdir PREFIX=/usr install
+}

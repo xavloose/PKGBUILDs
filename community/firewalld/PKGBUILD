@@ -1,0 +1,55 @@
+# $Id: PKGBUILD 172195 2016-04-27 21:11:45Z alucryd $
+# Maintainer: Maxime Gauduin <alucryd@archlinux.org>
+# Contributor: unikum <unikum.pm@gmail.com>
+# Contributor: speed145a <jonathan@tagchapter.com>
+
+pkgname=firewalld
+pkgver=0.4.1.2
+pkgrel=2
+pkgdesc='Firewall daemon with D-Bus interface'
+arch=('any')
+url='https://github.com/t-woerner/firewalld'
+license=('GPL2')
+depends=('dbus-glib' 'dconf' 'ebtables' 'hicolor-icon-theme' 'ipset' 'iptables'
+         'python-slip')
+makedepends=('docbook-xsl' 'intltool')
+optdepends=('bash-completion: bash completion'
+            'gtk3: firewall-config'
+            'libnm-glib: firewall-config and firewall-applet'
+            'libnotify: firewall-applet'
+            'python-pyqt4: firewall-applet')
+backup=('etc/conf.d/firewalld'
+        'etc/firewalld/firewalld.conf')
+source=("firewalld-${pkgver}.tar.gz::https://github.com/t-woerner/firewalld/archive/v${pkgver}.tar.gz"
+        'firewalld-arch.patch')
+sha256sums=('fa818f2bf6a500cd81968db0ab8c6220a74b78c3a3fc4b2d7663daed003b6a34'
+            '47fba93f6e7ed5925096854c97c01a38c7e35d11b6d57f41e63f7ea56b870375')
+
+prepare() {
+  cd firewalld-${pkgver}
+
+  patch -Np1 -i ../firewalld-arch.patch
+
+  ./autogen.sh
+}
+
+build() {
+  cd firewalld-${pkgver}
+
+  ./configure \
+    --prefix='/usr' \
+    --localstatedir='/var' \
+    --sbindir='/usr/bin' \
+    --sysconfdir='/etc' \
+    --with-sysconfigdir='/etc/conf.d' \
+    --disable-schemas-compile
+  make
+}
+
+package() {
+  cd firewalld-${pkgver}
+
+  make DESTDIR="${pkgdir}" install
+}
+
+# vim: ts=2 sw=2 et:

@@ -1,0 +1,45 @@
+# $Id: PKGBUILD 158679 2016-01-23 09:01:37Z arodseth $
+# Maintainer: Alexander Rødseth <rodseth@gmail.com>
+# Contributor: Thomas Dziedzic < gostrc at gmail >
+# Contributor: Chris O'Donnell <christopher.p.odonnell@gmail.com>
+# Contributor: Sam May <sam.m4y@gmail.com>
+
+pkgname=clojure
+pkgver=1.8.0
+pkgrel=1
+pkgdesc='LISP for the JVM'
+url='http://clojure.org/'
+arch=('any')
+license=('CPL')
+depends=('java-environment' 'bash')
+makedepends=('java-environment' 'classpath' 'git' 'maven')
+optdepends=('rlwrap: friendlier shell with readline support')
+install='clojure.install'
+source=("$pkgname::git://github.com/clojure/clojure.git#tag=$pkgname-$pkgver"
+        'clj.sh' "$pkgname.sh")
+sha256sums=('SKIP'
+            '2194819fd417174351172d94e3ccff050479401ca883b57d325a349072200bee'
+            'b3fa6257dad10fb39851e87563269b80b2473623126595d9c279bbd90e97f052')
+
+build() {
+  cd "$pkgname"
+
+  mvn package -Dmaven.test.skip=true -Dmaven.repo.local=m2
+}
+
+check() {
+  cd "$pkgname"
+
+  mvn test -Dmaven.repo.local=m2
+}
+
+package() {
+  install -Dm755 clj.sh "$pkgdir/usr/bin/clj"
+  install -Dm755 clj.sh "$pkgdir/usr/bin/clojure"
+  install -Dm755 "$pkgname.sh" "$pkgdir/etc/profile.d/$pkgname.sh"
+  install -Dm644 "$pkgname/target/$pkgname-$pkgver.jar" \
+    "$pkgdir/usr/share/$pkgname/$pkgname.jar"
+}
+
+# getver: clojure.org/downloads
+# vim:set ts=2 sw=2 et:

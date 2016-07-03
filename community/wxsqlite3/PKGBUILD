@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 170119 2016-04-10 16:26:02Z jlichtblau $
+# Maintainer : speps <speps at aur dot archlinux dot org>
+# Maintainer : Jaroslav Lichtblau <svetlemodry@archlinux.org>
+# Contributor: napa3um <napa3um@gmail.com>
+
+pkgname=wxsqlite3
+pkgver=3.3.1
+pkgrel=1
+pkgdesc="wxWidgets wrapper for SQLite3"
+arch=('i686' 'x86_64')
+url=" http://utelle.github.io/wxsqlite3"
+license=('custom:wxWindows')
+depends=('wxgtk' 'sqlite')
+source=(https://github.com/utelle/wxsqlite3/releases/download/v$pkgver/$pkgname-$pkgver.tar.gz)
+sha256sums=('9e947b5920dd6de4d4effd3c9b86c328cff444bb0fbc20255c60372bc47965ff')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="${pkgdir}" install
+
+  # license
+  install -Dm644 LICENCE.txt "${pkgdir}"/usr/share/licenses/$pkgname/LICENSE
+}

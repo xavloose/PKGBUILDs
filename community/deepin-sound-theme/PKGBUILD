@@ -1,0 +1,22 @@
+# $Id: PKGBUILD 174874 2016-05-12 07:53:24Z fyan $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Josip Ponjavic <josipponjavic at gmail dot com>
+# Contributor: Xu Fasheng <fasheng.xu[AT]gmail.com>
+
+pkgname=deepin-sound-theme
+pkgver=15.10.1
+pkgrel=1
+pkgdesc="Deepin sound theme"
+arch=('any')
+url="https://gitcafe.com/Deepin/deepin-sound-theme"
+license=('GPL3')
+groups=('deepin')
+makedepends=('git')
+conflicts=('deepin-artwork')
+source=("git+https://github.com/linuxdeepin/deepin-sound-theme.git#tag=$pkgver")
+sha256sums=('SKIP')
+
+package() {
+  cd $pkgname
+  make PREFIX=/usr DESTDIR="${pkgdir}" install
+}

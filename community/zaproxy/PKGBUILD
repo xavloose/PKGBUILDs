@@ -1,0 +1,33 @@
+# Maintainer: Levente Polyak <anthraxx[at]archlinux[dot]org>
+# Contributor: Joris Steyn <jorissteyn@gmail.com>
+# Contributor: fnord0 <fnord0 AT riseup DOT net>
+
+pkgname=zaproxy
+pkgver=2.5.0
+pkgrel=1
+pkgdesc='Integrated penetration testing tool for finding vulnerabilities in web applications'
+url='https://www.owasp.org/index.php/ZAP'
+arch=('any')
+license=('Apache')
+depends=('java-runtime' 'ttf-font')
+source=(${pkgname}-${pkgver}.tar.gz::https://github.com/zaproxy/zaproxy/releases/download/${pkgver}/ZAP_${pkgver}_Linux.tar.gz)
+sha512sums=('070c2a1ae8193e79e50d21ea38702a9bd6fdba5c1fc73308b3c79be44589f5ffaff1809c48d0fbe6db39d4369ea477b85e3f57f8b90ad674043d7e1970b3696b')
+
+prepare() {
+  cd ZAP_${pkgver}
+  cat > ${pkgname} <<EOF
+#!/bin/sh
+cd /usr/share/zaproxy
+./zap.sh
+cd -
+EOF
+}
+
+package() {
+  cd ZAP_${pkgver}
+  install -d "${pkgdir}/usr/share/${pkgname}"
+  cp -pR . "${pkgdir}/usr/share/${pkgname}"
+  install -Dm 755 ${pkgname} "${pkgdir}/usr/bin/${pkgname}"
+}
+
+# vim: ts=2 sw=2 et:

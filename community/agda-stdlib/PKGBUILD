@@ -1,0 +1,35 @@
+# $Id: PKGBUILD 152508 2015-12-10 18:09:47Z fyan $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Arch Haskell Team <arch-haskell@haskell.org>
+
+pkgname=agda-stdlib
+pkgver=0.12
+pkgrel=1
+pkgdesc="Agda standard libraries"
+url="https://github.com/agda/agda-stdlib"
+license=("MIT")
+arch=('i686' 'x86_64')
+depends=("agda")
+makedepends=("ghc" "git" "haskell-filemanip")
+options=('staticlibs')
+source=("git+https://github.com/agda/agda-stdlib.git#tag=v$pkgver")
+sha256sums=('SKIP')
+
+build() {
+    cd "${srcdir}/${pkgname}"
+    
+    runhaskell Setup configure
+    runhaskell Setup build
+
+    dist/build/GenerateEverything/GenerateEverything
+
+    agda -i. -isrc Everything.agda
+    agda --html -i. -isrc README.agda
+}
+
+package() {
+    cd "${srcdir}/${pkgname}"
+    install -dm755 "$pkgdir/usr/share/agda/lib/prim"
+    cp -pr Everything.agda* src/* "$pkgdir/usr/share/agda/lib/prim"
+    install -D -m644 "LICENCE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENCE"
+}

@@ -1,0 +1,37 @@
+# $Id: PKGBUILD 269833 2016-06-14 16:55:15Z arojas $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Maintainer: Antonio Rojas <arojas@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=kdiamond
+pkgver=16.04.2
+pkgrel=1
+pkgdesc="A single player puzzle game"
+url="http://kde.org/applications/games/kdiamond/"
+arch=('i686' 'x86_64')
+license=('GPL' 'LGPL' 'FDL')
+groups=('kde-applications' 'kdegames')
+depends=('libkdegames' 'knotifyconfig' 'hicolor-icon-theme')
+makedepends=('extra-cmake-modules' 'python' 'kdoctools')
+conflicts=('kdegames-kdiamond')
+replaces=('kdegames-kdiamond')
+source=("http://download.kde.org/stable/applications/${pkgver}/src/kdiamond-${pkgver}.tar.xz")
+sha1sums=('89c24c460f4b6e769981983c95249ad655e5009e')
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../$pkgname-$pkgver \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DBUILD_TESTING=OFF \
+    -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="${pkgdir}" install
+}

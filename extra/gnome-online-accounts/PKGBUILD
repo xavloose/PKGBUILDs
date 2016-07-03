@@ -1,0 +1,32 @@
+# $Id: PKGBUILD 264806 2016-04-12 22:31:12Z heftig $
+# Maintainer: Ionut Biru <ibiru@archlinux.org>
+
+pkgname=gnome-online-accounts
+pkgver=3.20.1
+pkgrel=1
+pkgdesc="GNOME service to access online accounts"
+arch=(i686 x86_64)
+url="http://www.gnome.org"
+license=('GPL')
+depends=('webkit2gtk' 'json-glib' 'libnotify' 'rest' 'libsecret' 'telepathy-glib' 'krb5' 'gcr')
+makedepends=('intltool' 'libxslt' 'gobject-introspection' 'docbook-xsl')
+optdepends=('gvfs-goa: Virtual file systems (e.g. OwnCloud)'
+            'gvfs-google: Google Drive')
+install=$pkgname.install
+source=(https://download.gnome.org/sources/$pkgname/${pkgver:0:4}/$pkgname-$pkgver.tar.xz)
+sha256sums=('c37aebc1e12f31f5516d33a354181e4d202a07da4f7d3a95b0da8cf0028c0c93')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr --libexecdir=/usr/lib/$pkgname --disable-static \
+    --enable-media-server --enable-kerberos --enable-lastfm
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make -j1 DESTDIR="$pkgdir" install
+}
+
+# vim:set ts=2 sw=2 et:

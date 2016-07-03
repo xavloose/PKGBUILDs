@@ -1,0 +1,21 @@
+# $Id: PKGBUILD 144849 2015-10-24 02:50:06Z eric $
+# Maintainer: Eric Bélanger <eric@archlinux.org>
+
+pkgname=emacs-pkgbuild-mode
+pkgver=0.14
+pkgrel=1
+pkgdesc="A major mode for creating packages with emacs"
+arch=('any')
+url="http://github.com/juergenhoetzel/pkgbuild-mode"
+license=('GPL')
+depends=('emacs')
+install=emacs-pkgbuild-mode.install
+source=($pkgname-$pkgver.tar.gz::https://github.com/juergenhoetzel/pkgbuild-mode/tarball/${pkgver})
+sha1sums=('61a8e6449f6af52a7fab07d764d2aa975414fe27')
+
+package() {
+  cd juergenhoetzel-pkgbuild-mode-*
+  emacs -batch -f batch-byte-compile pkgbuild-mode.el
+  install -d "${pkgdir}/usr/share/emacs/site-lisp"
+  install -D -m644 pkgbuild-mode.el pkgbuild-mode.elc "${pkgdir}/usr/share/emacs/site-lisp"
+}

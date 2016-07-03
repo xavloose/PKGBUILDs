@@ -1,0 +1,33 @@
+# $Id: PKGBUILD 261022 2016-03-06 10:43:46Z jgc $
+# Maintainer: Jan de Groot <jgc@archlinux.org>
+
+pkgname=gfbgraph
+pkgver=0.2.3
+pkgrel=1
+pkgdesc="GLib/GObject wrapper for the Facebook Graph API"
+arch=('i686' 'x86_64')
+license=('LGPL')
+makedepends=('rest' 'json-glib' 'gobject-introspection' 'gtk-doc')
+depends=('gnome-online-accounts')
+url="https://wiki.gnome.org/Projects/GFBGraph"
+source=(https://download.gnome.org/sources/$pkgname/${pkgver:0:3}/$pkgname-$pkgver.tar.xz)
+sha256sums=('da1179083cde2b649d7491c745250a00d292e390fd620b7dd2dd95a122dae0b6')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr --disable-silent-rules \
+    --disable-static \
+    --enable-gtk-doc \
+    --enable-introspection
+
+  # Omit unused direct shared library dependencies.
+  sed -i -e 's! -shared ! -Wl,--as-needed\0!g' libtool
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+  install -m755 -d "$pkgdir"/usr/share
+  mv "$pkgdir"/usr/doc "$pkgdir"/usr/share/doc
+}

@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 171536 2016-04-21 19:29:56Z arojas $
+# Maintainer: Giovanni Scafora <giovanni@archlinux.org>
+
+pkgname=sshfs
+pkgver=2.7
+_tag=sshfs_${pkgver/./_}
+pkgrel=1
+pkgdesc="FUSE client based on the SSH File Transfer Protocol"
+arch=('i686' 'x86_64')
+url="http://github.com/libfuse/sshfs"
+license=('GPL')
+depends=('fuse' 'glib2' 'openssh')
+makedepends=('pkg-config')
+source=(https://github.com/libfuse/sshfs/archive/$pkgname-$pkgver.tar.gz)
+md5sums=('5e803dc318d4b2bfa82d274323fa99a2')
+
+build() {
+  cd sshfs-sshfs-$pkgver
+
+  autoreconf -i
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd sshfs-sshfs-$pkgver
+
+  make DESTDIR="${pkgdir}" install
+}

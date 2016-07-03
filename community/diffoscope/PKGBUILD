@@ -1,0 +1,71 @@
+# Maintainer: Levente Polyak <anthraxx[at]archlinux[dot]org>
+
+pkgname=diffoscope
+pkgver=54
+pkgrel=1
+pkgdesc='Tool for in-depth comparison of files, archives, and directories'
+url='https://diffoscope.org/'
+arch=('x86_64')
+license=('GPL3')
+depends=('python-magic' 'python-libarchive-c' 'python-setuptools')
+optdepends=(
+  'acl: access control list utilities support'
+  'binutils: binary utilities support'
+  'bzip2: bzip2 utilities support'
+  'cdrkit: ISO utilities support'
+  'colord: ICC profiles support'
+  'cpio: cpio archive support'
+  'diffutils: diff utilities support'
+  'e2fsprogs: Ext2/3/4 filesystem utilities support'
+  'enjarify: Android dex file support'
+  'fpc: Free Pascal utilities support'
+  'java-environment: java utilities support'
+  #'libcaca: image compare support'
+  'fontforge: bitmap font utilities support'
+  'gettext: GNU internationalization utilities support'
+  'ghc: haskell utilities support'
+  'gnupg: GNU privacy guard support'
+  'mono-tools: mono utilities support'
+  'poppler: PDF utilities support'
+  'sqlite: SQLite support'
+  'squashfs-tools: squashfs filesystem support'
+  #'python-guestfs: guestfs filesystem support'
+  'tlsh: fuzzy matching supprt'
+  'unzip: zip utilities support'
+  'gzip: gzip utilities support'
+  'tar: tar utilities support'
+  'vim: Vi IMproved (xxd) utilities support'
+  'xz: XZ and LZMA utilities support'
+)
+# TODO: readd fpc
+checkdepends=(
+  'python-pytest' 'acl' 'binutils' 'bzip2' 'cdrkit' 'colord' 'cpio' 'diffutils' 'e2fsprogs' 'enjarify' 'java-environment>=8' 'fontforge' 'gettext' 'ghc' 'gnupg'
+  'mono-tools' 'poppler' 'sqlite' 'squashfs-tools' 'tlsh' 'unzip' 'gzip' 'tar' 'vim' 'xz')
+source=(${pkgname}-${pkgver}.tar.xz::https://anonscm.debian.org/cgit/reproducible/${pkgname}.git/snapshot/${pkgname}-${pkgver}.tar.xz
+        sqlite-magic.patch)
+sha512sums=('8adbff01652243954aa47f404057f600567d46d0265cdc22f2d9c33740de1b64ff2cb238d147649598488c955637df0b9a1b57a2965686f86d9d2712b38c17eb'
+            '3450c114f01a223c968fa75d230321fa188eae81146a2aad36b095a3ce96332167c638a46458c032343adaabc245555fd0f1fc7bd5e9ec26ff26c9cdd534ab23')
+
+prepare() {
+  cd ${pkgname}-${pkgver}
+  sed '/python-magic/d' -i setup.py
+  patch -p1 < "${srcdir}/sqlite-magic.patch"
+}
+
+build() {
+  cd ${pkgname}-${pkgver}
+  python setup.py build
+}
+
+check() {
+  cd ${pkgname}-${pkgver}
+  PYTHONPATH=".:${PYTHONPATH}" py.test
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  python setup.py install --skip-build -O1 --root="${pkgdir}"
+  install -Dm 644 README.rst "${pkgdir}/usr/share/doc/${pkgname}/README"
+}
+
+# vim: ts=2 sw=2 et:

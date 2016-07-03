@@ -1,0 +1,70 @@
+# Maintainer: Guillaume ALAUX <guillaume@archlinux.org>
+pkgname=('java-runtime-common' 'java-environment-common')
+pkgbase=java-common
+pkgver=2
+pkgrel=2
+arch=('any')
+url='www.archlinux.org'
+license=('GPL')
+checkdepends=('wget')
+source=(profile_jre.csh
+        profile_jre.sh
+        bin_archlinux-java
+        test_archlinux-java
+        https://shunit2.googlecode.com/files/shunit2-2.1.6.tgz)
+
+sha256sums=('9d25638cafc2fabd1ba6f2f26aa01233eccf3d31db003d956b571f0ab655dd23'
+            '519e9881a2a9f4fc3d581ea0ef0da594eedbfdfcf734f9fdc0bb595e8ac77e4c'
+            '272296ec7ca673b4f9f59fb70565328b6daef682c29cd964c988c018090c3fc2'
+            'c2c413a6b2f8b88ed170a5b19f7cb620518e09686f0d286b4b27d30f571e5050'
+            '65a313a76fd5cc1c58c9e19fbc80fc0e418a4cbfbd46d54b35ed5b6e0025d4ee')
+
+check() {
+  cd "${srcdir}"
+  ./test_archlinux-java
+}
+
+package_java-runtime-common() {
+  pkgdesc='Common files for Java Runtime Environments'
+  conflicts=('java-common')
+  replaces=('java-common')
+  backup=(etc/profile.d/jre.sh
+          etc/profile.d/jre.csh)
+  install=install_java-runtime-common.sh
+
+  cd "${srcdir}"
+
+  install -d -m 755 "${pkgdir}/usr/lib/jvm/"
+  ln -s /dev/null "${pkgdir}/usr/lib/jvm/default"
+  ln -s /dev/null "${pkgdir}/usr/lib/jvm/default-runtime"
+
+  install -D -m 644 profile_jre.sh  "${pkgdir}/etc/profile.d/jre.sh"
+  install -D -m 644 profile_jre.csh "${pkgdir}/etc/profile.d/jre.csh"
+  install -D -m 755 bin_archlinux-java "${pkgdir}/usr/bin/archlinux-java"
+
+  install -d -m 755 "${pkgdir}/usr/bin/"
+  # Official list of binaries that Java headless runtime packages MUST provide
+  # This list is based on Arch Linux' default Java implementation: "OpenJDK 7 Icedtea"
+  for b in \
+    java keytool orbd pack200 policytool rmid rmiregistry servertool tnameserv unpack200;
+  do
+    ln -s /usr/lib/jvm/default-runtime/bin/${b} "${pkgdir}/usr/bin/${b}"
+  done
+}
+
+package_java-environment-common() {
+  pkgdesc='Common files for Java Development Kits'
+
+  cd "${srcdir}"
+
+  install -d -m 755 "${pkgdir}/usr/bin/"
+  # Official list of supplementary binaries that Java environment packages MUST provide
+  # This list is based on Arch Linux' default Java implementation: "OpenJDK 7 Icedtea"
+  for b in \
+    appletviewer extcheck idlj jar jarsigner javac javadoc javah javap jcmd \
+    jconsole jdb jhat jinfo jmap jps jrunscript jsadebugd jstack jstat \
+    jstatd native2ascii rmic schemagen serialver wsgen wsimport xjc;
+  do
+    ln -s /usr/lib/jvm/default/bin/${b} "${pkgdir}/usr/bin/${b}"
+  done
+}

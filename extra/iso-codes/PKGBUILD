@@ -1,0 +1,28 @@
+# $Id: PKGBUILD 266845 2016-05-04 02:08:58Z fyan $
+# Maintainer: Jan de Groot <jgc@archlinux.org>
+
+pkgname=iso-codes
+pkgver=3.68
+pkgrel=1
+pkgdesc="Lists of the country, language, and currency names"
+arch=('any')
+url="http://pkg-isocodes.alioth.debian.org/"
+license=('LGPL')
+makedepends=('python')
+source=(http://pkg-isocodes.alioth.debian.org/downloads/$pkgname-$pkgver.tar.xz{,.sig})
+md5sums=('a5ce7d78b80f6d29150883d892f2e185'
+         'SKIP')
+validpgpkeys=('60A031EEAB8EFA24001DF0A283FD1C4682D138E0'
+              'D1CB8F39BC5DED24C5D2C78C1302F1F036EBEB19')  # Tobias Quathamer
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "$srcdir/$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" pkgconfigdir=/usr/lib/pkgconfig install
+}
+

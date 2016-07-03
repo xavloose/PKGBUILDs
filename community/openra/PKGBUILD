@@ -1,0 +1,41 @@
+# $Id: PKGBUILD 175965 2016-05-20 19:41:57Z arojas $
+# Maintainer: Sven-Hendrik Haase <sh@lutzhaase.com>
+# Contributor: Matthew Bowra-Dean <matthew@ijw.co.nz>
+pkgname=openra
+pkgver=20160508
+pkgrel=2
+pkgdesc="An open-source implementation of the Red Alert engine using .NET/Mono and OpenGL"
+arch=('any')
+url="http://www.openra.net"
+license=('GPL3')
+install=openra.install
+depends=('mono' 'ttf-dejavu' 'openal' 'libgl' 'freetype2' 'sdl2' 'lua51' 'hicolor-icon-theme' 'gtk-update-icon-cache'
+         'desktop-file-utils' 'xdg-utils' 'zenity')
+makedepends=('git' 'unzip')
+options=(!strip)
+source=("git+https://github.com/OpenRA/OpenRA.git#tag=release-${pkgver}")
+md5sums=('SKIP')
+
+prepare() {
+  cd OpenRA
+
+  make version
+}
+
+build() {
+  cd OpenRA
+
+  make dependencies
+  make core
+  make tools
+}
+
+package() {
+  cd OpenRA
+
+  make prefix=/usr DESTDIR="$pkgdir" install-all
+  make prefix=/usr DESTDIR="$pkgdir" install-linux-shortcuts
+  make prefix=/usr DESTDIR="$pkgdir" install-linux-mime
+  make prefix=/usr DESTDIR="$pkgdir" install-linux-appdata
+  make prefix=/usr DESTDIR="$pkgdir" install-man-page
+}

@@ -1,0 +1,46 @@
+# $Id: PKGBUILD 176082 2016-05-22 08:27:55Z stativ $
+# Maintainer: Lukas Jirkovsky <l.jirkovsky@gmail.com>
+pkgname=intellij-idea-community-edition
+pkgver=2016.1.2b
+_pkgver=145.972.3
+pkgrel=1
+epoch=2
+pkgdesc="IDE for Java, Groovy and other programming languages with advanced refactoring features"
+arch=('any')
+url="https://www.jetbrains.com/idea/"
+license=('Apache')
+depends=('java-environment' "intellij-idea-libs" 'giflib' 'libxtst' 'libxft' 'ttf-font')
+install=idea.install
+source=(http://download.jetbrains.com/idea/ideaIC-$pkgver.tar.gz \
+        idea.desktop idea.sh)
+sha256sums=('9e3e0f4538707da37237106697fff4e0b5ed651085f456671764e1fbc9651bbe'
+            'bd37ad47c926941108f624cbe5adbd7fe91d198b15aca63d8a0c0da14c7a76a6'
+            '6f6445697ac16553e329a86d1ecb918db09493818650282a5d07c088defdbd91')
+
+package() {
+  install -d -m755 "$pkgdir/"usr/share
+  cp -a "idea-IC-$_pkgver" "$pkgdir"/usr/share/intellijidea-ce
+
+  # remove files owned by intellij-idea-libs
+  rm "$pkgdir"/usr/share/intellijidea-ce/bin/{fsnotifier,libbreakgen}*
+  rm -rf "$pkgdir"/usr/share/intellijidea-ce/lib/libpty
+
+  # make sure that all files are owned by root
+  chown -R root:root "$pkgdir/usr/share"
+
+  # never wait on user input when starting idea
+  sed -i '/.*read IGNORE.*/ d' "$pkgdir"/usr/share/intellijidea-ce/bin/idea.sh
+
+  install -D -m755 "$srcdir"/idea.sh "$pkgdir"/usr/bin/idea.sh
+  install -D -m644 "$srcdir"/idea.desktop "$pkgdir"/usr/share/applications/idea.desktop
+  install -D -m644 "$pkgdir"/usr/share/intellijidea-ce/bin/idea.png \
+                   "$pkgdir"/usr/share/pixmaps/idea.png
+
+  # workaround FS#40934
+  sed -i 's|lcd|on|'  "$pkgdir"/usr/share/intellijidea-ce/bin/*.vmoptions
+
+  # remove the bundled jre
+  rm -rf "$pkgdir"/usr/share/intellijidea-ce/jre
+}
+
+# vim:set ts=2 sw=2 et:

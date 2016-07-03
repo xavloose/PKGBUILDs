@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 167358 2016-03-18 08:54:54Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: Sergej Pupykin <pupykin.s+arch@gmail.com>
+
+pkgname=freewrl
+pkgver=3.0.0
+_pkgver=3.0
+pkgrel=1
+pkgdesc="VRML viewer"
+arch=('i686' 'x86_64')
+url="http://freewrl.sourceforge.net/"
+license=('GPL')
+depends=('java-runtime' 'libxaw' 'glew' 'freeglut' 'curl' 'freetype2' 'imlib2' 'sox'
+         'unzip' 'imagemagick' 'libxml2' 'ttf-bitstream-vera' 'lesstif' 'js185' 'glu'
+         'openal' 'freealut')
+makedepends=('java-environment' 'xulrunner' 'wget' 'mesa')
+source=(http://downloads.sourceforge.net/project/freewrl/freewrl-linux/${_pkgver}/freewrl-${pkgver}.tar.bz2)
+md5sums=('350066d1b7c0fd0b842260c60c1c3179')
+
+build() {
+#  . /etc/profile.d/jre.sh
+  cd $srcdir/$pkgname-${pkgver}
+#  export JAVASCRIPT_ENGINE_CFLAGS="-I/usr/include/js -DXP_UNIX -DJS_THREADSAFE $(pkg-config --cflags nspr)"
+#  export JAVASCRIPT_ENGINE_LIBS="$(pkg-config --libs nspr) -lmozjs185"
+  ./configure \
+    --prefix=/usr --with-fontsdir=/usr/share/fonts/TTF --enable-libeai \
+    --enable-libcurl --with-expat=/usr --with-target=x11 --enable-plugin \
+    --disable-mozilla-js --enable-xulrunner-js --disable-firefox-js \
+    --disable-seamonkey-js
+  make
+}
+
+package() {
+  cd $srcdir/$pkgname-${pkgver}
+  make DESTDIR=$pkgdir install
+}

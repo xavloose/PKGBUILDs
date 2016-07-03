@@ -1,0 +1,39 @@
+# $Id: PKGBUILD 179729 2016-06-12 20:07:35Z alucryd $
+# Maintainer: Maxime Gauduin <alucryd@archlinux.org>
+# Contributor: kirek <rbuldo@gmail.com>
+# Contributor: Cédric Bellegarde <gnumdk@gmail.com>
+
+pkgname=lollypop
+pkgver=0.9.110
+pkgrel=1
+pkgdesc='Music player for GNOME'
+arch=('any')
+url='https://github.com/gnumdk/lollypop'
+license=('GPL')
+depends=('desktop-file-utils' 'gst-python' 'gtk3' 'python-cairo'
+         'python-dbus' 'python-gobject' 'totem-plparser')
+makedepends=('gobject-introspection' 'intltool' 'itstool' 'python')
+optdepends=('gst-libav: FFmpeg plugin for GStreamer'
+            'kid3-qt: Store covers in tags'
+            'libsecret: Last.FM support'
+            'python-pylast: Last.FM support'
+            'python-wikipedia: Wikipedia support')
+source=("https://github.com/gnumdk/lollypop/releases/download/${pkgver}/lollypop-${pkgver}.tar.xz")
+sha256sums=('7cb4a91d7480338a77c3d1baac3e34052af1c6775540f7e475e2e4a28f7aae86')
+
+build() {
+  cd lollypop-${pkgver}
+
+  ./configure \
+    --prefix='/usr' \
+    --disable-schemas-compile
+  make
+}
+
+package() {
+  cd lollypop-${pkgver}
+
+  make DESTDIR="${pkgdir}" install
+}
+
+# vim: ts=2 sw=2 et:

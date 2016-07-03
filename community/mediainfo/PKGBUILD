@@ -1,0 +1,26 @@
+# $Id: PKGBUILD 181754 2016-07-01 17:46:58Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Maintainer: hydro <hydro@freenet.de>
+
+pkgname=mediainfo
+pkgver=0.7.87
+pkgrel=1
+pkgdesc="supplies technical and tag information about a video or audio file"
+arch=('i686' 'x86_64')
+url="http://mediaarea.net"
+license=('GPL')
+depends=('libmediainfo')
+makedepends=('libtool' 'automake' 'autoconf')
+source=(http://mediaarea.net/download/source/mediainfo/$pkgver/mediainfo_$pkgver.tar.bz2)
+md5sums=('3656a22dfbcee53edf66a5e0f890cc20')
+
+build() {
+  cd $srcdir/MediaInfo/Project/GNU/CLI
+  sh ./autogen.sh
+  ./configure --prefix=/usr
+  make
+}
+package() {
+  cd $srcdir/MediaInfo/Project/GNU/CLI
+  make DESTDIR=$pkgdir install
+}

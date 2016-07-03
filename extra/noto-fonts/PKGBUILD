@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 257255 2015-12-24 23:46:32Z arojas $
+# Maintainer: Antonio Rojas <arojas@archlinux.org>
+
+pkgbase=noto-fonts
+pkgname=(noto-fonts ttf-croscore)
+_pkgver=2015-12-24
+_commit=3f1dc1
+pkgver=${_pkgver//-}
+pkgrel=2
+pkgdesc="Google Noto TTF fonts"
+arch=(any)
+url="https://www.google.com/get/noto/"
+license=(Apache)
+depends=(fontconfig)
+provides=(ttf-font)
+install=noto-fonts.install
+#source=("https://github.com/googlei18n/noto-fonts/archive/v$_pkgver-license-adobe.tar.gz")
+source=("https://github.com/googlei18n/noto-fonts/archive/$_commit.zip")
+sha256sums=('4a91e1ed90bf61a8d3e486db6dac40f8e71973b97960d41be7790cbb68ce81df')
+
+package_noto-fonts() {
+  optdepends=('noto-fonts-cjk: CJK characters' 'noto-fonts-emoji: Emoji characters')
+
+  mkdir -p "$pkgdir"/usr/share/fonts/noto
+  install -m644 $pkgbase-*/hinted/Noto*.ttf "$pkgdir"/usr/share/fonts/noto
+}
+
+package_ttf-croscore() {
+  pkgdesc='Chrome OS core fonts'
+
+  cd $pkgbase-*/hinted
+  mkdir -p "$pkgdir"/usr/share/fonts/TTF
+  install -m644 Arimo*.ttf Cousine*.ttf Tinos*.ttf "$pkgdir"/usr/share/fonts/TTF
+}
+
+

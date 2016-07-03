@@ -1,0 +1,23 @@
+# $Id: PKGBUILD 154444 2015-12-24 13:33:07Z arojas $
+# Maintainer: Antonio Rojas < arojas@archlinux.org >
+
+pkgname=libreoffice-extension-texmaths
+_extname=texmaths
+pkgver=0.42
+pkgrel=1
+pkgdesc="A LaTeX equation editor for LibreOffice"
+arch=('any')
+url="http://roland65.free.fr/texmaths/"
+license=('GPL2')
+depends=('libreoffice' 'texlive-core')
+conflicts=('texmaths')
+replaces=('texmaths')
+source=("http://downloads.sourceforge.net/project/$_extname/$pkgver/TexMaths-$pkgver.oxt")
+md5sums=('a89c53632de4f0977ece6d315aab355f')
+
+package() {
+  install -d -m755 $pkgdir/usr/lib/libreoffice/share/extensions/$_extname
+
+  cp -r * $pkgdir/usr/lib/libreoffice/share/extensions/$_extname
+  rm $pkgdir/usr/lib/libreoffice/share/extensions/$_extname/*.oxt
+}

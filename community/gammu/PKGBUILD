@@ -1,0 +1,39 @@
+# $Id: PKGBUILD 177364 2016-05-28 11:31:25Z jlichtblau $
+# Maintainer: Jaroslav Lichtblau <svetlemodry@archlinux.org>
+# Contributor: Ray Rashif <schiv@archlinux.org>
+# Contributor: Corrado Primier <bardo@aur.archlinux.org>
+# Contributor: Aurelien Foret <orelien@chez.com>
+
+pkgname=gammu
+pkgver=1.37.3
+pkgrel=1
+pkgdesc="GNU All Mobile Management Utilities"
+arch=('i686' 'x86_64')
+url="http://wammu.eu/gammu/"
+license=('GPL')
+depends=('glib2' 'bluez-libs' 'curl' 'libmariadbclient' 'postgresql-libs' 'libusb' 'libgudev')
+makedepends=('cmake' 'doxygen' 'mariadb' 'python2')
+optdepends=('dialog: support for the gammu-config script' 'python2: for python bindings')
+source=(http://downloads.sourceforge.net/$pkgname/$pkgname-$pkgver.tar.xz)
+sha256sums=('63fcb78e94e1c8cff199cada3f64c694f49c1e9fe2c3f17495dc01a5e8e03a84')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+# bash completion dir change
+  sed -i 's,COMPLETIONSDIR "/etc/bash_completion.d",COMPLETIONSDIR "/usr/share/bash-completion/completions",' contrib/CMakeLists.txt
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+
+  cmake . -DCMAKE_INSTALL_PREFIX="/usr" -DLIB_SUFFIX=""
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+
+  make DESTDIR="$pkgdir" install
+}
+
+# vim:set ts=2 sw=2 et:

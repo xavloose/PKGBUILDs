@@ -1,0 +1,34 @@
+# $Id: PKGBUILD 269796 2016-06-14 16:44:11Z arojas $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=kdeaccessibility-kmag
+pkgver=16.04.2
+pkgrel=1
+arch=('i686' 'x86_64')
+pkgdesc='Screen Magnifier'
+url='http://kde.org/applications/utilities/kmag/'
+license=('GPL' 'FDL')
+groups=('kde-applications' 'kdeaccessibility')
+depends=('kdebase-runtime' 'libkdeaccessibilityclient')
+makedepends=('cmake' 'automoc4')
+source=("http://download.kde.org/stable/applications/${pkgver}/src/kmag-${pkgver}.tar.xz")
+sha1sums=('f578c2ca089f2914f5ed4d8079f718a6249db118')
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../kmag-${pkgver} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DKDE4_BUILD_TESTS=OFF \
+    -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="$pkgdir" install
+}

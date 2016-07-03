@@ -1,0 +1,38 @@
+# $Id: PKGBUILD 269939 2016-06-14 17:38:42Z arojas $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=khangman
+pkgver=16.04.2
+pkgrel=1
+pkgdesc="Hangman Game"
+url="http://kde.org/applications/education/khangman/"
+arch=('i686' 'x86_64')
+license=('GPL' 'LGPL' 'FDL')
+groups=('kde-applications' 'kdeedu')
+depends=('libkeduvocdocument' 'knewstuff' 'kdeclarative')
+makedepends=('extra-cmake-modules' 'kdoctools' 'python')
+replaces=('kdeedu-khangman')
+conflicts=('kdeedu-khangman')
+source=("http://download.kde.org/stable/applications/${pkgver}/src/khangman-${pkgver}.tar.xz")
+sha1sums=('75bab2247a0b6db7e386fec3b5e55a212b37287a')
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../khangman-${pkgver} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DBUILD_TESTING=OFF \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=lib \
+    -DSYSCONF_INSTALL_DIR=/etc
+  make
+}
+
+package() {
+  cd "${srcdir}"/build
+  make DESTDIR="${pkgdir}" install
+}

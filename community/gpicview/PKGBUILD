@@ -1,0 +1,38 @@
+# $Id: PKGBUILD 162911 2016-02-21 00:54:21Z bgyorgy $ 
+# Maintainer: Balló György <ballogyor+arch at gmail dot com>
+# Contributor: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+# Contributor: Angel Velasquez <angvp@archlinux.org> 
+# Contributor: Geoffroy Carrier <geoffroy.carrier@koon.fr>
+
+pkgname=gpicview
+pkgver=0.2.5
+pkgrel=1
+pkgdesc='Lightweight image viewer'
+arch=('i686' 'x86_64')
+license=('GPL2')
+url='http://lxde.org/'
+groups=('lxde')
+depends=('gtk2' 'desktop-file-utils' 'xdg-utils')
+install=$pkgname.install
+makedepends=('intltool')
+optdepends=('librsvg: For SVG support')
+source=(http://downloads.sourceforge.net/lxde/$pkgname-$pkgver.tar.xz)
+md5sums=('26be9b0c5a234f1afe7d83d02a4a33f4')
+
+prepare() {
+  cd $pkgname-$pkgver
+
+  # Apply only one main category (FS#34684)
+  sed -i '/^Categories=/ s/Utility;//' gpicview.desktop.in
+}
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --sysconfdir=/etc --prefix=/usr
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}

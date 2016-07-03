@@ -1,0 +1,28 @@
+# $Id: PKGBUILD 263868 2016-04-04 17:18:02Z andyrtr $
+# Maintainer: AndyRTR <andyrtr@archlinux.org>
+# Maintainer: Jan de Groot <jgc@archlinux.org>
+
+pkgname=inputproto
+pkgver=2.3.2
+pkgrel=1
+pkgdesc="X11 Input extension wire protocol"
+arch=(any)
+license=('custom')
+url="http://xorg.freedesktop.org/"
+makedepends=('xorg-util-macros' 'asciidoc')
+source=(${url}/releases/individual/proto/${pkgname}-${pkgver}.tar.bz2)
+sha256sums=('893a6af55733262058a27b38eeb1edc733669f01d404e8581b167f03c03ef31d')
+
+build() {
+  cd ${pkgname}-${pkgver}
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  make DESTDIR="${pkgdir}" install
+
+  install -m755 -d "${pkgdir}/usr/share/licenses/${pkgname}"
+  install -m644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/"
+}

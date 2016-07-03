@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 181543 2016-06-28 19:10:58Z bluewind $
+# Contributor: Alexander Fehr <pizzapunk gmail com>
+# Maintainer: Daniel J Griffiths <ghost1227@archlinux.us>
+
+pkgname=filezilla
+pkgver=3.19.0
+pkgrel=1
+pkgdesc="Fast and reliable FTP, FTPS and SFTP client"
+arch=('i686' 'x86_64')
+url="http://filezilla-project.org/"
+license=('GPL')
+depends=('dbus' 'xdg-utils' 'wxgtk' 'libidn' 'hicolor-icon-theme' 'sqlite' 'gnutls' "libfilezilla")
+source=("http://downloads.sourceforge.net/project/filezilla/FileZilla_Client/${pkgver}/FileZilla_${pkgver}_src.tar.bz2")
+
+prepare() {
+  cd "${pkgname}-${pkgver}"
+}
+
+build() {
+  cd "${pkgname}-${pkgver}"
+  ./configure \
+    --prefix=/usr \
+    --disable-manualupdatecheck \
+    --disable-autoupdatecheck \
+    --disable-static \
+    --with-pugixml=builtin
+
+  make
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}" install
+}
+md5sums=('8cbb61393e029f4bd71cfe1d1f32adeb')

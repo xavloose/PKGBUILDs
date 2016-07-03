@@ -1,0 +1,87 @@
+# $Id: PKGBUILD 174568 2016-05-10 15:07:57Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Maintainer: rubenvb vanboxem <dottie> ruben <attie> gmail <dottie> com
+
+_targets="i686-w64-mingw32 x86_64-w64-mingw32"
+
+pkgname=mingw-w64-gcc
+pkgver=6.1.1
+_snapshot=6-20160505
+_islver=0.17.1
+_cloogver=0.18.4
+pkgrel=1
+pkgdesc="Cross GCC for the MinGW-w64 cross-compiler"
+arch=('i686' 'x86_64')
+url="http://gcc.gnu.org"
+license=('GPL' 'LGPL' 'FDL' 'custom')
+groups=('mingw-w64-toolchain' 'mingw-w64')
+depends=('zlib' 'libmpc'
+	 'mingw-w64-crt' 'mingw-w64-binutils' 'mingw-w64-winpthreads'
+	 'mingw-w64-headers')
+makedepends=("gcc-ada=${pkgver}")
+#checkdepends=('dejagnu') # Windows executables could run on Arch through bin_mft and Wine
+optdepends=()
+provides=('mingw-w64-gcc-base')
+replaces=()
+backup=()
+options=('!strip' 'staticlibs' '!emptydirs' '!buildflags')
+#source=("ftp://gcc.gnu.org/pub/gcc/releases/gcc-${pkgver}/gcc-${pkgver}.tar.bz2"
+source=("ftp://gcc.gnu.org/pub/gcc/snapshots/${_snapshot}/gcc-${_snapshot}.tar.bz2"
+	"http://isl.gforge.inria.fr/isl-${_islver}.tar.bz2"
+	"http://www.bastoul.net/cloog/pages/download/cloog-${_cloogver}.tar.gz")
+md5sums=('acb8c7d76a0061c068e406eaa65eff33'
+         '5184f543a013165e8057be59728664b1'
+         'e531f725244856c92c9bba009ff44faf')
+
+if [ -n "$_snapshot" ]; then
+  _basedir=gcc-$_snapshot
+else
+  _basedir=gcc-$pkgver
+fi
+
+prepare() {
+  cd ${srcdir}/${_basedir}
+  # link isl/cloog for in-tree builds
+  ln -s ../isl-${_islver} isl
+  ln -s ../cloog-${_cloogver} cloog
+
+  #do not install libiberty
+#  sed -i 's/install_to_$(INSTALL_DEST) //' libiberty/Makefile.in
+  # hack! - some configure tests for header files using "$CPP $CPPFLAGS"
+#  sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" {libiberty,gcc}/configure
+}
+
+build() {
+  for _target in ${_targets}; do
+    mkdir -p ${srcdir}/gcc-build-${_target} && cd ${srcdir}/gcc-build-${_target}
+
+    ${srcdir}/${_basedir}/configure --prefix=/usr --libexecdir=/usr/lib \
+        --target=${_target} \
+        --enable-languages=c,lto,c++,objc,obj-c++,fortran,ada \
+        --enable-shared --enable-static \
+        --enable-threads=posix --enable-fully-dynamic-string --enable-libstdcxx-time=yes \
+        --with-system-zlib --enable-cloog-backend=isl \
+        --enable-lto --disable-dw2-exceptions --enable-libgomp \
+        --disable-multilib --enable-checking=release
+    make all
+  done
+}
+
+package() {
+  for _target in ${_targets}; do
+    cd ${srcdir}/gcc-build-${_target}
+    make DESTDIR=${pkgdir} install
+    ${_target}-strip ${pkgdir}/usr/${_target}/lib/*.dll
+    strip ${pkgdir}/usr/bin/${_target}-*
+    strip ${pkgdir}/usr/lib/gcc/${_target}/${pkgver}/{cc1*,collect2,gnat1,f951,lto*}
+    ln -s ${_target}-gcc $pkgdir/usr/bin/${_target}-cc
+    # mv dlls
+    mkdir -p $pkgdir/usr/${_target}/bin/
+    mv $pkgdir/usr/${_target}/lib/*.dll $pkgdir/usr/${_target}/bin/
+  done
+  strip ${pkgdir}/usr/bin/*
+  # remove unnecessary files
+  rm -r ${pkgdir}/usr/share
+  rm -f ${pkgdir}/usr/lib/libcc1.so*
+  rm -f ${pkgdir}/usr/lib/libcc1.a
+}

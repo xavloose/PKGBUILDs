@@ -1,0 +1,26 @@
+# $Id: PKGBUILD 110435 2014-04-29 15:37:19Z mtorromeo $
+# Maintainer: Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
+# Contributor: Daniele Paolella <dp@mcrservice.it>
+
+pkgname=python2-meld3
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="An HTML/XML templating engine"
+arch=('any')
+url="http://www.plope.com/software/meld3/"
+license=('ZPL')
+depends=('python2')
+makedepends=('python2-setuptools')
+source=("http://pypi.python.org/packages/source/m/meld3/meld3-$pkgver.tar.gz")
+
+build() {
+    cd "$srcdir/meld3-$pkgver"
+    python2 setup.py build
+}
+
+package() {
+    cd "$srcdir/meld3-$pkgver"
+    python2 setup.py install -O1 --skip-build --prefix=/usr --root="$pkgdir"
+}
+
+sha256sums=('57b41eebbb5a82d4a928608962616442e239ec6d611fe6f46343e765e36f0b2b')

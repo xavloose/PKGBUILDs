@@ -1,0 +1,44 @@
+# $Id: PKGBUILD 133367 2015-05-13 12:31:10Z arodseth $
+# Maintainer: Alexander F Rødseth <xyproto@archlinux.org>
+
+pkgname=moosefs
+pkgver=3.0.78
+pkgrel=1
+pkgdesc='High performing and fault tolerant distributed file system'
+url='http://moosefs.com/'
+replaces=('mfs-master' 'mfs-chunkserver' 'mfs-client')
+conflicts=('mfs-master' 'mfs-chunkserver' 'mfs-client')
+arch=('x86_64' 'i686')
+license=('GPL2')
+depends=('fuse' 'python2' 'bash' 'xfsprogs')
+install="$pkgname.install"
+source=("http://ppa.moosefs.com/src/moosefs-${pkgver}-1.tar.gz")
+sha256sums=('8d26b5429fdd1dd896d9c061d4ef6574a2bfd73fc9486f941d0e18305094b7ee')
+
+build() {
+  cd "moosefs-${pkgver%_*}"
+
+  ./configure \
+    --prefix=/usr \
+    --mandir=/usr/share/man \
+    --sysconfdir=/etc \
+    --localstatedir=/var/lib \
+    --with-default-user=mfs \
+    --with-default-group=mfs \
+    --with-systemdsystemunitdir=/usr/lib/systemd/system
+  make
+}
+
+package() {
+  make DESTDIR="$pkgdir" -C "moosefs-${pkgver%_*}" install
+
+  # Move mount.moosefs from sbin to usr/bin
+  mv "$pkgdir/sbin/"* "$pkgdir/usr/bin/"
+  mv "$pkgdir/usr/sbin/"* "$pkgdir/usr/bin/"
+  rmdir "$pkgdir/sbin"
+  rmdir "$pkgdir/usr/sbin"
+}
+
+
+# getver: moosefs.com/download/sources.html
+# vim:set ts=2 sw=2 et:

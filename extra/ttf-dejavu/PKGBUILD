@@ -1,0 +1,28 @@
+# $Id: PKGBUILD 261139 2016-03-07 08:09:48Z jgc $
+# Maintainer:
+# Contributor: Jan de Groot <jgc@archlinux.org>
+# Contributor: Michal Krenek <mikos@sg1.cz>
+
+pkgname=ttf-dejavu
+pkgver=2.35
+pkgrel=1
+pkgdesc="Font family based on the Bitstream Vera Fonts with a wider range of characters"
+arch=('any')
+url="http://dejavu-fonts.org/wiki/Main_Page"
+license=('custom')
+depends=('fontconfig' 'xorg-fonts-encodings' 'xorg-mkfontscale' 'xorg-mkfontdir')
+provides=('ttf-font')
+install=ttf-dejavu.install
+source=(http://downloads.sourceforge.net/project/dejavu/dejavu/${pkgver}/dejavu-fonts-ttf-${pkgver}.tar.bz2)
+sha256sums=('f6d7965586101ff3a8a5c3ec503e082bb6a9604ff53413e10702e5917c194d88')
+
+package() {
+  install -dm755 "${pkgdir}"/etc/fonts/conf.avail
+  install -dm755 "${pkgdir}"/usr/share/fonts/TTF
+
+  cd "${srcdir}"/dejavu-fonts-ttf-${pkgver}
+  install -m644 ttf/*.ttf "${pkgdir}"/usr/share/fonts/TTF/
+  install -m644 fontconfig/*.conf "${pkgdir}"/etc/fonts/conf.avail/
+
+  install -Dm644 LICENSE "${pkgdir}"/usr/share/licenses/${pkgname}/LICENSE
+}

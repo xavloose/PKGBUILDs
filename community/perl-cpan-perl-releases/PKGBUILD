@@ -1,0 +1,30 @@
+# $Id: PKGBUILD 166234 2016-03-12 11:05:49Z spupykin $
+# Maintainer: 
+
+pkgname=perl-cpan-perl-releases
+pkgver=2.58
+pkgrel=1
+pkgdesc='Mapping Perl releases on CPAN to the location of the tarballs'
+arch=('any')
+url="https://metacpan.org/release/CPAN-Perl-Releases"
+license=('PerlArtistic' 'GPL')
+depends=('perl')
+options=('!emptydirs')
+source=("http://search.cpan.org/CPAN/authors/id/B/BI/BINGOS/CPAN-Perl-Releases-$pkgver.tar.gz")
+md5sums=('92b48064be4727e40f72be5a7ac0c880')
+
+build() {
+  cd CPAN-Perl-Releases-$pkgver
+  perl Makefile.PL INSTALLDIRS=vendor
+  make
+}
+
+check() {
+  cd CPAN-Perl-Releases-$pkgver
+  make test
+}
+
+package() {
+  cd CPAN-Perl-Releases-$pkgver
+  make DESTDIR="$pkgdir" install
+}

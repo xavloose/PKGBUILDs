@@ -1,0 +1,42 @@
+# $Id: PKGBUILD 154320 2015-12-23 06:05:05Z fyan $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Jan de Groot <jgc@archlinux.org>
+
+_pkgbasename=libxi
+pkgname=lib32-$_pkgbasename
+pkgver=1.7.6
+pkgrel=1
+pkgdesc="X11 Input extension library (32-bit)"
+arch=('x86_64')
+url="http://xorg.freedesktop.org"
+depends=('lib32-libxext' 'lib32-libxfixes' 'inputproto' $_pkgbasename)
+makedepends=('pkgconfig' 'xorg-util-macros' gcc-multilib automake)
+options=(!libtool)
+license=('custom')
+source=(${url}/releases/individual/lib/libXi-${pkgver}.tar.bz2{,.sig})
+sha256sums=('1f32a552cec0f056c0260bdb32e853cec0673d2f40646ce932ad5a9f0205b7ac'
+            'SKIP')
+validpgpkeys=('3C2C43D9447D5938EF4551EBE23B7E70B467F0BF') # Peter Hutterer
+
+build() {
+  export CC="gcc -m32"
+  export CXX="g++ -m32"
+  export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+
+  cd "${srcdir}/libXi-${pkgver}"
+
+  ./configure --prefix=/usr --sysconfdir=/etc --disable-static \
+    --libdir=/usr/lib32
+
+  make
+}
+
+package() {
+  cd "${srcdir}/libXi-${pkgver}"
+
+  make DESTDIR="${pkgdir}" install
+
+  rm -rf "${pkgdir}"/usr/{include,share,bin}
+  mkdir -p "$pkgdir/usr/share/licenses"
+  ln -s $_pkgbasename "$pkgdir/usr/share/licenses/$pkgname"
+}

@@ -1,0 +1,34 @@
+# $Id: PKGBUILD 162818 2016-02-20 15:34:21Z arodseth $
+# Maintainer: Alexander F Rødseth <xyproto@archlinux.org>
+# Contributor: Brad Fanella <bradfanella@archlinux.us>
+# Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
+
+pkgname=libcss
+pkgver=0.6.0
+pkgrel=2
+pkgdesc='CSS parser and selection engine'
+arch=('x86_64' 'i686')
+url='http://www.netsurf-browser.org/projects/libcss/'
+license=('MIT')
+depends=('libparserutils>=0.2.3-2' 'libwapcaplet>=0.3.0-3')
+makedepends=('netsurf-buildsystem')
+source=("http://download.netsurf-browser.org/libs/releases/libcss-$pkgver-src.tar.gz")
+sha256sums=('4eb5228e5c480e31ba8ca098cedfec3a7ef90302ede77989caedf11670b8e462')
+
+build() {
+  cd "$pkgname-$pkgver"
+
+  sed 's:_BSD_SOURCE:_DEFAULT_SOURCE:' -i Makefile
+  export CFLAGS="-Wno-error=unused-but-set-variable"
+  make INCLUDEDIR=include LIBDIR=lib PREFIX=/usr COMPONENT_TYPE="lib-shared"
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+
+  make install INCLUDEDIR=include LIBDIR=lib PREFIX=/usr DESTDIR="$pkgdir" \
+    COMPONENT_TYPE="lib-shared"
+  install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
+}
+
+# vim:set ts=2 sw=2 et:

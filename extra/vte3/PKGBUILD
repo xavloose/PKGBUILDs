@@ -1,0 +1,44 @@
+# $Id: PKGBUILD 267633 2016-05-10 19:21:49Z heftig $
+# Maintainer: Ionut Biru <ibiru@archlinux.org>
+
+pkgbase=vte3
+pkgname=(vte3 vte-common)
+pkgver=0.44.2
+pkgrel=1
+pkgdesc="Virtual Terminal Emulator widget for use with GTK3"
+url="https://wiki.gnome.org/Apps/Terminal/VTE"
+arch=(i686 x86_64)
+license=(LGPL)
+options=(!emptydirs)
+depends=(gtk3)
+makedepends=(intltool gobject-introspection vala glade)
+source=(http://download.gnome.org/sources/vte/${pkgver::4}/vte-$pkgver.tar.xz)
+sha256sums=('a1ea594814bb136a3a9a6c7656b46240571f6a198825c1111007fe99194b0949')
+
+build() {
+  cd vte-$pkgver
+
+  ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/lib/vte \
+    --localstatedir=/var --disable-static --enable-introspection --enable-glade-catalogue
+
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+
+  make
+}
+
+package_vte3(){
+  depends+=(vte-common)
+
+  cd vte-$pkgver
+  make DESTDIR="$pkgdir" install
+
+  rm "$pkgdir"/etc/profile.d/vte.sh
+}
+
+package_vte-common() {
+  pkgdesc="Common files used by vte and vte3"
+  depends=(sh)
+
+  cd vte-$pkgver
+  install -Dm644 src/vte.sh "$pkgdir"/etc/profile.d/vte.sh
+}

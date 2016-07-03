@@ -1,0 +1,30 @@
+# $Id: PKGBUILD 172075 2016-04-27 16:09:55Z jsteel $
+# Maintainer: Jonathan Steel <jsteel at archlinux.org>
+# Contributor: Allan McRae <allan@archlinux.org>
+# Contributor: Tom Newsom <Jeepster@gmx.co.uk>
+
+pkgname=gnuchess
+pkgver=6.2.2
+pkgrel=2
+pkgdesc="Play chess against the computer on a terminal and an engine for graphical chess frontends"
+arch=('i686' 'x86_64')
+url="http://www.gnu.org/software/chess/chess.html"
+license=('GPL3')
+depends=('bash')
+optdepends=('xboard: graphical frontend')
+source=(http://ftp.gnu.org/pub/gnu/chess/$pkgname-$pkgver.tar.gz)
+md5sums=('c181b5e218695a154a550292fddedc6d')
+
+build() {
+  cd $pkgname-$pkgver
+
+  ./configure --prefix=/usr
+
+  make  
+}
+
+package() {
+  cd $pkgname-$pkgver
+
+  make prefix="$pkgdir"/usr install
+}

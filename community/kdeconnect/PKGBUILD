@@ -1,0 +1,38 @@
+# $Id: PKGBUILD 181797 2016-07-02 21:24:17Z arojas $
+# Maintainer: Antonio Rojas <arojas@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+# Contributor: Kuba Serafinowski <zizzfizzix(at)gmail(dot)com>
+
+pkgname=kdeconnect
+pkgver=0.9.g
+_pkgver=0.9g
+pkgrel=3
+pkgdesc='Adds communication between KDE and your smartphone'
+url='https://community.kde.org/KDEConnect'
+license=(GPL)
+arch=(i686 x86_64)
+depends=(hicolor-icon-theme kcmutils kwayland libfakekey qca-qt5)
+makedepends=(extra-cmake-modules python)
+optdepends=('sshfs: remote filesystem browser' 'kde-cli-tools: configuration UI')
+source=("http://download.kde.org/unstable/$pkgname/${pkgver%.*}/src/$pkgname-kde-${_pkgver}.tar.xz")
+md5sums=('1472d071bd3d4f46c125a3aa0f387ca2')
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../$pkgname-kde-$_pkgver \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DBUILD_TESTING=OFF \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DKDE_INSTALL_LIBDIR=lib \
+    -DKDE_INSTALL_LIBEXECDIR=/usr/lib
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="$pkgdir" install
+}

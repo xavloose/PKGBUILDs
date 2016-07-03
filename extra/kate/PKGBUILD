@@ -1,0 +1,72 @@
+# $Id: PKGBUILD 269803 2016-06-14 16:46:06Z arojas $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Maintainer: Antonio Rojas <arojas@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+
+pkgbase=kate
+pkgname=('kwrite'
+         'kate')
+pkgver=16.04.2
+pkgrel=1
+arch=('i686' 'x86_64')
+license=('GPL' 'LGPL' 'FDL')
+makedepends=('extra-cmake-modules' 'kdoctools' 'python' 'plasma-framework' 'knewstuff' 'ktexteditor'
+             'threadweaver' 'kitemmodels' 'kactivities')
+source=("http://download.kde.org/stable/applications/${pkgver}/src/${pkgbase}-${pkgver}.tar.xz" kdebug-363297.patch)
+sha1sums=('7f77c9c36fe800038efb374fcbd20dd8aee6363c'
+          '1efebf617f8407a5b2d58338ea8860fbe86cdf90')
+
+prepare() {
+  mkdir -p build
+
+# Fix opening file:// url's http://bugs.kde.org/show_bug.cgi?id=363297
+  cd $pkgbase-$pkgver
+  patch -p1 -i ../kdebug-363297.patch
+}
+
+build() {
+  cd build
+  cmake ../${pkgbase}-${pkgver} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=lib \
+    -DSYSCONF_INSTALL_DIR=/etc \
+    -DBUILD_TESTING=OFF
+  make
+}
+
+package_kwrite() {
+  pkgdesc="Text Editor"
+  groups=('kde-applications' 'kdebase')
+  url="http://www.kde.org/applications/utilities/kwrite/"
+  depends=('ktexteditor' 'kded' 'kactivities' 'hicolor-icon-theme')
+  replaces=('kdebase-kwrite')
+  conflicts=('kdebase-kwrite')
+  provides=('kdebase-kwrite')
+
+  cd build/kwrite
+  make DESTDIR="${pkgdir}" install
+
+  cd ../../build/doc/kwrite
+  make DESTDIR="${pkgdir}" install
+}
+
+package_kate() {
+  pkgdesc="Advanced Text Editor"
+  groups=('kde-applications' 'kdebase')
+  url="http://www.kde.org/applications/utilities/kate/"
+  depends=('knewstuff' 'ktexteditor' 'threadweaver' 'kded' 'kitemmodels' 'kactivities' 'hicolor-icon-theme')
+  replaces=('kdesdk-kate')
+  conflicts=('kdesdk-kate')
+  provides=('kdesdk-kate')
+  optdepends=('konsole: open a terminal in Kate')
+
+  cd build/kate
+  make DESTDIR="${pkgdir}" install
+
+  cd ../../build/doc/kate
+  make DESTDIR="${pkgdir}" install
+
+  cd ../../../build/addons
+  make DESTDIR="${pkgdir}" install
+}

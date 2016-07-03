@@ -1,0 +1,25 @@
+# $Id: PKGBUILD 141697 2015-09-27 13:28:10Z lfleischer $
+# Maintainer: Lukas Fleischer <lfleischer@archlinux.org>
+
+pkgname=libdaq
+pkgver=2.0.6
+pkgrel=1
+pkgdesc='Data Acquisition library for packet I/O.'
+arch=('i686' 'x86_64')
+url='http://www.snort.org/'
+license=('GPL')
+depends=('libpcap')
+makedepends=('ca-certificates')
+source=(http://www.snort.org/downloads/snort/daq-${pkgver}.tar.gz)
+md5sums=('2cd6da422a72c129c685fc4bb848c24c')
+
+build() {
+  cd "${srcdir}/daq-${pkgver}"
+  ./configure --prefix=/usr
+  make -j1
+}
+
+package() {
+  cd "${srcdir}/daq-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}

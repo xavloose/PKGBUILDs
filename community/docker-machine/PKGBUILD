@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 176186 2016-05-24 06:05:27Z fyan $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Dmitry Chusovitin <dchusovitin@gmail.com>
+
+pkgname=docker-machine
+pkgver=0.7.0
+pkgrel=2
+pkgdesc='Machine management for a container-centric world'
+arch=('i686' 'x86_64')
+url='https://github.com/docker/machine'
+license=('Apache')
+depends=('gcc-libs')
+optdepends=('net-tools: for VirtualBox support')
+makedepends=('gcc-go' 'git')
+optdepends=('net-tools: required for VirtualBox driver')
+source=("git+https://github.com/docker/machine.git#tag=v$pkgver")
+sha256sums=('SKIP')
+
+prepare() {
+  export GOPATH="$srcdir/build"
+  mkdir -p build/src
+  mv machine/vendor/* build/src/
+  mkdir -p build/src/github.com/docker
+  mv machine build/src/github.com/docker/machine
+}
+
+build() {
+  cd build/src/github.com/docker/machine
+  go build -o bin/docker-machine -gccgoflags "$CFLAGS $LDFLAGS" cmd/machine.go
+}
+
+package() {
+  cd build/src/github.com/docker/machine
+  install -Dm755 bin/docker-machine "$pkgdir"/usr/bin/docker-machine
+  install -Dm644 LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+}

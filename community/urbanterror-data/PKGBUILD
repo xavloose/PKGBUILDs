@@ -1,0 +1,27 @@
+# $Id: PKGBUILD 126303 2015-01-20 14:06:52Z svenstaro $
+# Maintainer: Sven-Hendrik Haase <sh@lutzhaase.com>
+
+pkgname=urbanterror-data
+_subversion=023
+pkgver=4.2.$_subversion
+pkgrel=1
+epoch=2
+pkgdesc="A team-based tactical shooter based on the Quake 3 Engine (data files)"
+arch=('any')
+url="http://www.urbanterror.info"
+license=('custom:freeware')
+backup=('opt/urbanterror/q3ut4/server.cfg' 'opt/urbanterror/q3ut4/mapcycle.txt')
+source=("http://cdn.urbanterror.info/urt/42/zips/UrbanTerror42_full${_subversion}.zip")
+md5sums=('20b4e2d10d9e1e76a6b050f1df3a3669')
+#PKGEXT='.pkg.tar'
+
+package() {
+  mkdir -p $pkgdir/opt/urbanterror
+  cp -r $srcdir/UrbanTerror42/q3ut4 $pkgdir/opt/urbanterror/q3ut4
+
+  install -Dm644 $srcdir/UrbanTerror42/q3ut4/readme42.txt $pkgdir/usr/share/licenses/$pkgname/LICENSE
+
+  echo -e "\nseta cl_cURLLib \"/usr/lib/libcurl.so.4\"" >> $pkgdir/opt/urbanterror/q3ut4/autoexec.cfg
+}
+
+# vim: sw=2:ts=2 et:

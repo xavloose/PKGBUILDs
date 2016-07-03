@@ -1,0 +1,27 @@
+# $Id: PKGBUILD 163435 2016-02-25 17:01:43Z arojas $
+# Maintainer:
+# Contributor: Evert Vorster (evorster@gmail.com)
+# Contributor: Martin Sandsmark <martin.sandsmark@kde.org>
+
+pkgname=movit
+pkgver=1.3.2
+pkgrel=1
+pkgdesc="The modern video toolkit"
+arch=(i686 x86_64)
+url="http://movit.sesse.net/"
+license=(GPL)
+depends=(fftw libepoxy)
+makedepends=(eigen gtest sdl2)
+source=("https://movit.sesse.net/$pkgname-$pkgver.tar.gz")
+md5sums=('dadc7e1695ac784a0233df6b2a1a2b8b')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}

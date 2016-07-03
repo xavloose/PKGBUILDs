@@ -1,0 +1,83 @@
+# $Id: PKGBUILD 166873 2016-03-16 06:38:28Z fyan $
+# Maintainer: Alexander Rødseth <rodseth@gmail.com>
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Thomas S Hatch <thatch45@gmail.com>
+# Contributor: Jelle van der Waa <jelle@vdwaa.nl>
+
+pkgbase=python-pymongo
+pkgname=('python-pymongo' 'python2-pymongo')
+pkgver=3.2.2
+pkgrel=1
+pkgdesc='Python module for using MongoDB'
+arch=('x86_64' 'i686')
+license=('APACHE')
+url='http://pypi.python.org/pypi/pymongo/'
+makedepends=('python-setuptools' 'python2-setuptools')
+checkdepends=('python-nose' 'python2-nose' 'python2-gevent' 'python2-monotonic' 'mongodb' 'perl')
+source=("http://pypi.python.org/packages/source/p/pymongo/pymongo-$pkgver.tar.gz")
+sha256sums=('f2018165823b341d83d398165d1c625e5db5cc779e7c44c107034407808463b6')
+
+prepare() {
+  cp -a "pymongo-$pkgver" "pymongo2-$pkgver"
+}
+
+build() {
+  cd "$srcdir/pymongo-$pkgver"
+  python setup.py build
+
+  cd "$srcdir/pymongo2-$pkgver"
+  python2 setup.py build
+}
+
+check() {
+  _mongod_run() {
+    MONGO_TMP_PORT=$(perl -MSocket -le 'socket S, PF_INET, SOCK_STREAM,getprotobyname("tcp");
+      $port = 50000;
+      ++$port until bind S, sockaddr_in($port,inet_aton("127.1"));
+      print $port')
+    echo "Picked port $MONGO_TMP_PORT to run tests with."
+
+    # Start a mongod instance for test
+    rm -rf "$srcdir/mongo_tmp"
+    mkdir "$srcdir/mongo_tmp"
+    rm -f "$srcdir/mongo_tmp.pid"
+
+    # Specifying --storageEngine is needed for i686
+    if [ "$CARCH" == "i686" ]; then
+      _storageEngine="--storageEngine=mmapv1"
+    else
+      _storageEngine=""
+    fi
+
+    mongod --bind_ip 127.0.0.1 --port $MONGO_TMP_PORT --dbpath "$srcdir/mongo_tmp" --nojournal $_storageEngine -v \
+           --nohttpinterface --noauth --smallfiles --nssize 1 --pidfilepath "$srcdir/mongo_tmp.pid" --logpath "$srcdir/mongo_tmp.log" &
+    # --fork is somehow broken in latest mongodb
+    sleep 5
+    
+    DB_PORT=$MONGO_TMP_PORT "$@"
+    kill $(cat "$srcdir/mongo_tmp.pid")
+  }
+
+  cd "$srcdir/pymongo-$pkgver"
+  _mongod_run python setup.py test
+
+  cd "$srcdir/pymongo2-$pkgver"
+  _mongod_run python2 setup.py test
+}
+
+package_python2-pymongo() {
+  depends=('python2')
+  optdepends=('python2-monotonic: enable support for a monotonic clock')
+
+  cd "pymongo2-$pkgver"
+  python2 setup.py install --root="$pkgdir" --skip-build --optimize=1
+}
+
+package_python-pymongo() {
+  depends=('python')
+
+  cd "pymongo-$pkgver"
+  python setup.py install --root="$pkgdir" --skip-build --optimize=1
+}
+
+# vim:set ts=2 sw=2 et:

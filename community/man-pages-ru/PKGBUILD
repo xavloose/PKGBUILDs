@@ -1,0 +1,24 @@
+# $Id: PKGBUILD 173705 2016-05-04 11:01:01Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: Sergej Pupykin <pupykin.s+arch@gmail.com>
+
+pkgname=man-pages-ru
+pkgver=4.05_2306_2171_20160416
+pkgrel=1
+pkgdesc="Russian Linux man pages"
+arch=(any)
+url="https://sourceforge.net/projects/man-pages-ru/"
+depends=(man)
+license=('FDL')
+source=(http://downloads.sourceforge.net/project/man-pages-ru/man-pages-ru_${pkgver//_/-}.tar.bz2)
+md5sums=('eb1176091030a8b04394addb9d6cf875')
+
+package() {
+  cd $srcdir/man-pages-ru_${pkgver//_/-}
+  mkdir -p $pkgdir/usr/share/man/ru
+  mv man* $pkgdir/usr/share/man/ru/
+  cd $pkgdir/usr/share/man/ru
+  # this is included in shadow
+  rm -f man5/passwd.5*
+  rm -f man3/getspnam.3*
+}

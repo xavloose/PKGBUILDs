@@ -1,0 +1,32 @@
+# $Id: PKGBUILD 180566 2016-06-20 20:55:44Z jlichtblau $
+# Maintainer: Jaroslav Lichtblau <svetlemodry@archlinux.org>
+# Contributor: Bjorn Lindeijer <bjorn lindeijer nl>
+# Contributor: Mateusz Herych <heniekk@gmail.com>
+# Contributor: Jesse McClure <jesse [dot] mcclure [at] umassmed [dot] edu>
+
+pkgname=manaplus
+pkgver=1.6.6.18
+pkgrel=1
+pkgdesc="Free OpenSource 2D MMORPG client for Evol Online, The mana world and similar servers"
+arch=('i686' 'x86_64')
+url="https://manaplus.org/"
+license=('GPL')
+depends=('glu' 'libxml2' 'physfs' 'sdl_image' 'sdl_mixer' 'sdl_net' 'sdl_ttf' 'sdl_gfx' 'curl')
+makedepends=('mesa')
+replaces=('tmw')
+source=($pkgname-$pkgver.tar.gz::https://github.com/ManaPlus/ManaPlus/archive/v$pkgver.tar.gz)
+sha256sums=('f187fbb46a30050ff112613d1007b6227db388385e9514d7ef02efecb05c63e5')
+
+build() {
+  cd ManaPlus-$pkgver
+
+  autoreconf -i
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd ManaPlus-$pkgver
+
+  make DESTDIR="${pkgdir}" install
+}

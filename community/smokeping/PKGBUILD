@@ -1,0 +1,34 @@
+# Maintainer: Florian Pritz <bluewind@xinu.at>
+# Contributor: Christos Nouskas nous <nous at archlinux.us>
+
+pkgname=smokeping
+pkgver=2.6.11
+pkgrel=3
+pkgdesc="A tool to keep track of your network latency"
+arch=('any')
+url="http://oss.oetiker.ch/smokeping/"
+license=('GPL2')
+depends=('perl-config-grammar' 'perl-digest-hmac' 'perl-libwww' 'rrdtool' 'perl-fcgi' 'perl-cgi-fast'
+         'perl-io-tty' 'perl-net-dns' 'perl-net-snmp' 'perl-net-telnet' 'perl-ldap' 'perl-net-openssh')
+source=(http://oss.oetiker.ch/smokeping/pub/smokeping-${pkgver}.tar.gz
+service)
+sha256sums=('f2b3c386e95a74af2b1e7aec6410d0a58852339f00e9963f3c770cfd85ba30dd'
+            '4691650aed6c7341bf3a898f63c8ad03f2453d4ce9874e83f24ced5ee21317d9')
+install=install
+
+build() {
+  cd "$srcdir"/${pkgname}-${pkgver}
+
+  ./configure --prefix=/usr --sysconfdir=/etc/smokeping --with-htdocs-dir=/srv/http/smokeping
+  make
+}
+
+package() {
+  cd "$srcdir"/${pkgname}-${pkgver}
+  make DESTDIR="$pkgdir" install
+
+  install -Dm644 "$srcdir/service" "$pkgdir/usr/lib/systemd/system/smokeping.service"
+  chmod 700 "$pkgdir/etc/smokeping"
+  install -dm700 "$pkgdir/var/lib/smokeping"
+}
+

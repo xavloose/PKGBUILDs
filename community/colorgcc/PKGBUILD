@@ -1,0 +1,28 @@
+# $Id: PKGBUILD 164529 2016-03-03 17:18:57Z jlichtblau $
+# Maintainer: Eric Belanger <eric@archlinux.org>
+# Maintainer: Jaroslav Lichtblau <svetlemodry@archlinux.org>
+
+pkgname=colorgcc
+pkgver=1.4.4
+pkgrel=2
+pkgdesc="A Perl wrapper to colorize the output of compilers with warning/error messages matching the gcc output format"
+arch=('any')
+url="http://www.schlueters.de/colorgcc.html"
+license=('GPL')
+depends=('perl')
+makedepends=('git')
+backup=('etc/colorgcc/colorgccrc')
+source=(git://github.com/olibre/colorgcc.git#tag=$pkgver)
+sha1sums=('SKIP')
+
+package() {
+  cd ${pkgname}
+  install -D -m755 colorgcc.pl "${pkgdir}/usr/bin/colorgcc"
+  install -D -m644 colorgccrc "${pkgdir}/etc/colorgcc/colorgccrc"
+  install -D -m644 README.md "${pkgdir}/usr/share/doc/colorgcc/README"
+
+  install -d "${pkgdir}/usr/lib/colorgcc/bin"
+  for i in cc c++ gcc g++ ; do
+    ln -s /usr/bin/colorgcc "${pkgdir}/usr/lib/colorgcc/bin/${i}"
+  done
+}

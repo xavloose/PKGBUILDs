@@ -1,0 +1,27 @@
+# $Id: PKGBUILD 140342 2015-09-16 01:38:37Z seblu $
+# Maintainer: Sébastien Luttringer
+# Contributor: Kovivchak Evgen <oneonfire@gmail.com>
+
+pkgname=ioping
+pkgver=0.9
+pkgrel=2
+pkgdesc='Simple disk I/0 latency measuring tool'
+arch=('i686' 'x86_64')
+license=('GPL3')
+url='https://github.com/koct9i/ioping'
+depends=('glibc')
+makedepends=('git')
+source=("git+https://github.com/koct9i/ioping#tag=v$pkgver")
+sha1sums=('SKIP')
+
+build() {
+  cd $pkgname
+  make PREFIX=/usr
+}
+
+package() {
+  cd $pkgname
+  make PREFIX="$pkgdir/usr" install
+}
+
+# vim:set ts=2 sw=2 et:

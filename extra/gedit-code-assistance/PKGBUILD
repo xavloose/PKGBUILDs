@@ -1,0 +1,27 @@
+# $Id: PKGBUILD 238597 2015-05-07 13:24:52Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Contributor: Jan de Groot <jgc@archlinux.org>
+
+pkgname=gedit-code-assistance
+pkgver=3.16.0
+pkgrel=1
+pkgdesc="Code assistance for gedit"
+arch=(i686 x86_64)
+license=(GPL3)
+depends=(gedit libgee gnome-code-assistance)
+makedepends=(intltool gobject-introspection)
+groups=(gnome-extra)
+url="http://www.gnome.org"
+source=(http://ftp.gnome.org/pub/gnome/sources/$pkgname/${pkgver:0:4}/$pkgname-$pkgver.tar.xz)
+sha256sums=('65e04381a2efd273ff2d0861db41245eadbb83bd9c369085bb083a5fbd5d0b23')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var
+  make
+}
+
+package(){
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}

@@ -1,0 +1,66 @@
+# $Id: PKGBUILD 177779 2016-06-03 00:50:30Z kkeen $
+# Maintainer: Kyle Keen <keenerd@gmail.com>
+# Contributor: Dominik Heidler <dheidler@gmail.com>
+
+# it looks like the release model has gotten better
+# keeping it more modular for now though
+
+pkgname=bladerf
+_libver=1.7.1
+_CLIver=1.4.0
+_FPGAver=0.6.0
+_firmver=2.0.0
+pkgver=$_libver
+pkgrel=1
+pkgdesc="Driver, userspace, fpga & firmware for the bladeRF SDR."
+url="https://github.com/Nuand/bladeRF"
+arch=('i686' 'x86_64')
+license=('GPL2')
+depends=('libusb')
+makedepends=('cmake' 'help2man' 'doxygen')
+#backup=("etc/bladerf.cfg")
+
+source=(
+    "https://github.com/Nuand/bladeRF/archive/libbladeRF_v$_libver.tar.gz"
+    "http://nuand.com/fpga/v$_FPGAver/hostedx40.rbf"
+    "http://nuand.com/fpga/v$_FPGAver/hostedx115.rbf"
+    "http://www.nuand.com/fx3/bladeRF_fw_v$_firmver.img")
+
+md5sums=('81adc4c1f2a2f5c1d9e66da425ebe7d3'
+         '29a65d08e3a98f16dd26dee5bc9200a1'
+         '326dc7f8e87b6f38716470b43de8b4e2'
+         '7b7426c9eb4ccbf0c32e04fd578a75ae')
+
+# bladeRF-cli is bundled with libbladeRF
+# bladeRF-cli can use libtecla (aur)?
+
+prepare() {
+  cd "$srcdir/bladeRF-libbladeRF_v$_libver"
+  # FS#47168
+  sed -i 's|MODE.*$|TAG+="uaccess"|' host/misc/udev/88-nuand.rules.in
+}
+
+build() {
+  cd "$srcdir/bladeRF-libbladeRF_v$_libver"
+  mkdir -p build
+  cd build
+  cmake \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DINSTALL_UDEV_RULES=ON \
+    -DBUILD_DOCUMENTATION=ON \
+    -DCMAKE_INSTALL_LIBDIR:PATH=lib \
+    -Dusb_LIBRARY:FILEPATH=/usr/lib/libusb-1.0.so \
+    -DCMAKE_INSTALL_PREFIX=/usr ../
+  make
+  # ENABLE_FX3_BUILD needs cypress toolchain
+  # really really wants to put files in /usr/lib64
+}
+
+package() {
+  cd "$srcdir/bladeRF-libbladeRF_v$_libver/build"
+  make DESTDIR="${pkgdir}" install
+  cd "$srcdir"
+  install -Dm644 "bladeRF_fw_v$_firmver.img" "$pkgdir/usr/share/bladerf/firmware/bladeRF_fw_v$_firmver.img"
+  install -Dm644 hostedx40.rbf "$pkgdir/usr/share/bladerf/fpga/hostedx40.rbf"
+  install -Dm644 hostedx115.rbf "$pkgdir/usr/share/bladerf/fpga/hostedx115.rbf"
+}

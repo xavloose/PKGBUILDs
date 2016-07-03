@@ -1,0 +1,33 @@
+# $Id: PKGBUILD 181758 2016-07-01 19:18:26Z arojas $
+# Maintainer: 
+# Contributor: Pierre Schmitz <pierre@archlinux.de>
+
+pkgname=kaffeine
+pkgver=2.0.4
+pkgrel=1
+pkgdesc='KDE media player'
+license=(GPL)
+arch=(i686 x86_64)
+url="http://kaffeine.kde.org"
+depends=(kio hicolor-icon-theme libxss vlc)
+makedepends=(extra-cmake-modules kidletime kdoctools)
+source=("http://download.kde.org/stable/$pkgname/$pkgver/src/$pkgname-$pkgver.tar.xz")
+md5sums=('0188f7480734e7798a63c017e8be74ac')
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../$pkgname-$pkgver \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DBUILD_TESTING=OFF
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="$pkgdir" install
+}

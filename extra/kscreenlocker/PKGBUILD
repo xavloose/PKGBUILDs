@@ -1,0 +1,37 @@
+# $Id: PKGBUILD 269539 2016-06-14 15:01:59Z arojas $
+# Maintainer: Antonio Rojas <arojas@archlinux.org>
+
+pkgname=kscreenlocker
+pkgver=5.6.5
+pkgrel=1
+pkgdesc='Library and components for secure lock screen architecture'
+arch=(i686 x86_64)
+url='https://www.kde.org/workspaces/plasmadesktop/'
+license=(LGPL)
+groups=(plasma)
+depends=(kidletime kwayland kdeclarative)
+makedepends=(extra-cmake-modules python kdoctools kcmutils libxcursor)
+source=("http://download.kde.org/stable/plasma/$pkgver/$pkgname-$pkgver.tar.xz"{,.sig})
+sha256sums=('c6f0befcd230ec58f2994cad8c2f322f223e7422cfe33e641c664938e7960b06'
+            'SKIP')
+validpgpkeys=('13C16D03EDE728514473AA73A506E6D4DD4D5088') # Jonathan Riddell
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../$pkgname-$pkgver \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DKDE_INSTALL_LIBDIR=lib \
+    -DKDE_INSTALL_LIBEXECDIR=/usr/lib \
+    -DBUILD_TESTING=OFF
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="$pkgdir" install
+}

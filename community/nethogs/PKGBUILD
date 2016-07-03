@@ -1,0 +1,39 @@
+# $Id: PKGBUILD 181460 2016-06-28 03:28:34Z kkeen $
+# Maintainer: Kyle Keen <keenerd@gmail.com>
+# Contributor: ViNS <gladiator@fastwebnet.it>
+# Contributor: Daenyth
+pkgname=nethogs
+pkgver=0.8.2
+pkgrel=1
+pkgdesc="A net top tool which displays traffic used per process instead of per IP or interface"
+url="http://nethogs.sourceforge.net"
+license=('GPL')
+depends=('libpcap' 'ncurses' 'gcc-libs')
+arch=('i686' 'x86_64')
+#source=(http://downloads.sourceforge.net/$pkgname/$pkgname-$pkgver.tar.gz
+source=(https://github.com/raboof/nethogs/archive/v$pkgver.tar.gz)
+md5sums=('f38db5f08c2dd2b030727ba4ecf58e06')
+
+prepare() {
+  cd "$srcdir/$pkgname-$pkgver"
+
+  sed -i 's|/sbin|/bin|' src/MakeApp.mk
+  sed -i 's|/local||'  Makefile
+
+  # bug in 0.8.2?
+  # .so file is unversioned
+  sed -i 's/$(LIB[^)]*ION)/0/g' src/MakeLib.mk
+}
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+  unset CFLAGS
+  unset CXXFLAGS
+  make prefix="/usr"
+}
+
+package() {
+  cd "$srcdir/$pkgname-$pkgver"
+  make prefix="/usr" DESTDIR="$pkgdir" install
+}
+# vim:set ts=2 sw=2 et:

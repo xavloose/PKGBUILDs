@@ -1,0 +1,30 @@
+# $Id: PKGBUILD 121315 2014-10-23 17:27:17Z eric $
+# Maintainer:
+
+pkgname=perl-devel-globaldestruction
+pkgver=0.13
+pkgrel=1
+pkgdesc="Expose the flag which marks global"
+arch=('any')
+url="http://search.cpan.org/dist/Devel-GlobalDestruction"
+license=('PerlArtistic' 'GPL')
+depends=('perl' 'perl-sub-exporter' 'perl-sub-exporter-progressive')
+options=('!emptydirs')
+source=(http://search.cpan.org/CPAN/authors/id/H/HA/HAARG/Devel-GlobalDestruction-$pkgver.tar.gz)
+md5sums=('e7be00040827e204b2b6cba2f3166074')
+
+build() {
+  cd Devel-GlobalDestruction-$pkgver
+  perl Makefile.PL INSTALLDIRS=vendor
+  make
+}
+
+check() {
+ cd Devel-GlobalDestruction-$pkgver
+ make test
+}
+
+package() {
+  cd Devel-GlobalDestruction-$pkgver
+  make DESTDIR="$pkgdir" install
+}

@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 171682 2016-04-24 04:03:12Z jleclanche $
+# Maintainer: Jerome Leclanche <jerome@leclan.ch>
+# Contributor: Isaac Dupree <antispam@idupree.com>
+
+pkgname=libsass
+pkgver=3.3.6
+pkgrel=1
+pkgdesc="C implementation of Sass CSS preprocessor (library)."
+arch=("i686" "x86_64")
+url="http://libsass.org/"
+license=("MIT")
+source=("$pkgname-$pkgver.tar.gz::https://github.com/sass/$pkgname/archive/$pkgver.tar.gz")
+sha256sums=("4b004b0fcef55420dc916216b1961e0d86925e6bf4a6be37d0b6db42f7f25da5")
+
+
+build() {
+	cd "$srcdir/$pkgname-$pkgver"
+
+	autoreconf -i
+	./configure --prefix=/usr
+	make
+}
+
+package() {
+	cd "$srcdir/$pkgname-$pkgver"
+
+	make DESTDIR="$pkgdir/" install
+	install -D -m644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

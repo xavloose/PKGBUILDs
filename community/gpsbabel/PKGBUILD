@@ -1,0 +1,45 @@
+# $Id: PKGBUILD 156181 2016-01-12 18:21:16Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: dibblethewrecker dibblethewrecker.at.jiwe.dot.org
+# Contributor: William Rea <sillywilly@gmail.com>
+
+pkgname=gpsbabel
+pkgver=1.5.3
+pkgrel=1
+pkgdesc="Reads, writes, and manipulates GPS waypoints in a variety of formats"
+arch=('i686' 'x86_64')
+url="http://www.gpsbabel.org"
+license=('GPL')
+depends=('libusb-compat' 'expat' 'qt5-base')
+makedepends=('fop' 'libxml2' 'libxslt' 'gtk2' 'lcms2' 'qt5-webkit' 'java-environment' 'docbook-xsl')
+optdepends=('qt5-webkit')
+options=('docs')
+source=("http://arch.p5n.pp.ru/~sergej/dl/gpsbabel-$pkgver.tar.gz")
+md5sums=('2ff4dd37aba85e0211fd818d653f5943')
+
+build() {
+  cd $srcdir
+  ./configure --prefix=/usr --with-doc=babelweb
+  make
+  make doc
+  (cd gui && qmake-qt5 && make)
+}
+
+package() {
+  cd $srcdir
+  make DESTDIR=$pkgdir install
+
+  # GUI
+  install -Dm755 gui/objects/gpsbabelfe-bin ${pkgdir}/usr/bin/gpsbabelfe-bin
+  install -Dm644 gui/images/appicon.png $pkgdir/usr/share/pixmaps/gpsbabel.png
+  install -Dm644 gui/gpsbabel.desktop $pkgdir/usr/share/applications/gpsbabel.desktop
+
+  # Header install
+  mkdir -p $pkgdir/usr/include/gpsbabel
+  cp *.h $pkgdir/usr/include/gpsbabel
+
+  # Doc install
+  mkdir -p $pkgdir/usr/share/doc/$pkgname
+  cp -r $srcdir/babelweb/* $pkgdir/usr/share/doc/$pkgname/
+  cp README* $pkgdir/usr/share/doc/$pkgname/
+}

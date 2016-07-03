@@ -1,0 +1,37 @@
+# $Id: PKGBUILD 163274 2016-02-24 10:04:40Z lcarlier $
+# Maintainer : Laurent Carlier <lordheavym@gmail.com>
+# Contributor: Giovanni Scafora <giovanni@archlinux.org>
+# Contributor: Alessio 'mOlOk' Bolognino <themolok@gmail.com>
+
+pkgname=iasl
+pkgver=20160212
+pkgrel=1
+pkgdesc="Intel ACPI Source Language compiler"
+arch=('i686' 'x86_64')
+url="http://acpica.org"
+license=('custom')
+depends=('glibc')
+makedepends=('flex' 'bison')
+options=('!makeflags')
+#install=iasl.install
+source=(http://acpica.org/sites/acpica/files/acpica-unix-${pkgver}.tar.gz
+	LICENSE)
+md5sums=('d8d51bad4436eb266bec1dac314fb54e'
+         '8615526144f69ea4e870d9bc37df9b29')
+
+build() {
+  cd "${srcdir}/acpica-unix-${pkgver}"/generate/unix
+
+  #sed -i -e 's/_CYGWIN/_LINUX/g' -e 's/-Werror//g' Makefile.config
+
+  make clean
+  make
+}
+
+package() {
+  cd "${srcdir}/acpica-unix-${pkgver}"/generate/unix
+
+  make DESTDIR=${pkgdir} install
+
+  install -D -m644 "${srcdir}/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

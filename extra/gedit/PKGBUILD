@@ -1,0 +1,33 @@
+# $Id: PKGBUILD 267238 2016-05-08 21:22:20Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Contributor: Jan de Groot <jgc@archlinux.org>
+
+pkgname=gedit
+pkgver=3.20.2
+pkgrel=1
+pkgdesc="A text editor for GNOME"
+arch=(i686 x86_64)
+license=(GPL)
+depends=(gtksourceview3 gsettings-desktop-schemas libpeas gspell python-gobject dconf)
+makedepends=(yelp-tools intltool vala gobject-introspection)
+groups=(gnome-extra)
+options=('!emptydirs')
+url="http://www.gnome.org"
+source=(https://download.gnome.org/sources/$pkgname/${pkgver:0:4}/$pkgname-$pkgver.tar.xz)
+sha256sums=('32a1276a71a0d4a5af4e20a87bc273170ba8e075fc1ca7f51c8d3a6c150463f8')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr \
+      --sysconfdir=/etc --localstatedir=/var \
+      --libexecdir=/usr/lib --disable-updater --disable-schemas-compile \
+      --enable-python
+
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+  make
+}
+
+package(){
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}

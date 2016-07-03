@@ -1,0 +1,34 @@
+# $Id: PKGBUILD 269999 2016-06-15 19:34:12Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Contributor: Ionut Biru <ibiru@archlinux.org>
+
+pkgname=accountsservice
+pkgver=0.6.42
+pkgrel=1
+pkgdesc="D-Bus interface for user account query and manipulation"
+url="http://www.freedesktop.org/software/accountsservice/"
+arch=(i686 x86_64)
+license=(GPL3)
+depends=(glib2 polkit systemd)
+makedepends=(intltool gobject-introspection python2 gtk-doc xmlto)
+source=("$url/$pkgname-$pkgver.tar.xz")
+sha256sums=('e56494c2f18627900b57234e5628923cc16a37bf8fd16b06c46118d6ae9c007e')
+
+prepare() {
+  cd $pkgname-$pkgver
+}
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
+    --libexecdir=/usr/lib/$pkgname --disable-static --enable-gtk-doc \
+    --enable-docbook-docs
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}
+
+# vim:set ts=2 sw=2 et:

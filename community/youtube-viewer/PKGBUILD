@@ -1,0 +1,44 @@
+#$Id: PKGBUILD 181528 2016-06-28 17:27:44Z arodseth $
+# Maintainer: Alexander F Rødseth <xyproto@archlinux.org>
+# Contributor: Daniel Wallace < danielwallace at gtmanfred dot com>
+# Contributor: Trizen <echo dHJpemVueEBnbWFpbC5jb20K | base64 -d>
+
+pkgname=youtube-viewer
+epoch=1
+pkgver=3.2.2
+pkgrel=1
+pkgdesc='Command line utility for viewing YouTube videos'
+arch=('any')
+url='https://github.com/trizen/youtube-viewer'
+license=('GPL3')
+source=("https://github.com/trizen/$pkgname/archive/$pkgver.tar.gz")
+sha256sums=('f70f4a634548a295b5479ce4cf616bcc7375af6dfe31c21a7c18e0903f366632')
+depends=('perl>=5.16.0' 'perl-data-dump' 'perl-json' 'perl-lwp-protocol-https' 'perl-libwww')
+optdepends=(
+  'perl-json-xs: faster JSON to HASH conversion'
+  'perl-lwp-useragent-cached: cache support'
+  'perl-text-charwidth: to print the results in a fixed-width format (-W)'
+  'perl-term-readline-gnu: for better STDIN support'
+  'youtube-dl: for playing videos with encrypted signatures'
+  'wget: for downloading videos with wget'
+  'mplayer: for playing the videos with MPlayer'
+  'vlc: for playing the videos with VLC'
+  'mpv: for playing the videos with MPV (recommended)'
+)
+
+build() {
+  cd "$pkgname-$pkgver"
+
+  perl Makefile.PL INSTALLDIRS=vendor
+}
+
+check(){
+  make -C "$pkgname-$pkgver" test
+}
+
+package() {
+  make -C "$pkgname-$pkgver" install DESTDIR="$pkgdir"
+  rm -r "$pkgdir/usr/lib"
+}
+
+# vim:set ts=2 sw=2 et:

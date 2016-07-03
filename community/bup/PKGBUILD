@@ -1,0 +1,38 @@
+# $Id: PKGBUILD 179739 2016-06-12 20:49:23Z arojas $
+# Maintainer: Alexander F Rødseth <xyproto@archlinux.org>
+# Contributor:  Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+# Contributor: Jakob Matthes <jakob.matthes@gmail.com>
+# Contributor: Bram Schoenmakers <me@bramschoenmakers.nl>
+# Contributor: henning mueller <henning@orgizm.net>
+# Contributor: rakoo (AUR)
+# Contributor: SanskritFritz (gmail)
+
+pkgname=bup
+pkgver=0.28.1
+pkgrel=1
+pkgdesc='Efficient backup system based on the git packfile format'
+arch=('x86_64' 'i686')
+url='https://bup.github.io/'
+license=('GPL')
+depends=('python2-fuse' 'par2cmdline' 'pylibacl' 'python2-pyxattr' 'git')
+makedepends=('ruby-ronn' 'git' 'setconf' 'pandoc')
+checkdepends=('rsync' 'python2-tornado')
+optdepends=('python2-tornado: for bup web')
+source=("https://github.com/bup/bup/archive/$pkgver.tar.gz")
+md5sums=('94d47ec13c5edcad4061b8abe2e8dcdd')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure
+  make
+}
+
+check() {
+  cd $pkgname-$pkgver
+  make test -j1
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" PREFIX=/usr install
+}

@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 269820 2016-06-14 16:51:37Z arojas $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=parley
+pkgver=16.04.2
+pkgrel=1
+pkgdesc="Vocabulary Trainer"
+url="http://kde.org/applications/education/parley/"
+arch=('i686' 'x86_64')
+license=('GPL' 'LGPL' 'FDL')
+groups=('kde-applications' 'kdeedu')
+depends=('kross' 'knewstuff' 'libkeduvocdocument' 'khtml' 'qt5-multimedia' 'kcmutils')
+makedepends=('extra-cmake-modules' 'kdoctools' 'python')
+replaces=('kdeedu-parley')
+conflicts=('kdeedu-parley')
+source=("http://download.kde.org/stable/applications/${pkgver}/src/parley-${pkgver}.tar.xz")
+sha1sums=('63b42ca4f7f6f420f703905696223c514fa655dc')
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../parley-${pkgver} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DSYSCONF_INSTALL_DIR=/etc
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="${pkgdir}" install
+}

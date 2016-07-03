@@ -1,0 +1,39 @@
+# Maintainer: Levente Polyak <anthraxx[at]archlinux[dot]org>
+# Contributor: Anton Bazhenov <anton.bazhenov at gmail>
+# Contributor: HuntXu <huntxu@live.cn>
+# Contributor: Stefan Husmann <stefan-husmann@t-online.de>
+
+pkgname=pngcrush
+pkgver=1.8.1
+pkgrel=1
+pkgdesc="A tool for optimizing the compression of PNG files"
+url="http://pmt.sourceforge.net/pngcrush"
+arch=('i686' 'x86_64')
+license=('custom')
+depends=('libpng')
+source=(http://downloads.sourceforge.net/pmt/${pkgname}-${pkgver}-nolib.tar.xz{,.asc}
+        LICENSE)
+sha512sums=('7311e3a2eb1d7e058fb8df2a3bb6ba10d7b175c534dacf57a867f5884398fb13b1f8596de45e1a81eb8b0149deec4016a4ff75a43f9ab445c503bb70ed64dda1'
+            'SKIP'
+            'f18613b9da9b4f31a317411e726def5122246087ff57887fba6b46f0a7a7fae7109388ecb2ce049bbe992cc6ef0a3fbbe0f5c5bc816705efd7583836cbd4e69d')
+validpgpkeys=('8048643BA2C840F4F92A195FF54984BFA16C640F') # Glenn Randers-Pehrson (pngcrush) <glennrp@users.sourceforge.net>
+
+prepare() {
+  cd ${pkgname}-${pkgver}-nolib
+  sed -r 's| -g||g' -i Makefile
+  sed -r 's|^(CFLAGS )=|\1+=|' -i Makefile
+  sed -r 's|^(LDFLAGS )=|\1+=|' -i Makefile
+}
+
+build() {
+  cd ${pkgname}-${pkgver}-nolib
+  make
+}
+
+package() {
+  cd ${pkgname}-${pkgver}-nolib
+  make DESTDIR="${pkgdir}" install
+  install -Dm 644 "${srcdir}/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}
+
+# vim:set ts=2 sw=2 et:

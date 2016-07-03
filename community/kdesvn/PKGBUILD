@@ -1,0 +1,37 @@
+# $Id: PKGBUILD 172829 2016-04-29 19:31:43Z jlichtblau $
+# Maintainer: Jaroslav Lichtblau <svetlemodry@archlinux.org>
+
+pkgname=kdesvn
+pkgver=1.7.0
+pkgrel=3
+pkgdesc="A pure C++ SVN-client for KDE"
+arch=('i686' 'x86_64')
+url="http://projects.kde.org/kdesvn"
+license=('GPL')
+depends=('kdebase-runtime' 'subversion')
+makedepends=('automoc4' 'cmake')
+changelog=$pkgname.changelog
+source=(http://download.kde.org/stable/$pkgname/$pkgver/$pkgname-$pkgver.tar.xz)
+sha256sums=('b3a9dc01e1730c880478aecd5c8d832a4b218468f791083985d325c0ef8a6ece')
+
+build() {
+  cd "${srcdir}"/$pkgname-$pkgver
+
+  cmake . \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_FLAGS="-DQT_THREAD_SUPPORT" \
+    -DLIB_SUFFIX=
+  make
+}
+
+package() {
+  cd "${srcdir}"/$pkgname-$pkgver
+
+  make DESTDIR="${pkgdir}" install
+
+#removing conflicting files - kdesdk
+  rm -f "${pkgdir}"/usr/share/kde4/services/svn*
+#removing $srcdir reference
+  rm -rf "${pkgdir}"/usr/share/doc
+}

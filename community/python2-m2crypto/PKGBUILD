@@ -1,0 +1,34 @@
+# $Id: PKGBUILD 140196 2011-10-09 08:27:16Z angvp $
+# Maintainer: Angel Velasquez <angvp@archlinux.org> 
+# Contributor: Sergej Pupykin <sergej@aur.archlinux.org>
+# Contributor: William Rea <sillywilly@gmail.com>
+
+pkgname=python2-m2crypto
+pkgver=0.24.0
+pkgrel=1
+pkgdesc="A crypto and SSL toolkit for Python"
+arch=('i686' 'x86_64')
+url="https://pypi.python.org/pypi/M2Crypto"
+license=('BSD')
+depends=('python2' 'openssl')
+makedepends=('swig' 'python2-setuptools')
+#source=("m2crypto-${pkgver}.tar.gz::https://github.com/martinpaljak/M2Crypto/archive/v$pkgver.tar.gz"
+source=("https://pypi.python.org/packages/source/M/M2Crypto/M2Crypto-$pkgver.tar.gz"
+	"LICENSE")
+md5sums=('8e87235942c76d1ba9f999ee33764fdb'
+         'b0e1f0b7d0ce8a62c18b1287b991800e')
+
+prepare() {
+  cd "${srcdir}/M2Crypto-${pkgver}"
+}
+
+build() {
+  cd "${srcdir}/M2Crypto-${pkgver}"
+  python2 setup.py build
+}
+
+package() {
+  cd "${srcdir}/M2Crypto-${pkgver}"
+  python2 setup.py install --root="${pkgdir}/" --optimize=1
+  install -D -m644 $srcdir/LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

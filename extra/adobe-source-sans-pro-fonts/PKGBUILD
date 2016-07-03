@@ -1,0 +1,25 @@
+# $Id: PKGBUILD 257660 2016-01-08 23:17:55Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+
+pkgname=adobe-source-sans-pro-fonts
+pkgver=2.020ro+1.075it
+_relver=2.020R-ro/1.075R-it
+_tarver=${_relver//\//-}
+pkgrel=1
+pkgdesc="Sans serif font family for user interface environments"
+arch=(any)
+url="http://adobe-fonts.github.io/source-sans-pro/"
+license=(custom)
+depends=(fontconfig)
+install=fonts.install
+source=("${_tarver}.tar.gz::https://github.com/adobe-fonts/source-sans-pro/archive/${_relver}.tar.gz")
+sha256sums=('bb45283fa9979c4821c99da3b54313012821aba0246e2ec0057f2b03ca24912c')
+
+package() {
+  cd source-sans-pro-$_tarver
+  install -d "$pkgdir/usr/share/fonts/adobe-source-sans-pro"
+  install -t "$pkgdir/usr/share/fonts/adobe-source-sans-pro" -m644 OTF/*.otf
+  install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+# vim:set ts=2 sw=2 et:

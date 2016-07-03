@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 168515 2016-03-26 21:47:55Z eworm $
+# Maintainer: Christian Hesse <mail@eworm.de>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+# Contributor: Pierre Schmitz <pierre@archlinux.de>
+# Contributor: Sergej Pupykin <pupykin.s+arch@gmail.com>
+
+pkgname=libiodbc
+pkgver=3.52.10
+pkgrel=1
+pkgdesc='Independent Open DataBase Connectivity for Linux'
+arch=('i686' 'x86_64')
+url='http://www.iodbc.org/dataspace/iodbc/wiki/iODBC/'
+license=('LGPL')
+makedepends=('chrpath')
+source=("http://downloads.sourceforge.net/iodbc/${pkgname}-${pkgver}.tar.gz")
+sha256sums=('1568b42b4e97f36110af661d39bfea7d94ac4ff020014574b16a7199f068e11f')
+
+build() {
+	cd ${pkgname}-${pkgver}
+
+	./configure --prefix=/usr \
+		--disable-static \
+		--includedir=/usr/include/libiodbc \
+		--disable-gui \
+		--disable-libodbc
+	make
+}
+
+package() {
+	cd ${pkgname}-${pkgver}
+
+	make DESTDIR=${pkgdir} install
+
+	chrpath -d ${pkgdir}/usr/bin/iodbctest{,w}
+	rm -rf ${pkgdir}/usr/share/libiodbc/
+}

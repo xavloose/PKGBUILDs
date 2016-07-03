@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 267272 2016-05-09 19:56:53Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Contributor: Jan de Groot <jgc@archlinux.org>
+
+pkgname=iagno
+pkgver=3.20.2
+pkgrel=1
+pkgdesc="Dominate the board in a classic version of Reversi"
+url="https://wiki.gnome.org/Apps/Iagno"
+arch=(i686 x86_64)
+license=(GPL)
+depends=(gtk3 libcanberra librsvg)
+makedepends=(intltool itstool gobject-introspection)
+options=(!emptydirs)
+groups=(gnome-extra)
+source=(https://download.gnome.org/sources/$pkgname/${pkgver:0:4}/$pkgname-$pkgver.tar.xz)
+sha256sums=('73f0f201ebf12b88e05cdefbaa72ccd5309bb592a9690d076285dbb800e965d2')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
+      --disable-schemas-compile
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}

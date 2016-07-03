@@ -1,0 +1,34 @@
+# $Id: PKGBUILD 269725 2016-06-14 16:22:56Z arojas $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=libkmahjongg
+pkgver=16.04.2
+pkgrel=1
+pkgdesc="Common code, backgrounds and tile sets for games using Mahjongg tiles"
+url="https://www.kde.org/applications/games/"
+arch=('i686' 'x86_64')
+license=('GPL' 'LGPL' 'FDL')
+depends=('kconfigwidgets' 'kcompletion' 'qt5-svg')
+makedepends=('extra-cmake-modules' 'python')
+source=("http://download.kde.org/stable/applications/${pkgver}/src/${pkgname}-${pkgver}.tar.xz")
+sha1sums=('eee3f1b893197a88d7723315c601366b1205a1de')
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../${pkgname}-${pkgver} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DBUILD_TESTING=OFF \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=lib
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="${pkgdir}" install
+}

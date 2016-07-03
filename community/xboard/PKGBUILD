@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 180316 2016-06-16 10:40:52Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: Jason Chu <jason@archlinux.org>
+# Contributor: Tom Newsom <Jeepster@gmx.co.uk>
+
+pkgname=xboard
+pkgver=4.9.0
+pkgrel=1
+pkgdesc="Graphical user interfaces for chess"
+arch=('i686' 'x86_64')
+url="http://www.gnu.org/software/xboard/"
+license=('GPL3')
+depends=('texinfo' 'xdg-utils' 'gtk2' 'cairo' 'librsvg')
+optdepends=('gnuchess: chess engine'
+	    'perl')
+source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz")
+md5sums=('fe9e1651bed8295c6e94a2ea354b151a')
+
+build() {
+  cd "${pkgname}-${pkgver}"
+  sed -i 's/fairymax/gnuchess/g' {xaw,gtk}/xboard.h xboard.conf
+  ./configure \
+    --prefix=/usr \
+    --mandir=/usr/share/man \
+    --sysconfdir=/etc \
+    --with-gtk \
+    --enable-zippy
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -Dm755 ${srcdir}/${pkgname}-${pkgver}/cmail \
+    ${pkgdir}/usr/bin/cmail
+}

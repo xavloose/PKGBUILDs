@@ -1,0 +1,35 @@
+# $Id: PKGBUILD 163300 2016-02-24 12:26:14Z guillaume $
+# Maintainer: Guillaume ALAUX <guillaume@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+# Contributor: Leif Warner <abimelech@gmail.com>
+
+pkgname=sbt
+epoch=1
+pkgver=0.13.11
+pkgrel=1
+pkgdesc="A minimally intrusive build tool for Scala projects"
+arch=('any')
+url='http://www.scala-sbt.org/'
+license=('BSD')
+depends=('java-runtime-headless' 'sh')
+IFS='.' read -a _pkgver <<< "${pkgver}"
+source=(https://dl.bintray.com/${pkgname}/native-packages/${pkgname}/${pkgver}/${pkgname}-${pkgver}.tgz
+        https://raw.githubusercontent.com/${pkgname}/${pkgname}/${_pkgver[0]}.${_pkgver[1]}/LICENSE)
+sha256sums=('a36a6fbf6dd70afd93fb8db16c40e8ac00798fdddfa0b4c678786dc15617afa6'
+            '70b7b72694a56a3e922deaf5482273e7c33bab2c00c0c67fc0ccc5d33927ffed')
+
+package() {
+  install -d "${pkgdir}"/usr/share
+  cp -r "${srcdir}/${pkgname}" "${pkgdir}"/usr/share
+  rm "${pkgdir}/usr/share/${pkgname}/bin/sbt.bat"
+  rm "${pkgdir}/usr/share/${pkgname}/conf/sbtconfig.txt"
+  find "${pkgdir}/usr/share/${pkgname}" -type f ! -name sbt -exec chmod -x {} \;
+
+  install -d "${pkgdir}"/usr/bin
+  ln -s "/usr/share/${pkgname}/bin/sbt" "${pkgdir}"/usr/bin/sbt
+
+  install -d "${pkgdir}/etc/${pkgname}"
+  ln -s "/usr/share/${pkgname}/conf/sbtopts" "${pkgdir}/etc/${pkgname}/sbtopts"
+
+  install -D -m644 "${srcdir}"/LICENSE "${pkgdir}"/usr/share/licenses/${pkgname}/LICENSE
+}

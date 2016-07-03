@@ -1,0 +1,49 @@
+# $Id: PKGBUILD 118184 2014-09-02 11:14:17Z fyan $
+# Maintainer: Jaroslav Lichtblau <svetlemodry@archlinux.org>
+# Contributor: Felix Yan <felixonmars@archlinux>
+
+pkgbase=python-gammu
+pkgname=('python-gammu' 'python2-gammu')
+pkgver=2.6
+pkgrel=1
+pkgdesc="Python bindings for Gammu library"
+arch=('i686' 'x86_64')
+url="http://wammu.eu/python-gammu/"
+license=('GPL')
+makedepends=('python-setuptools' 'python2-setuptools' 'gammu')
+source=(http://dl.cihar.com/python-gammu/python-gammu-$pkgver.tar.bz2)
+sha256sums=('d5839c77a9738faef5f416f07daccb10bcb805337f75d94dda55f7d11e8060b1')
+
+prepare() {
+  cp -a python-gammu-$pkgver{,-py2}
+}
+
+build() {
+  cd "${srcdir}"/python-gammu-$pkgver
+  python setup.py build
+
+  cd "${srcdir}"/python-gammu-$pkgver-py2
+  python2 setup.py build
+}
+
+check() {
+  cd "${srcdir}"/python-gammu-$pkgver
+  python setup.py test || warning "Tests failed"
+
+  cd "${srcdir}"/python-gammu-$pkgver-py2
+  python2 setup.py test || warning "Tests failed"
+}
+
+package_python-gammu() {
+  depends=('python' 'gammu')
+
+  cd python-gammu-$pkgver
+  python setup.py install --root="${pkgdir}" --optimize=1
+}
+
+package_python2-gammu() {
+  depends=('python2' 'gammu')
+
+  cd python-gammu-$pkgver-py2
+  python2 setup.py install --root="${pkgdir}" --optimize=1
+}

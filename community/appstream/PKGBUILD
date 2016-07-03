@@ -1,0 +1,57 @@
+# $Id: PKGBUILD 177650 2016-06-01 19:01:59Z arojas $
+# Maintainer: Antonio Rojas <arojas@archlinux.org>
+# Contributor: Jameson Pugh <imntreal@gmail.com>
+# Contributor: Tim Jester-Pfadt <t.jp<at>gmx.de>
+
+pkgbase=appstream
+pkgname=(appstream appstream-qt)
+pkgver=0.9.6
+pkgrel=2
+pkgdesc="Provides a standard for creating app stores across distributions"
+arch=(i686 x86_64)
+url="http://distributions.freedesktop.org/wiki/AppStream"
+license=(GPL)
+depends=(xapian-core polkit libyaml libxml2 protobuf)
+makedepends=(cmake xmlto intltool gobject-introspection python2 docbook-xsl qt5-base)
+source=("http://www.freedesktop.org/software/appstream/releases/AppStream-$pkgver.tar.xz" update-appstream-index.hook
+        appstream-provides-tag.patch::"https://github.com/ximion/appstream/commit/94da019e.patch")
+sha256sums=('1d1c778b5a0b4c65bdfdcaacf19765f691551118326678c109401dba52c7350f'
+            '4f65f9f7facc3e37074dc6532390b075377116d939ce3173654349c39d755e76'
+            '173a2f697af83c43a31acd965da11b7561e7f127bb2d996b2ecb88cd9110f937')
+
+prepare() {
+  mkdir -p build
+
+# Properly write provides tag https://github.com/ximion/appstream/issues/44
+  cd AppStream-$pkgver
+  patch -p1 -i ../appstream-provides-tag.patch
+}
+
+build() {
+  cd build
+
+  cmake ../AppStream-$pkgver \
+	-DQT=ON \
+	-DCMAKE_INSTALL_LIBDIR=lib \
+	-DCMAKE_BUILD_TYPE=Release
+  make
+}
+
+package_appstream() {
+  cd build
+
+  make DESTDIR="$pkgdir" install
+  
+# provided by -qt subpackage
+  rm -r "$pkgdir"/usr/{include/AppstreamQt,lib/cmake,lib/libAppstreamQt.*}
+
+  install -Dm644 "$srcdir"/update-appstream-index.hook "$pkgdir"/usr/share/libalpm/hooks/update-appstream-index.hook
+}
+
+package_appstream-qt() {
+  pkgdesc='Qt5 interface for AppStream'
+  depends=(appstream qt5-base)
+
+  cd build/qt
+  make DESTDIR="$pkgdir" install
+}

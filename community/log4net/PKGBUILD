@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 153243 2015-12-14 13:04:04Z bgyorgy $
+# Maintainer: Balló György <ballogyor+arch at gmail dot com>
+# Contributor: Frane Bandov <frane@offbyte.com>
+# Contributor: Thijs Vermeir <thijsvermeir@gmail.com>
+
+pkgname=log4net
+pkgver=1.2.15
+pkgrel=1
+pkgdesc="A tool to help the programmer output log statements to a variety of output targets"
+arch=('any')
+url="http://logging.apache.org/log4net/"
+license=('Apache')
+depends=('mono')
+source=(http://www.apache.org/dist/logging/$pkgname/source/$pkgname-$pkgver-src.zip
+        $pkgname.pc)
+md5sums=('f87a8553222a70a58cf51d9f8d6c5947'
+         'a292da72afbd6bd705e02f4ddb564fd7')
+
+prepare() {
+  cd "$srcdir/$pkgname-$pkgver"
+  sed -i "s/@VERSION@/$pkgver/" "$srcdir/$pkgname.pc"
+}
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+  mkdir bin
+  dmcs -t:library -out:bin/$pkgname.dll -keyfile:$pkgname.snk -d:NET_2_0 \
+       -r:System,System.Data,System.Xml,System.Web,System.Net,System.Configuration \
+       $(find src -name "*.cs")
+}
+
+package() {
+  cd "$srcdir/$pkgname-$pkgver"
+  gacutil -i bin/$pkgname.dll -package $pkgname-$pkgver -root "$pkgdir/usr/lib/"
+  install -Dm644 "$srcdir/$pkgname.pc" "$pkgdir/usr/lib/pkgconfig/$pkgname.pc"
+}

@@ -1,0 +1,27 @@
+# $Id: PKGBUILD 181024 2016-06-24 16:21:26Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: nut543 <kfs1@online.no>
+
+pkgname='freedroidrpg'
+pkgver=0.16.1
+pkgrel=1
+arch=('i686' 'x86_64')
+depends=('sdl_mixer' 'sdl_image' 'sdl_gfx' 'libogg' 'libvorbis' 'libgl' 'glu')
+makedepends=('mesa' 'python2')
+optdepends=('python2' 'espeak')
+pkgdesc="a mature science fiction role playing game set in the future"
+url="http://freedroid.sourceforge.net"
+license=("GPL")
+source=(ftp://ftp.osuosl.org/pub/freedroid/freedroidRPG-${pkgver%.*}/freedroidRPG-$pkgver.tar.gz)
+md5sums=('ba19730c0139df810602ea9252d47120')
+
+build() {
+  cd $srcdir/$pkgname-$pkgver
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd $srcdir/$pkgname-$pkgver
+  make DESTDIR=$pkgdir/ install
+}

@@ -1,0 +1,43 @@
+#$Id: PKGBUILD 164602 2016-03-04 04:40:29Z fyan $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Daniel Wallace <danielwallace at gtmanfred dot com>
+# Contributor: kfgz <kfgz at interia pl>
+# Contributor: Ionut Biru <ibiru at archlinux dot org>
+
+_pkgbasename=nspr
+pkgname=lib32-${_pkgbasename}
+pkgver=4.12
+pkgrel=1
+pkgdesc="Netscape Portable Runtime (32-bit)"
+arch=('x86_64')
+url="http://www.mozilla.org/projects/nspr/"
+#download_url=ftp://ftp.mozilla.org/pub/mozilla.org/nspr/releases/
+license=('MPL' 'GPL')
+depends=('lib32-glibc' ${_pkgbasename})
+makedepends=('zip' 'gcc-multilib')
+options=(!emptydirs)
+source=(https://ftp.mozilla.org/pub/mozilla.org/nspr/releases/v${pkgver}/src/${_pkgbasename}-${pkgver}.tar.gz)
+md5sums=('0de760c1e00a92e180e611cf06ce9589')
+
+build() {
+  cd "${srcdir}"/${_pkgbasename}-${pkgver}
+
+  ./nspr/configure \
+      --prefix=/usr \
+      --libdir=/usr/lib32 \
+      --includedir=/usr/include/nspr \
+      --enable-optimize \
+      --disable-debug
+  make
+}
+
+package() {
+  cd "${srcdir}"/${_pkgbasename}-${pkgver}
+
+  make DESTDIR="${pkgdir}" install
+  chmod 644 "$pkgdir"/usr/lib32/*.a
+  ln -s nspr.pc "$pkgdir/usr/lib32/pkgconfig/mozilla-nspr.pc"
+  rm -r "$pkgdir"/usr/bin/{compile-et.pl,prerr.properties} \
+        "$pkgdir/usr/include/nspr/md"
+  rm -rf "${pkgdir}"/usr/{bin,share,include}
+}

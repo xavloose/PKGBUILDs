@@ -1,0 +1,64 @@
+# $Id: PKGBUILD 266133 2016-04-24 16:58:46Z guillaume $
+# Maintainer: Andreas Radke <andyrtr@archlinux.org>
+# Maintainer: Guillaume ALAUX <guillaume@archlinux.org>
+# Contributor: Jan de Groot <jgc@archlinux.org>
+
+pkgbase=rhino
+pkgname=('java-rhino' 'rhino' 'rhino-javadoc')
+pkgver=1.7.7.1
+_pkgver=${pkgver//\./_}
+pkgrel=1
+arch=('any')
+url="http://www.mozilla.org/rhino/"
+license=('MPL')
+makedepends=('apache-ant')
+source=(https://github.com/mozilla/${pkgbase}/releases/download/Rhino${_pkgver}_RELEASE/${pkgbase}-${pkgver}.zip
+        https://github.com/mozilla/${pkgbase}/archive/Rhino${_pkgver}_RELEASE.tar.gz
+        rhino
+        rhino-debugger
+        rhino-debugger.1
+        rhino-idswitch
+        rhino-jsc
+        rhino-jsc.1)
+
+sha256sums=('f753d82002927208139f374e47febb35d7832a10890f57bb1a3c28cad0de6e84'
+            'fb44d67e3c83cbf7615afa55d5153d10a3ac73ad75ee68e818d548839368b73b'
+            '44271f9467a37941cda3eba88ecf8b32e96a96b1f4109a5cdf420a969f8da7f5'
+            'da467c7752433a44740241a645ba0e0c648ffef98e83e3e895c6ae35efbde396'
+            'afad5dd37f0157138077f5e070b0434491f5e0389bb6bccc5a9cfde275e5c4d8'
+            '4f50016b43a220faab78da6ceaef5984cf3c156976ccd4ce98786da17107fafc'
+            '0d7815302b2ee12d8fd7d17020c3357bddae5f45915ad83a00d66b1d616ee439'
+            '15bb5da739c5d27634aae479ff5c94f685967de0d59cf7dc53b595d94a0b6860')
+
+package_java-rhino() {
+  pkgdesc="Open-source implementation of JavaScript written entirely in Java - JAR"
+  depends=('java-runtime-headless')
+
+  install -Dm644 \
+    ${pkgbase}${pkgver}/lib/${pkgbase}-${pkgver}.jar \
+    ${pkgdir}/usr/share/java/js-${pkgver}.jar
+  ln -s js-${pkgver}.jar ${pkgdir}/usr/share/java/js.jar
+}
+
+package_rhino() {
+  pkgdesc="Open-source implementation of JavaScript written entirely in Java"
+  depends=('java-rhino' 'java-jline')
+
+  install -dm755 ${pkgdir}/usr/bin
+  install -m755 \
+    rhino rhino-debugger rhino-jsc rhino-idswitch \
+    ${pkgdir}/usr/bin/
+  install -dm755 ${pkgdir}/usr/share/man/man1
+  install -m755 \
+    ${pkgbase}-Rhino${_pkgver}_RELEASE/man/rhino.1 \
+    rhino-debugger.1 \
+    rhino-jsc.1 \
+    ${pkgdir}/usr/share/man/man1/
+}
+
+package_rhino-javadoc() {
+  pkgdesc="Open-source implementation of JavaScript written entirely in Java - Javadoc"
+
+  install -m755 -d ${pkgdir}/usr/share/${pkgbase}
+  cp -r ${pkgbase}${pkgver}/docs ${pkgdir}/usr/share/${pkgbase}
+}

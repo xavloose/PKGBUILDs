@@ -1,0 +1,41 @@
+# $Id: PKGBUILD 237960 2015-04-23 14:45:53Z giovanni $
+# Maintainer: Giovanni Scafora <giovanni@archlinux.org>
+# Contributor: dorphell <dorphell@archlinux.org>
+
+pkgname=tcpdump
+pkgver=4.7.4
+pkgrel=1
+pkgdesc="A tool for network monitoring and data acquisition"
+arch=('i686' 'x86_64')
+url="http://www.tcpdump.org"
+license=('BSD')
+depends=('libpcap' 'openssl')
+source=("http://www.tcpdump.org/release/${pkgname}-${pkgver}.tar.gz"
+        'tcpdump_duplicate_executable.patch')
+md5sums=('58af728de36f499341918fc4b8e827c3'
+         '01379e4a12a208ce951c6c2abe80300f')
+
+prepare() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  # do not install tcpdump-4.1.1 executable (FS#23346)
+  patch -Np1 -i "${srcdir}/tcpdump_duplicate_executable.patch"
+}
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  ./configure --prefix=/usr \
+              --sbindir=/usr/bin \
+              --enable-ipv6
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  make DESTDIR="${pkgdir}" install
+
+  #install the license
+  install -D -m644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

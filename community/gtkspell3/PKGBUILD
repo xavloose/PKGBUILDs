@@ -1,0 +1,31 @@
+# $Id: PKGBUILD 169739 2016-04-08 13:38:53Z bgyorgy $
+# Maintainer: Balló György <ballogyor+arch at gmail dot com>
+# Contributor: Roman Kyrylych <roman@archlinux.org>
+# Contributor: Ben <ben@benmazer.net>
+
+pkgname=gtkspell3
+pkgver=3.0.8
+pkgrel=1
+url="http://gtkspell.sourceforge.net/"
+pkgdesc="Provides word-processor-style highlighting and replacement of misspelled words in a GtkTextView widget"
+arch=('i686' 'x86_64')
+license=('GPL')
+depends=('gtk3' 'enchant')
+makedepends=('intltool' 'gobject-introspection' 'vala' 'python2')
+source=(http://gtkspell.sourceforge.net/download/$pkgname-$pkgver.tar.gz)
+sha256sums=('011a0ce3f7c2f4b3a5b8f54c55927cdd73e1abf591a284a6d66cfb4cfe2d3fff')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr --disable-static
+
+  #https://bugzilla.gnome.org/show_bug.cgi?id=656231
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}

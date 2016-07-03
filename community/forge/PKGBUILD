@@ -1,0 +1,38 @@
+# Maintainer: Sven-Hendrik Haase <sh@lutzhaase.com>
+pkgname=forge
+pkgdesc="High Performance Visualizations"
+url='https://github.com/arrayfire/forge'
+pkgver=3.2.2
+arch=('i686' 'x86_64')
+pkgrel=1
+license=('BSD')
+makedepends=('cmake' 'doxygen' 'graphviz' 'git')
+depends=('glew' 'glfw' 'freetype2' 'fontconfig' 'glm')
+source=(https://github.com/arrayfire/forge/archive/af${pkgver}.tar.gz)
+md5sums=('cfc4c8b33705527d7dd92c147b6b839d')
+
+build() {
+  cd "${srcdir}/forge-af${pkgver}/"
+
+  rm -rf build
+  mkdir build && cd build
+
+  cmake .. \
+      -DCMAKE_INSTALL_PREFIX=/usr \
+      -DUSE_SYSTEM_GLM=ON \
+      -DUSE_SYSTEM_FREETYPE=ON \
+      -DBUILD_EXAMPLES=ON \
+      -DBUILD_DOCUMENTATION=ON
+
+  make VERBOSE=1
+}
+
+package() {
+  cd "${srcdir}/forge-af${pkgver}/"
+
+  install -Dm644 LICENSE ${pkgdir}/usr/share/licenses/${pkgname}/LICENSE
+
+  cd build
+
+  make DESTDIR="${pkgdir}/" install
+}

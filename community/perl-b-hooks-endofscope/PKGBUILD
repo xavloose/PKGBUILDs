@@ -1,0 +1,41 @@
+# $Id: PKGBUILD 178011 2016-06-06 13:15:53Z spupykin $
+# Maintainer: Sergej Pupykin <arch+pub@sergej.pp.ru>
+# Maintainer: Maxwell Pray a.k.a. Synthead <synthead@gmail.com>
+# Contributor: aurperl@juster.us
+
+pkgname="perl-b-hooks-endofscope"
+_cpanname="B-Hooks-EndOfScope"
+pkgver=0.15
+pkgrel=2
+pkgdesc="Execute code after a scope finished compilation"
+arch=("any")
+license=("PerlArtistic" "GPL")
+options=("!emptydirs")
+depends=("perl-module-implementation"
+	 "perl-module-runtime"
+	 "perl-sub-exporter"
+	 "perl-sub-exporter-progressive"
+	 "perl-try-tiny"
+	 "perl-variable-magic>=0.34"
+	 "perl>=5.5.0")
+url="http://search.cpan.org/~bobtfish/B-Hooks-EndOfScope-$pkgver/"
+source=("http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/B-Hooks-EndOfScope-$pkgver.tar.gz")
+md5sums=('61dd64e3a05ffb06fee9bee3211d16b8')
+
+build() {
+	cd $srcdir/B-Hooks-EndOfScope-$pkgver
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+	make
+}
+
+check() {
+	cd $srcdir/B-Hooks-EndOfScope-$pkgver
+	make test
+}
+
+package() {
+	cd $srcdir/B-Hooks-EndOfScope-$pkgver
+	make install DESTDIR=$pkgdir
+	# Remove "perllocal.pod" and ".packlist".
+	find "$pkgdir" -name .packlist -o -name perllocal.pod -delete
+}

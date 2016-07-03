@@ -1,0 +1,28 @@
+# $Id: PKGBUILD 155414 2016-01-04 14:21:34Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: Baptiste Grenier <baptiste@bapt.name>
+
+pkgname=rubber
+pkgver=1.4
+pkgrel=1
+pkgdesc="A wrapper for LaTeX and friends"
+arch=('any')
+url="https://launchpad.net/rubber/"
+license=('GPL')
+depends=('python2')
+makedepends=('texinfo' 'texlive-plainextra')
+source=("http://launchpad.net/rubber/trunk/$pkgver/+download/rubber-$pkgver.tar.gz")
+md5sums=('ac3e379d7f5f046a9d0cb0b9b232ebff')
+
+build() {
+  cd "${srcdir}/rubber-$pkgver"
+  python2 setup.py build
+}
+
+package() {
+  cd "${srcdir}/rubber-$pkgver"
+  python2 setup.py install --root=$pkgdir --mandir=/usr/share/man --infodir=/usr/share/info
+
+  mkdir -p $pkgdir/usr/share/bash-completion/completions/
+  echo "complete -f -X '!*.tex' rubber" >$pkgdir/usr/share/bash-completion/completions/rubber
+}

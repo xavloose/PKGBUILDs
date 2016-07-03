@@ -1,0 +1,174 @@
+# $Id: PKGBUILD 269936 2016-06-14 17:24:47Z arojas $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+# Contributor: Pierre Schmitz <pierre@archlinux.de>
+
+pkgbase=kde-l10n
+pkgver=16.04.2
+pkgrel=1
+arch=('any')
+url='http://www.kde.org/'
+license=('GPL')
+makedepends=('extra-cmake-modules' 'kdoctools' 'kdelibs' 'automoc4' 'kconfig' 'ki18n' 'qt5-tools' 'python')
+options=('docs')
+
+_languages=(
+  'ar     "Arabic"'
+  'ast    "Asturian"'
+  'bg     "Bulgarian"'
+  'bs     "Bosnian"'
+  'ca     "Catalan"'
+  'ca@valencia     "Catalan (Valencian)"'
+  'cs     "Czech"'
+  'da     "Danish"'
+  'de     "German"'
+  'el     "Greek"'
+  'en_GB  "British English"'
+  'eo     "Esperanto"'
+  'es     "Spanish"'
+  'et     "Estonian"'
+  'eu     "Basque"'
+  'fa     "Farsi"'
+  'fi     "Finnish"'
+  'fr     "French"'
+  'ga     "Irish"'
+  'gl     "Galician"'
+  'he     "Hebrew"'
+  'hi     "Hindi"'
+  'hr     "Croatian"'
+  'hu     "Hungarian"'
+  'ia     "Interlingua"'
+  'id     "Indonesian"'
+  'is     "Icelandic"'
+  'it     "Italian"'
+  'ja     "Japanese"'
+  'kk     "Kazakh"'
+  'km     "Khmer"'
+  'ko     "Korean"'
+  'lt     "Lithuanian"'
+  'lv     "Latvian"'
+  'mr     "Marathi"'
+  'nb     "Norwegian Bokmal"'
+  'nds    "Low Saxon"'
+  'nl     "Dutch"'
+  'nn     "Norwegian Nynorsk"'
+  'pa     "Panjabi/Punjabi"'
+  'pl     "Polish"'
+  'pt     "Portuguese"'
+  'pt_BR  "Brazilian Portuguese"'
+  'ro     "Romanian"'
+  'ru     "Russian"'
+  'sk     "Slovak"'
+  'sl     "Slovenian"'
+  'sr     "Serbian"'
+  'sv     "Swedish"'
+  'tr     "Turkish"'
+  'ug     "Uyghur"'
+  'uk     "Ukrainian"'
+  'wa     "Walloon"'
+  'zh_CN  "Chinese Simplified"'
+  'zh_TW  "Chinese Traditional"'
+)
+
+pkgname=()
+source=()
+
+for _lang in "${_languages[@]}"; do
+  _locale=${_lang%% *}
+  _pkgname=kde-l10n-${_locale,,}
+  
+  pkgname+=($_pkgname)
+  source+=("http://download.kde.org/stable/applications/$pkgver/src/$pkgbase/$pkgbase-$_locale-$pkgver.tar.xz")
+  eval "package_$_pkgname() {
+    _package $_lang
+  }"
+done
+
+md5sums=('a2112df42202afb8bb9970b656aa2dd6'
+         'fd9c849d9e1f45afa9b807d96f27848f'
+         '5e9dba572a12d38534fcf43ef1465c07'
+         '436b19f161758f61e2c665394ced07ff'
+         '3dcb189042b8565bb92346bd6fd148e5'
+         '0d95fe49bcb9e4a5452dfd9a566a216b'
+         '4c09d8e7017af0bb63ebb2af5fd6d75a'
+         'bc082d05084352336b196712500bdf3e'
+         '7fee8c8a9ab26ec2d9d1d6c4e172a2d3'
+         '83d9a0790c6a9d5bf5c60924eab16791'
+         '2ebd00978e19c874a7bd9fd1ed3ae237'
+         '4a0b2a53addbe3124d92a0d4b8752d04'
+         '5687aae3dc8e5d44df087b6bd42226c9'
+         '55d40486cf603d41f7714e24bf3c12b5'
+         '281d4ff779ea84c92ebdbb5970449ea6'
+         '61ddb5c3414c14903517dc34cfa6d374'
+         '15a7e9e60e5e1e38852b98d86e51edfe'
+         'cfbd33b4004b69b5dbd5f1ea6531cc14'
+         'cdb630fb1b491d219741a8bd68bf5868'
+         '69a3a677becbee789817c143359fae23'
+         'c61e2bff6bcf7adf6e46d60279296dcf'
+         '0ff2c71a35b7edff6b32f9d2064540a5'
+         'c113742e8b9035174109c0aa32103b0e'
+         '1f6d9380b0ec426f7df99150560e8c39'
+         '8d4b8c5a4416ab018316508e23ad1734'
+         'b21f5d76553f55bca5ed35375eae0318'
+         '457b3d9b40c10a32757759330a116cd4'
+         'bf3d6b4e750dbd080aeffad6c5d395cf'
+         'e77299e4c5b8a1d5b80b8d75802898f0'
+         'f0160a339f04aa4b6644d2d270bb40e8'
+         'feac8b54d8105fd07872ef6466fbf6b9'
+         'a1d505ef5049d2b6727abe2b962f6540'
+         '375b24d8f92bc52c1cb5d11b783b20d2'
+         '21e622b394c4168a2f08382d6825235b'
+         '91a832c770f049804997b6c59eeb5d2a'
+         '19fefede8ce79df9fd564b2523e53948'
+         'e3aad0ae19850ca17f57f393fe6b27ed'
+         'e87a31808286d311e2f3f054a09824e9'
+         'b05e65f46071d7f21888506cc35edcb6'
+         'cbd7d3c526d35cbca5ec7c026ea62ca3'
+         '803112650e2c8d20aef7decf6a952744'
+         '016f1cd33c32050fb3b042aa8ab2b0c5'
+         '82ab563c12424387151601300b8f0ea9'
+         'b2958251db8305ad413fec4aa8238362'
+         'fe9dbff0347c24e9dbbcc9d30f8dfb00'
+         '0cca8c5832ffc859aa3a45c5fea25916'
+         '4865320880357cb763a5ca90bc8f3c86'
+         '4cc5c836262ef7811fff9dde25324a6b'
+         '194a5e3287fc5335de67b8695487fe32'
+         '199c808661943f66d2fe08f550b0ff6f'
+         '893151364a31a244fe952703dc083da3'
+         '5338a2da28a6139f93cacc4eed63e4e0'
+         '183f04077356c16c3fef418b2474bbb9'
+         'a562d02a875362633e78e10e99b29ed0'
+         '86d7fb4c81a069f0060a1e89cab7c8ea')
+
+prepare() {
+  for _lang in "${_languages[@]}"; do
+    _locale=${_lang%% *}
+
+# Remove kde-runtime and kde-workspace docs, conflicts with plasma-desktop
+  sed -e '/kde-runtime/d' -e '/kde-workspace/d' -e '/kdeplasma-addons/d' \
+   -i $pkgbase-$_locale-$pkgver/4/$_locale/docs/CMakeLists.txt || true
+# kde-l10n-sr needs special casing
+  sed -e '/kde-runtime/d' -e '/kde-workspace/d' -e '/kdeplasma-addons/d' \
+   -i $pkgbase-$_locale-$pkgver/4/$_locale/*/docs/CMakeLists.txt || true
+  done
+}
+
+build() {
+  for _lang in "${_languages[@]}"; do
+    _locale=${_lang%% *}
+    
+    mkdir -p build/$_locale
+    cd build/$_locale
+    cmake $srcdir/$pkgbase-$_locale-$pkgver \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX=/usr
+    make
+    cd ../..
+  done
+}
+
+_package() {
+  pkgdesc="$2 localization for KDE Applications"
+  cd build/$1
+  make DESTDIR="$pkgdir" install
+}

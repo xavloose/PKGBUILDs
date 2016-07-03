@@ -1,0 +1,61 @@
+# $Id: PKGBUILD 147089 2015-11-18 17:17:51Z tredaelli $
+# Maintainer: Timothy Redaelli <timothy.redaelli@gmail.com>
+# Contributor: Frank Ickstadt (frank dot ickstadt at gmail dot com)
+
+pkgname=argyllcms
+_pkgname=Argyll
+pkgver=1.8.3
+_pkgver="V${pkgver}"
+pkgrel=1
+pkgdesc="An ICC compatible color management system with support for different colorimeter hardware"
+arch=(i686 x86_64)
+depends=('libtiff' 'libxss' 'libxinerama' 'libxxf86vm' 'libxrandr' 'openssl')
+makedepends=('ftjam' 'zip' 'unzip')
+# You need to fake an UserAgent or it doesn't download
+DLAGENTS=('http::/usr/bin/curl -fLC - --retry 3 --retry-delay 3 -A "Mozilla/4.0" -o %o %u')
+source=(http://www.argyllcms.com/${_pkgname}_${_pkgver}_src.zip
+        argyllcms-1.8.0-gcc5.patch)
+url="http://www.argyllcms.com/"
+license=("GPL" "AGPL")
+install=${pkgname}.install
+sha256sums=('60494176785f6c2e4e4daefb9452d83859880449040b2a843ed81de3bd0c558e'
+            'de9b8a90e249070d457291c29ae3c732f89c51bc6f6296cb6aa7e800ba31a0e5')
+
+prepare() {
+  cd ${_pkgname}_${_pkgver}
+  sed -i 's:^TEST=="/lib/udev/usb-db", IMPORT{program}="usb-db %p":IMPORT{builtin}="hwdb --subsystem=usb":' usb/55-Argyll.rules
+  patch -Np1 -i "$srcdir"/argyllcms-1.8.0-gcc5.patch
+
+  sed -i 's/-j${NUMBER_OF_PROCESSORS:-2}/$MAKEFLAGS/' makeall.sh
+
+  # From Gentoo argyllcms ebuild
+  echo "LINKFLAGS += ${LDFLAGS} ;" >> Jamtop
+  echo "STDLIBS += -ldl -lrt -lX11 -lXext -lXxf86vm -lXinerama -lXrandr -lXau -lXdmcp -lXss -ltiff -ljpeg ;" >> Jamtop
+}
+
+build() {
+  cd ${_pkgname}_${_pkgver}
+
+  CCOPTFLAG="$CFLAGS" ./makeall.sh
+  ./makeinstall.sh
+  ./makepackagebin.sh
+  rm {bin,ref}/License.txt
+  rm {doc,ref}/afiles
+}
+
+package() {
+  mkdir -p "${pkgdir}"/usr/bin
+  install -m755 ${_pkgname}_${_pkgver}/bin/* "${pkgdir}"/usr/bin
+  mkdir -p "${pkgdir}"/usr/share/${pkgname}/ref
+  install -m644 ${_pkgname}_${_pkgver}/ref/*.* "${pkgdir}"/usr/share/${pkgname}/ref
+  install -m644 ${_pkgname}_${_pkgver}/profile/*.sp "${pkgdir}"/usr/share/${pkgname}/ref
+  install -m644 ${_pkgname}_${_pkgver}/scanin/*.c?? "${pkgdir}"/usr/share/${pkgname}/ref
+  # Because there is just html documentation we have to move it
+  mkdir -p "${pkgdir}"/usr/share/${pkgname}/doc/ccmxs
+  install -m644 ${_pkgname}_${_pkgver}/doc/ccmxs/*.ccmx "${pkgdir}"/usr/share/${pkgname}/doc/ccmxs
+  install -m644 ${_pkgname}_${_pkgver}/doc/*.* "${pkgdir}"/usr/share/${pkgname}/doc
+  mkdir -p "${pkgdir}"/usr/lib/udev/rules.d
+  install -m644 ${_pkgname}_${_pkgver}/usb/55-Argyll.rules "${pkgdir}"/usr/lib/udev/rules.d/55-Argyll.rules
+}
+
+# vim:set ts=2 sw=2 et:

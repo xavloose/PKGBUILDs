@@ -1,0 +1,30 @@
+# $Id: PKGBUILD 262032 2016-03-18 09:52:16Z fyan $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+
+pkgname=perl-log-log4perl
+pkgver=1.47
+pkgrel=1
+pkgdesc='Log4j implementation for Perl'
+arch=('any')
+url="https://metacpan.org/release/Log-Log4perl"
+license=('PerlArtistic' 'GPL')
+depends=('perl')
+options=('!emptydirs')
+source=("http://search.cpan.org/CPAN/authors/id/M/MS/MSCHILLI/Log-Log4perl-$pkgver.tar.gz")
+md5sums=('53a0a2e68da51fa445c3557e4852d3a4')
+
+build() {
+  cd Log-Log4perl-$pkgver
+  perl Makefile.PL INSTALLDIRS=vendor
+  make
+}
+
+check() {
+  cd Log-Log4perl-$pkgver
+  make test
+}
+
+package() {
+  cd Log-Log4perl-$pkgver
+  make DESTDIR="$pkgdir" install
+}

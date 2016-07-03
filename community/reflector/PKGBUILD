@@ -1,0 +1,33 @@
+#Maintainer: Xyne <ac xunilhcra enyx, backwards>
+pkgname=reflector
+pkgver=2015.12
+pkgrel=2
+pkgdesc='A Python 3 module and script to retrieve and filter the latest Pacman mirror list.'
+arch=(any)
+license=(GPL)
+url="http://xyne.archlinux.ca/projects/reflector"
+depends=(python3)
+optdepends=('rsync: rate rsync mirrors')
+source=(
+  http://xyne.archlinux.ca/projects/reflector/src/reflector-2015.12.tar.xz
+  http://xyne.archlinux.ca/projects/reflector/src/reflector-2015.12.tar.xz.sig
+)
+sha512sums=(
+  9c1da4688fd2e2b5bd9f1498b9b9252043de3742eb86f6e8aecae3d9c2779fca2baadf64a5103abb08db01b4ecd5ccb61127bcdbcef64f972405371b631e013d
+  5a689419ac03f6a1d2a6231c195b9653d4654a3062b21bb6791211455870154a305c39856f377102c6c982541cca945f9b381b7922d4d2a2e9b84e238a25acea
+)
+md5sums=(
+  b2997306594aa064bfeff3533132b174
+  43a73486fed553664e3a484ebdff501e
+)
+validpgpkeys=('EC3CBE7F607D11E663149E811D1F0DC78F173680')
+
+package ()
+{
+  cd "$srcdir/$pkgname-$pkgver"
+  python3 setup.py install --prefix=/usr --root="$pkgdir" --optimize=1
+  install -Dm755 "$srcdir/$pkgname-$pkgver/$pkgname" "$pkgdir/usr/bin/$pkgname"
+}
+
+
+# vim: set ts=2 sw=2 et:

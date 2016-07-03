@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 175719 2016-05-19 16:26:10Z arojas $
+# Maintainer: Antonio Rojas <arojas@archlinux.org>
+# Contributor: James Spencer <james.s.spencer@gmail.com>
+
+pkgname=jmol
+pkgver=14.6.0
+_pkgver=${pkgver}_2016.05.17
+pkgrel=1
+pkgdesc="a Java 3D viewer for chemical structures"
+arch=(any)
+url="http://jmol.sourceforge.net"
+license=(LGPL)
+depends=(java-runtime)
+makedepends=(unzip)
+source=("http://sourceforge.net/projects/jmol/files/Jmol/Version%20${pkgver%.*}/Version%20$pkgver/Jmol-$_pkgver-binary.tar.gz")
+sha1sums=('2c5991f033451466090835bf2a02d17e2adb428c')
+
+package() {
+  cd $pkgname-$_pkgver
+
+  mkdir -p "$pkgdir"/usr/share/$pkgname
+  mkdir -p "$pkgdir"/usr/bin
+
+  unzip jsmol.zip -d "$pkgdir"/usr/share/
+  rm jsmol.zip
+
+  cp *.jar jmol.sh "$pkgdir"/usr/share/$pkgname
+  ln -s /usr/share/$pkgname/$pkgname.sh "$pkgdir"/usr/bin/$pkgname
+}

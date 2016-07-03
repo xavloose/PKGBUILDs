@@ -1,0 +1,37 @@
+# $Id: PKGBUILD 171479 2016-04-21 06:58:36Z ronald $
+# Maintainer: Ronald van Haren <ronald.archlinux.org>
+# Contributor: Eric Belanger <eric.archlinux.org>
+# Contributor: Fabio Scotoni <CCuleX.gmail.com>
+# Contributor: Alexander Rødseth <rodseth@gmail.com>
+
+pkgname=extremetuxracer
+pkgver=0.7.2
+pkgrel=1
+pkgdesc="Downhill racing game starring Tux"
+arch=('x86_64' 'i686')
+url="http://sourceforge.net/projects/extremetuxracer/"
+license=('GPL')
+depends=('sfml' 'glu' 'freetype2')
+makedepends=('csfml')
+conflicts=('ppracer' 'etracer')
+replaces=('ppracer' 'etracer')
+source=("http://downloads.sourceforge.net/${pkgname}/etr-${pkgver}.tar.xz")
+sha1sums=('50b0c3a42ae5f72ed33047baf68f76c8e7549be6')
+
+build() {
+  cd "${srcdir}/etr-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+check() {
+  cd "${srcdir}/etr-${pkgver}"
+  make check
+}
+
+package() {
+  cd "${srcdir}/etr-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+# vim:set ts=2 sw=2 et:

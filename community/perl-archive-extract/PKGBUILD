@@ -1,0 +1,43 @@
+# $Id: PKGBUILD 136499 2015-07-07 02:31:32Z fyan $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Florian Pritz <bluewind@xinu.at>
+
+pkgname=perl-archive-extract
+pkgver=0.76
+pkgrel=1
+pkgdesc='Generic archive extracting mechanism'
+arch=(any)
+license=(PerlArtistic GPL)
+options=(!emptydirs)
+depends=(perl)
+url=https://metacpan.org/release/Archive-Extract
+source=("http://search.cpan.org/CPAN/authors/id/B/BI/BINGOS/Archive-Extract-$pkgver.tar.gz")
+sha512sums=('b17a490fe6bd0535a3105929677e5f3fa1460aba391a4541bdcb838cca8c8d3f73f744d59b71306abc7c13835b35ebec2902692e4438f7dc8e8284372f5a7dec')
+_ddir="Archive-Extract-$pkgver"
+
+build() (
+  cd "$srcdir/$_ddir"
+  export PERL_MM_USE_DEFAULT=1 PERL_AUTOINSTALL=--skipdeps
+  unset PERL5LIB PERL_MM_OPT
+  /usr/bin/perl Makefile.PL
+  make
+)
+
+check() (
+  cd "$srcdir/$_ddir"
+  export PERL_MM_USE_DEFAULT=1
+  unset PERL5LIB
+  make test
+)
+
+package() (
+  cd "$srcdir/$_ddir"
+  make install INSTALLDIRS=vendor DESTDIR="$pkgdir"
+  find "$pkgdir" -name .packlist -o -name perllocal.pod -delete
+)
+
+# Local Variables:
+# mode: shell-script
+# sh-basic-offset: 2
+# End:
+# vim:set ts=2 sw=2 et:

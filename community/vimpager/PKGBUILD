@@ -1,0 +1,38 @@
+# Maintainer: Florian Pritz <bluewind@xinu.at>
+# Contributor: Geoffroy Carrier <geoffroy.carrier@koon.fr>
+# Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
+
+pkgname=vimpager
+pkgver=2.06
+pkgrel=1
+pkgdesc="A vim-based script to use as a PAGER."
+arch=('any')
+url="http://www.vim.org/scripts/script.php?script_id=1723"
+license=('custom:BSD')
+depends=('vim')
+noextract=(vimpager-$pkgver.tar.gz)
+backup=(etc/vimpagerrc)
+source=("vimpager-$pkgver.tar.gz::https://github.com/rkitover/vimpager/tarball/$pkgver"
+        "https://github.com/rkitover/vimpager/releases/download/$pkgver/man.tar.gz")
+md5sums=('2b0986775fd98c10c3f8536fa6bd6890'
+         '55f48bbd73d8f2b956043186b83a6024')
+
+prepare() {
+	cd "${srcdir}"
+
+	mkdir -p "$srcdir/vimpager-$pkgver"
+	bsdtar --strip-components=1 -C "$srcdir/vimpager-$pkgver" -xf vimpager-$pkgver.tar.gz
+
+	cd "$srcdir/vimpager-$pkgver"
+
+	sed -i "s/\r$//" vimpager
+	cp "$srcdir/"{vimpager.1,vimcat.1} .
+}
+
+package() {
+	cd "${srcdir}/vimpager-$pkgver"
+
+	make SYSCONFDIR="/etc" PREFIX="/usr" DESTDIR="$pkgdir" install
+
+	install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/license.txt"
+}

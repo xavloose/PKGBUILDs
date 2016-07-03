@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 165934 2016-03-10 12:29:46Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: Morgan LEFIEUX <comete_AT_archlinuxfr.org>
+
+pkgname=python2-ldap
+pkgver=2.4.25
+pkgrel=1
+pkgdesc="Provides an object-oriented API to access LDAP directory servers from Python programs"
+arch=('i686' 'x86_64')
+url="http://python-ldap.sourceforge.net"
+license=('custom')
+depends=('python2' 'libldap>=2.4.26')
+makedepends=('chrpath')
+replaces=('python-ldap')
+source=(http://pypi.python.org/packages/source/p/python-ldap/python-ldap-$pkgver.tar.gz)
+md5sums=('21523bf21dbe566e0259030f66f7a487')
+
+build() {
+  cd $srcdir/python-ldap-$pkgver
+  sed -i 's|<sasl.h>|<sasl/sasl.h>|' Modules/LDAPObject.c
+  python2 setup.py build
+}
+
+package() {
+  cd $srcdir/python-ldap-$pkgver
+  python2 setup.py install --root $pkgdir
+  install -D -m644 LICENCE $pkgdir/usr/share/licenses/$pkgname/LICENSE
+  chrpath -d $pkgdir/usr/lib/python2.7/site-packages/_ldap.so
+}

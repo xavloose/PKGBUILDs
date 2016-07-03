@@ -1,0 +1,39 @@
+# Maintainer: Levente Polyak <anthraxx[at]archlinux[dot]org>
+# Contributor: Rudy Matela <rudy@matela.com.br>
+# Contributor: Bartek Piotrowski <barthalion@gmail.com>
+# Contributor: Thomas S Hatch <thatch45 at gmail dot com>
+# Contributor: pootzko <pootzko@gmail.com>
+# Contributor: Jinx <jinxware@gmail.com>
+# Contributor: Timothée Ravier <tim@siosm.fr>
+
+pkgname=hydra
+pkgver=8.2
+pkgrel=1
+pkgdesc='A very fast network logon cracker which support many different services'
+url='https://www.thc.org/thc-hydra/'
+arch=('i686' 'x86_64')
+license=('GPL3')
+depends=('postgresql-libs' 'subversion' 'libssh' 'libmariadbclient' 'libidn' 'libfbclient' 'afpfs-ng' 'zlib' 'openssl' 'ncurses' 'pcre')
+optdepends=('gtk2: graphical front-end (xhydra)')
+makedepends=('gtk2' 'pkg-config')
+source=(${pkgname}-${pkgver}.tar.gz::https://www.thc.org/releases/${pkgname}-${pkgver}.tar.gz)
+sha512sums=('0e2e6f4800060171681bffbb97e4fb4f4230d621573f2faf567515aabdd3546962815db9abdf0bd46ff2948418145c1485dd109ee356eb9c1e814c32ee50c618')
+DLAGENTS=('https::/usr/bin/curl -fLC - --retry 3 --retry-delay 3 -o %o %u -k')
+
+prepare() {
+  cd ${pkgname}-${pkgver}
+}
+
+build() {
+  cd ${pkgname}-${pkgver}
+  ./configure --fhs
+  make
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  make DESTDIR="${pkgdir}" install
+  install -Dm 644 README "${pkgdir}/usr/share/doc/${pkgname}/README"
+}
+
+# vim:set ts=2 sw=2 et:

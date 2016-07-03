@@ -1,0 +1,47 @@
+# $Id: PKGBUILD 107013 2014-03-11 11:26:24Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+
+pkgname=freedesktop-docs
+pkgver=20140311
+pkgrel=1
+pkgdesc="Specifications from freedesktop.org"
+arch=('any')
+url="http://standards.freedesktop.org"
+license=('GPL')
+options=('docs')
+source=(http://standards.freedesktop.org/autostart-spec/autostart-spec-latest.html
+	http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
+	http://standards.freedesktop.org/clipboard-extensions-spec/clipboard-extensions-latest.txt
+	http://standards.freedesktop.org/clipboards-spec/clipboards-latest.txt
+	http://standards.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html
+	http://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
+	http://standards.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html
+	http://standards.freedesktop.org/menu-spec/menu-spec-latest.html
+	http://standards.freedesktop.org/recent-file-spec/recent-file-spec-latest.xml
+	http://standards.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-latest.html
+	http://standards.freedesktop.org/startup-notification-spec/startup-notification-latest.txt
+	http://standards.freedesktop.org/systemtray-spec/systemtray-spec-latest.html
+	http://standards.freedesktop.org/wm-spec/wm-spec-latest.html
+	http://standards.freedesktop.org/xembed-spec/xembed-spec-latest.xml
+	http://standards.freedesktop.org/xsettings-spec/xsettings-spec-0.5.html)
+md5sums=('SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         '0fa70364077e6de341ce50db8a684ebe')
+
+package() {
+  cd $srcdir/
+  mkdir -p $pkgdir/usr/share/doc/freedesktop.org
+  cp -L * $pkgdir/usr/share/doc/freedesktop.org/
+}

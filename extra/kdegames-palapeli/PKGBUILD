@@ -1,0 +1,31 @@
+# $Id: PKGBUILD 269860 2016-06-14 17:02:57Z arojas $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=kdegames-palapeli
+pkgver=16.04.2
+pkgrel=1
+pkgdesc="A single-player jigsaw puzzle game"
+url="http://kde.org/applications/games/palapeli/"
+arch=('i686' 'x86_64')
+license=('GPL' 'LGPL' 'FDL')
+groups=('kde-applications' 'kdegames')
+depends=('kdebase-runtime' 'libkdegames4' 'qhull')
+makedepends=('cmake' 'automoc4')
+source=("http://download.kde.org/stable/applications/${pkgver}/src/palapeli-${pkgver}.tar.xz")
+sha1sums=('5832e0a00f34a9902fcbef4679b967c9c47784cc')
+
+build() {
+  mkdir -p build
+  cd build
+  cmake ../palapeli-${pkgver} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DKDE4_BUILD_TESTS=OFF \
+    -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="${pkgdir}" install
+}

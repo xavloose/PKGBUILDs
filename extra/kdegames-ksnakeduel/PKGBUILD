@@ -1,0 +1,31 @@
+# $Id: PKGBUILD 269853 2016-06-14 17:00:57Z arojas $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=kdegames-ksnakeduel
+pkgver=16.04.2
+pkgrel=1
+pkgdesc="A simple snake duel game"
+url="http://kde.org/applications/games/ksnakeduel/"
+arch=('i686' 'x86_64')
+license=('GPL' 'LGPL' 'FDL')
+groups=('kde-applications' 'kdegames')
+depends=('kdebase-runtime' 'libkdegames4')
+makedepends=('cmake' 'automoc4')
+source=("http://download.kde.org/stable/applications/${pkgver}/src/ksnakeduel-${pkgver}.tar.xz")
+sha1sums=('08b888e7254deb76bf8c9ee17e941e22eb030c49')
+
+build() {
+  mkdir -p build
+  cd build
+  cmake ../ksnakeduel-${pkgver} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DKDE4_BUILD_TESTS=OFF \
+    -DCMAKE_INSTALL_PREFIX=/usr
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="${pkgdir}" install
+}

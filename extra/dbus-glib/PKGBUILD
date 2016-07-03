@@ -1,0 +1,28 @@
+# $Id: PKGBUILD 259995 2016-02-19 13:28:42Z jgc $
+# Maintainer: Jan de Groot <jgc@archlinux.org>
+
+pkgname=dbus-glib
+pkgver=0.106
+pkgrel=1
+pkgdesc="GLib bindings for DBUS"
+arch=(i686 x86_64)
+license=('GPL')
+url="http://www.freedesktop.org/wiki/Software/DBusBindings"
+depends=('dbus' 'glib2')
+options=('!emptydirs')
+source=(http://dbus.freedesktop.org/releases/${pkgname}/${pkgname}-${pkgver}.tar.gz{,.asc})
+md5sums=('2eea0b7f52b49f600a07abfd8535d4e4'
+         'SKIP')
+validpgpkeys=('3C8672A0F49637FE064AC30F52A43A1E4B77B059')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
+      --enable-static=no --enable-bash-completion=no
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="${pkgdir}" install
+}

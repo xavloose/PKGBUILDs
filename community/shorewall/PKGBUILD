@@ -1,0 +1,79 @@
+# $Id: PKGBUILD 158559 2016-01-22 11:59:23Z foutrelis $
+# Maintainer: Evangelos Foutras <evangelos@foutrelis.com>
+# Contributor: Malte Rabenseifner <malte@zearan.de>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+# Contributor: FUBAR <mrfubar@gmail.com>
+
+pkgname=('shorewall' 'shorewall6' 'shorewall-core')
+pkgver=5.0.4
+pkgrel=1
+_v1=$(expr $pkgver : '\([0-9]\+\(\.[0-9]\+\)\{1\}\)') # 5.x
+_v2=$(expr $pkgver : '\([0-9]\+\(\.[0-9]\+\)\{2\}\)') # 5.x.x
+arch=('any')
+url="http://www.shorewall.net/"
+license=('GPL')
+source=(http://www.shorewall.net/pub/$pkgname/$_v1/$pkgname-$_v2/$pkgname-$pkgver.tar.bz2{,.asc}
+        http://www.shorewall.net/pub/$pkgname/$_v1/$pkgname-$_v2/shorewall6-$pkgver.tar.bz2{,.asc}
+        http://www.shorewall.net/pub/$pkgname/$_v1/$pkgname-$_v2/shorewall-core-$pkgver.tar.bz2{,.asc})
+sha256sums=('34a4ab3e4ded052cb563a280f07f350616db913ded124bfceb39adb325f1ce0a'
+            'SKIP'
+            '86b939f5a27e464d2d4928b66ba145c30c299bc90fd19802817d8a013cfc1fff'
+            'SKIP'
+            'ea80b9e1854033c723a5321fc920b35aa0ebb0dea3721a47cee616aa3b92ed9f'
+            'SKIP')
+validpgpkeys=('94C56B34AE09A1EA13E1C1A7A2F7A69B6C562AC4')
+
+build() {
+  for product in shorewall{,6,-core}; do
+    pushd "$srcdir/$product-$pkgver"
+    ./configure HOST=archlinux
+    popd
+  done
+}
+
+package_shorewall() {
+  pkgdesc="An iptables-based firewall for Linux systems"
+  depends=('shorewall-core' 'perl')
+  backup=(etc/shorewall/{accounting,actions,blrules,clear,conntrack,ecn,findgw,hosts,init,initdone,interfaces,lib.private,maclist,mangle,masq,nat,netmap,params,policy,providers,proxyarp,refresh,refreshed,restored,routes,stoppedrules,rtrules,rules,scfilter,secmarks,shorewall.conf,start,started,stop,stopped,tcclasses,tcclear,tcdevices,tcfilters,tcinterfaces,tcpri,tunnels,zones})
+
+  cd "$srcdir/$pkgname-$pkgver"
+
+  do_install
+}
+
+package_shorewall6() {
+  pkgdesc="An iptables-based firewall for Linux systems (with IPv6 support)"
+  depends=('shorewall')
+  backup=(etc/shorewall6/{accounting,actions,blrules,clear,conntrack,findgw,hosts,init,interfaces,maclist,mangle,masq,netmap,params,policy,providers,proxyndp,refresh,refreshed,restored,routes,stoppedrules,rtrules,rules,scfilter,secmarks,shorewall6.conf,start,started,stop,stopped,tcclasses,tcclear,tcdevices,tcfilters,tcinterfaces,tcpri,tunnels,zones})
+
+  cd "$srcdir/$pkgname-$pkgver"
+
+  do_install 6
+}
+
+package_shorewall-core() {
+  pkgdesc="Core Shorewall libraries"
+  depends=('iptables' 'iproute2')
+
+  cd "$srcdir/$pkgname-$pkgver"
+
+  DESTDIR="$pkgdir" ./install.sh
+}
+
+do_install() {
+  local _name_suffix=$1
+
+  sed -i -e 's|^MODULE_SUFFIX=ko$|&.gz|' \
+         -e 's|/subsys||' \
+      "configfiles/shorewall$_name_suffix.conf"
+
+  DESTDIR="$pkgdir" ./install.sh
+
+  install -d "$pkgdir/usr/share/doc/shorewall$_name_suffix/"
+  cp -r Samples$_name_suffix "$pkgdir/usr/share/doc/shorewall$_name_suffix/"
+
+  chmod -R 644 "$pkgdir/etc/shorewall$_name_suffix/"
+  chmod 755 "$pkgdir/etc/shorewall$_name_suffix/"
+}
+
+# vim:set ts=2 sw=2 et:

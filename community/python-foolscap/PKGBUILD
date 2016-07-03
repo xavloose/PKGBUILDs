@@ -1,0 +1,30 @@
+# $Id: PKGBUILD 168060 2016-03-23 10:21:08Z fyan $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Alexander Rødseth <rodseth@gmail.com>
+# Contributor: Chris Brannon <cmbrannon79@gmail.com>
+# Contributor: giniu <gginiu@gmail.com>
+
+pkgbase=python-foolscap
+pkgname=python2-foolscap
+pkgver=0.11.0
+pkgrel=1
+pkgdesc='RPC protocol for Python and Twisted'
+arch=('any')
+url='http://foolscap.lothar.com/'
+license=('MIT')
+depends=('python2-twisted' 'python2-pyopenssl')
+makedepends=('python2-setuptools')
+conflicts=('python-foolscap<=0.6.3')
+replaces=('python-foolscap<=0.6.3')
+options=('!emptydirs')
+source=("http://foolscap.lothar.com/releases/foolscap-$pkgver.tar.gz")
+sha256sums=('b6874de97eb08654362cce80317e68d203bcccf85e4eed613ef10a3cf4b1aa87')
+
+package_python2-foolscap() {
+  cd "foolscap-$pkgver"
+
+  python2 setup.py install --prefix=/usr --root="$pkgdir" --optimize=1
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+# vim:set ts=2 sw=2 et:

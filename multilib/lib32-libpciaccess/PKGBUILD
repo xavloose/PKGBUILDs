@@ -1,0 +1,40 @@
+# $Id: PKGBUILD 132691 2015-05-04 09:54:22Z lcarlier $
+# Maintainer: Jan de Groot <jgc@archlinux.org>
+# Contributor: Alexander Baldeck <alexander@archlinux.org>
+
+_pkgbasename=libpciaccess
+pkgname=lib32-${_pkgbasename}
+pkgver=0.13.4
+pkgrel=1
+pkgdesc="X11 PCI access library (32-bit"
+arch=(i686 x86_64)
+license=('custom')
+url="http://xorg.freedesktop.org/"
+depends=('lib32-glibc' ${_pkgbasename})
+makedepends=('gcc-multilib' 'pkgconfig' 'xorg-util-macros')
+options=('!libtool')
+source=(${url}/releases/individual/lib/${_pkgbasename}-${pkgver}.tar.bz2{,.sig})
+sha256sums=('07f864654561e4ac8629a0ef9c8f07fbc1f8592d1b6c418431593e9ba2cf2fcf'
+            'SKIP')
+validpgpkeys=('4A193C06D35E7C670FA4EF0BA2FB9E081F2D130E') # Alan Coopersmith <alan.coopersmith@oracle.com>
+
+build() {
+  cd "${srcdir}/${_pkgbasename}-${pkgver}"
+
+  export CC="gcc -m32"
+  export CXX="g++ -m32"
+  export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+
+  ./configure --prefix=/usr --sysconfdir=/etc \
+    --libdir=/usr/lib32
+  make
+}
+
+package() {
+  cd "${srcdir}/${_pkgbasename}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+
+  rm -rf "${pkgdir}"/usr/include
+  mkdir -p "$pkgdir/usr/share/licenses"
+  ln -s $_pkgbasename "$pkgdir/usr/share/licenses/$pkgname"
+}

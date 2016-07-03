@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 168273 2016-03-25 01:45:32Z speps $
+# Maintainer : speps <speps at aur dot archlinux dot org>
+# Contributor: breakdown <breakdown(at)archlinux(dot)us>
+
+pkgname=plowshare
+pkgver=2.1.3
+pkgrel=1
+pkgdesc="Command-line downloader and uploader for Rapidshare, Mediafire and other file sharing websites."
+arch=('any')
+url="https://github.com/mcrapet/plowshare"
+license=('GPL3')
+depends=('curl' 'recode' 'js185' 'git')
+optdepends=('bash-completion: enable bash auto completion'
+            'libcaca: ascii display for no X server'
+            'tiv: ascii display for no X server'
+            'aview: ascii display for no X server')
+source=("$url/archive/v$pkgver.tar.gz")
+md5sums=('114cebf706027f3f93bbccb3762105b2')
+
+package() {
+  cd $pkgname-*
+
+  # force release version
+  export PLOWSHARE_FORCE_VERSION=$pkgver
+
+  DESTDIR="$pkgdir/" PREFIX=/usr make
+}
+
+# vim:set ts=2 sw=2 et:

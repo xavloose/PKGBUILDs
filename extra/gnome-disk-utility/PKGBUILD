@@ -1,0 +1,35 @@
+# $Id: PKGBUILD 267226 2016-05-08 21:03:53Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Maintainer: Jan de Groot <jgc@archlinux.org>
+# Contributor: Silvio Knizek (killermoehre)
+
+pkgname=gnome-disk-utility
+pkgver=3.20.2
+pkgrel=1
+pkgdesc="Disk Management Utility for GNOME"
+url="https://www.gnome.org/"
+arch=(i686 x86_64)
+license=(GPL)
+groups=(gnome)
+depends=(udisks2 gtk3 libsecret libpwquality libcanberra libdvdread libnotify parted)
+makedepends=(intltool docbook-xsl gnome-settings-daemon)
+options=('!emptydirs')
+source=(https://download.gnome.org/sources/$pkgname/${pkgver:0:4}/$pkgname-$pkgver.tar.xz)
+sha256sums=('ad12ae0f3a2ae9c690ca799dd1f690a8eb238575e0fd8f328b66a96eb9bf2c3d')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr --sysconfdir=/etc --disable-static
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+  make
+}
+
+check() {
+  cd $pkgname-$pkgver
+  make check
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

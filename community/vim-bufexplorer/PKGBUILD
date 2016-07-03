@@ -1,0 +1,27 @@
+#$Id: PKGBUILD 137959 2015-08-05 01:23:01Z svenstaro $
+#Contributor: Aaron Griffin <aaron@archlinux.org>
+#Maintainer: 
+
+pkgname=vim-bufexplorer
+pkgver=7.4.6
+pkgrel=1
+pkgdesc="A simple buffer list/switcher for vim "
+arch=('any')
+url="http://www.vim.org/scripts/script.php?script_id=42"
+license=('BSD')
+depends=('vim>=7.0')
+makedepends=('git')
+groups=('vim-plugins')
+install=vimdoc.install
+source=("git://github.com/jlanzarotta/bufexplorer.git#commit=fc022c")
+md5sums=('SKIP')
+
+package() {
+	cd ${srcdir}/bufexplorer
+
+	installpath="${pkgdir}/usr/share/vim/vimfiles"
+
+	install -D -m644 doc/bufexplorer.txt $installpath/doc/bufexplorer.txt
+	install -D -m644 plugin/bufexplorer.vim $installpath/plugin/bufexplorer.vim
+	install -D -m644 LICENSE ${pkgdir}/usr/share/licenses/${pkgname}/LICENSE
+}

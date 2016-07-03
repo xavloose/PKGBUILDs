@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 267806 2016-05-11 13:55:16Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Contributor: Ionut Biru <ibiru@archlinux.org>
+
+pkgname=networkmanager-vpnc
+pkgver=1.2.2
+pkgrel=1
+pkgdesc="NetworkManager VPN plugin for VPNC"
+url="https://wiki.gnome.org/Projects/NetworkManager"
+arch=(i686 x86_64)
+license=(GPL)
+depends=(libnm-gtk libsecret vpnc)
+makedepends=(intltool python)
+source=(http://ftp.gnome.org/pub/GNOME/sources/NetworkManager-vpnc/${pkgver::3}/NetworkManager-vpnc-${pkgver}.tar.xz)
+sha256sums=('e900f6500026f8c3ee4feb92e1d0a0c0abbee9ba507dad915b47a8ab7df9e1f3')
+
+build() {
+  cd NetworkManager-vpnc-$pkgver
+  ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
+    --libexecdir=/usr/lib/networkmanager \
+    --enable-more-warnings=yes \
+    --disable-static
+  make
+}
+
+package() {
+  cd NetworkManager-vpnc-$pkgver
+  make DESTDIR="$pkgdir" install
+}

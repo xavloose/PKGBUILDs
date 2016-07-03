@@ -1,0 +1,38 @@
+# $Id: PKGBUILD 269554 2016-06-14 15:04:18Z arojas $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+# Contributor: Antonio Rojas
+
+pkgname=milou
+pkgver=5.6.5
+pkgrel=1
+pkgdesc="A dedicated search application built on top of Baloo"
+arch=('i686' 'x86_64')
+url='https://www.kde.org/workspaces/plasmadesktop/'
+license=('LGPL')
+depends=('krunner')
+makedepends=('extra-cmake-modules' 'kdoctools' 'python')
+groups=('plasma')
+source=("http://download.kde.org/stable/plasma/${pkgver}/$pkgname-$pkgver.tar.xz"{,.sig})
+sha256sums=('ae6f9e8f9576d08c31b6b1a525f1b4e11c8e589e6176d7718dd9162d6f3bd318'
+            'SKIP')
+validpgpkeys=('13C16D03EDE728514473AA73A506E6D4DD4D5088') # Jonathan Riddell
+
+prepare() {
+  mkdir -p build
+}
+
+build() {
+  cd build
+  cmake ../${pkgname}-${pkgver} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DKDE_INSTALL_LIBDIR=lib \
+    -DBUILD_TESTING=OFF
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="${pkgdir}" install
+}

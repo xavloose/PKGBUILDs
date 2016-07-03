@@ -1,0 +1,31 @@
+# $Id: PKGBUILD 166360 2016-03-12 11:47:46Z spupykin $
+#Maintainer:
+
+pkgname=perl-xml-xpath
+pkgver=1.34
+pkgrel=1
+pkgdesc="A set of modules for parsing and evaluating XPath statements"
+arch=('any')
+url="https://metacpan.org/release/XML-XPath"
+license=('PerlArtistic' 'GPL')
+depends=('perl' 'perl-xml-parser')
+options=('!emptydirs')
+source=("https://cpan.metacpan.org/authors/id/M/MA/MANWAR/XML-XPath-$pkgver.tar.gz")
+sha1sums=('72a8e7a71f5d0b46e004adfbc5c5dbf59affd03c')
+sha1sums=('0d5d33450e3e3b422371eef3828919c34c7cc1cf')
+
+build() {
+  cd "${srcdir}/XML-XPath-${pkgver}"
+  perl Makefile.PL INSTALLDIRS=vendor
+  make
+}
+
+check() {
+  cd "${srcdir}/XML-XPath-${pkgver}"
+#  make test
+}
+
+package() {
+  cd "${srcdir}/XML-XPath-${pkgver}"
+  make DESTDIR="$pkgdir" install
+}

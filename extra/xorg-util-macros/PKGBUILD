@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 208916 2014-03-28 17:26:31Z andyrtr $
+# Maintainer: Andreas Radke <andyrtr@archlinux.org>
+# Maintainer: Jan de Groot <jgc@archlinux.org>
+
+pkgname=xorg-util-macros
+pkgver=1.19.0
+pkgrel=1
+pkgdesc="X.Org Autotools macros"
+arch=(any)
+license=('custom')
+url="http://xorg.freedesktop.org/"
+source=(${url}/releases/individual/util/util-macros-${pkgver}.tar.bz2)
+sha256sums=('2835b11829ee634e19fa56517b4cfc52ef39acea0cd82e15f68096e27cbed0ba')
+
+build() {
+  cd util-macros-${pkgver}
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd util-macros-${pkgver}
+  make DESTDIR="${pkgdir}" install
+
+  install -m755 -d "${pkgdir}/usr/lib"
+  mv "${pkgdir}/usr/share/pkgconfig" "${pkgdir}/usr/lib/"
+  install -m755 -d "${pkgdir}/usr/share/licenses/${pkgname}"
+  install -m644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/"
+}

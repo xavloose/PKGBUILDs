@@ -1,0 +1,45 @@
+# $Id: PKGBUILD 148396 2015-12-04 12:16:11Z flexiondotorg $
+# Maintainer : Martin Wimpress <code@flexion.org>
+
+_ver=1.12
+_pkgbase=mate-applets
+pkgname=(${_pkgbase}-gtk3)
+pkgver=${_ver}.1
+pkgrel=1
+pkgdesc="Applets for MATE panel (GTK3 version [EXPERIMENTAL])"
+arch=('i686' 'x86_64')
+url="http://mate-desktop.org"
+license=('GPL')
+depends=('gtksourceview3' 'libgtop' 'libnotify' 'mate-panel-gtk3>=1.12'
+         'python2-dbus' 'python2-gobject' 'upower')
+makedepends=('docbook2x' 'docbook-xsl' 'mate-common' 'yelp-tools')
+optdepends=('fortune-mod: for displaying fortune cookies in the Wanda the Fish applet'
+            'yelp: for reading MATE help documents')
+groups=('mate-extra-gtk3')
+conflicts=("${_pkgbase}")
+source=("http://pub.mate-desktop.org/releases/${_ver}/${_pkgbase}-${pkgver}.tar.xz")
+sha1sums=('1275d9922e8c0abde0256d086d3e7bceb9bcf2c9')
+install=${_pkgbase}.install
+
+prepare() {
+    cd "${srcdir}/${_pkgbase}-${pkgver}"
+    sed -i 's/env python/env python2/' invest-applet/invest/{chart.py,invest-applet.py,mate-invest-chart}
+}
+
+build() {
+    cd "${srcdir}/${_pkgbase}-${pkgver}"
+    PYTHON=/usr/bin/python2 ./configure \
+        --prefix=/usr \
+        --sysconfdir=/etc \
+        --libexecdir=/usr/lib/${_pkgbase} \
+        --enable-polkit \
+        --enable-ipv6 \
+        --with-gtk=3.0 \
+        --disable-static
+    make
+}
+
+package() {
+    cd "${srcdir}/${_pkgbase}-${pkgver}"
+    make DESTDIR="${pkgdir}" install
+}

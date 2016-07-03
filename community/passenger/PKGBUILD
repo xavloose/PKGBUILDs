@@ -1,0 +1,33 @@
+# $Id: PKGBUILD 181405 2016-06-27 12:39:31Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+
+pkgname=passenger
+pkgver=5.0.29
+pkgrel=1
+pkgdesc="mod_rails passenger"
+arch=('i686' 'x86_64')
+url="http://www.modrails.com"
+_watch="https://github.com/phusion/passenger/releases"
+license=('GPL')
+depends=('ruby' 'ruby-rack' 'curl')
+makedepends=('apache')
+install=passenger.install
+options=('!emptydirs' 'staticlibs')
+source=($pkgname-$pkgver.tar.gz::https://github.com/FooBarWidget/passenger/archive/release-$pkgver.tar.gz)
+md5sums=('206e0011fc32c54518aaed4f2d3e49c2')
+
+build(){
+  cd $srcdir/passenger-release-$pkgver
+  rake nginx CACHING=false
+  ./bin/passenger-install-apache2-module -a
+}
+
+package() {
+  cd $srcdir/passenger-release-$pkgver
+
+  mkdir -p $pkgdir/usr/lib/passenger/
+  cp -R * $pkgdir/usr/lib/passenger/
+
+  mkdir -p $pkgdir/usr/lib/httpd/modules
+  ln -sf /usr/lib/passenger/buildout/apache2/mod_passenger.so $pkgdir/usr/lib/httpd/modules/mod_passenger.so
+}

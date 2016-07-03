@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 270433 2016-06-21 18:38:53Z bpiotrowski $
+# Maintainer: Ionut Biru <ibiru@archlinux.org>
+# Maintainer: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+
+pkgname=libva
+pkgver=1.7.1
+pkgrel=1
+pkgdesc='Video Acceleration (VA) API for Linux'
+arch=('i686' 'x86_64')
+url='http://freedesktop.org/wiki/Software/vaapi'
+license=('MIT')
+depends=('libgl' 'libdrm' 'libxfixes')
+makedepends=('mesa')
+optdepends=('libva-vdpau-driver: backend for Nvidia and AMD cards'
+            'libva-intel-driver: backend for Intel cards')
+source=(http://freedesktop.org/software/vaapi/releases/$pkgname/$pkgname-$pkgver.tar.bz2)
+md5sums=('79f98dd94daa78a026ded79fbcc137c5')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+  install -Dm644 COPYING "$pkgdir"/usr/share/licenses/$pkgname/COPYING
+}

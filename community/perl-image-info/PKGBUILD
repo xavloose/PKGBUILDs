@@ -1,0 +1,29 @@
+# $Id: PKGBUILD 166282 2016-03-12 11:11:38Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: Caleb Cushing <xenoterracide@gmail.com>
+
+pkgname=perl-image-info
+pkgver=1.38
+pkgrel=1
+pkgdesc="Extract meta information from image files"
+arch=('any')
+license=('PerlArtistic' 'GPL')
+options=('!emptydirs')
+depends=('perl')
+url='http://search.cpan.org/dist/Image-Info'
+source=(http://search.cpan.org/CPAN/authors/id/S/SR/SREZIC/Image-Info-$pkgver.tar.gz)
+md5sums=('0fa4db4bdf14b6f453655bafa62d766a')
+
+build() {
+  cd ${srcdir}/Image-Info-$pkgver
+  export PERL_MM_USE_DEFAULT=1
+  perl Makefile.PL INSTALLDIRS=vendor
+  make
+  make test
+}
+
+package() {
+  cd ${srcdir}/Image-Info-$pkgver
+  make DESTDIR="${pkgdir}/" install
+  find "$pkgdir" -name .packlist -o -name perllocal.pod -delete
+}

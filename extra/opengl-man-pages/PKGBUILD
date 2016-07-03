@@ -1,0 +1,55 @@
+# $Id: PKGBUILD 260084 2016-02-20 17:15:48Z andyrtr $
+# Maintainer: AndyRTR <andyrtr@archlinux.org>
+
+pkgname=opengl-man-pages
+pkgver=20160220
+_revision=32463
+pkgrel=1
+pkgdesc="OpenGL Man Pages"
+arch=('any')
+url="http://www.opengl.org/wiki/Getting_started/XML_Toolchain_and_Man_Pages"
+license=('custom')
+# OpenGL 4.x (current) API and GLSL pages - libxslt' 'docbook-xsl'
+# OpenGL 3.x and older 'w3c-mathml2' 'docbook-mathml'
+makedepends=('libxslt' 'docbook-xsl' 'w3c-mathml2' 'docbook-mathml' 'subversion')
+# https://cvs.khronos.org/svn/repos/ogl/trunk/ecosystem/public/sdk/docs/
+source=(man4::svn+https://cvs.khronos.org/svn/repos/ogl/trunk/ecosystem/public/sdk/docs/man4/#revision=${_revision}	# OpenGL 4.x (current) API and GLSL pages
+        man3::svn+https://cvs.khronos.org/svn/repos/ogl/trunk/ecosystem/public/sdk/docs/man3/#revision=${_revision}	# OpenGL 3.x API pages
+        man2::svn+https://cvs.khronos.org/svn/repos/ogl/trunk/ecosystem/public/sdk/docs/man2/#revision=${_revision}	# OpenGL 2.x API pages
+        'LICENSE')
+md5sums=('SKIP'
+         'SKIP'
+         'SKIP'
+         'cb856abe5968300057e650096ba25b2f')
+_mandirs=(man4 man3 man2)
+
+pkgver() {
+  date +%Y%m%d
+}
+
+build() {
+  export WD=`pwd`
+  xmlcatalog --create --noout \
+    --add public "-//W3C//DTD MathML 2.0//EN" "file:///usr/share/xml/w3c/mathml2/mathml2.dtd" \
+    --add public "-//W3C//DTD MathML//EN" "file:///usr/share/xml/w3c/mathml2/mathml2.dtd" \
+    --add system "http://www.w3.org/TR/MathML2/dtd/mathml2.dtd" "file:///usr/share/xml/w3c/mathml2/mathml2.dtd" \
+    mathml2.cat
+  export XML_CATALOG_FILES="$WD/mathml2.cat /etc/xml/catalog"
+ 
+  for manpages in ${_mandirs[@]}; do
+    cd "${srcdir}/${manpages}"
+    for file in gl*.xml; do
+      xsltproc --noout --nonet /usr/share/xml/docbook/xsl-stylesheets-*/manpages/docbook.xsl ${file}
+    done
+  done
+}
+
+package() {
+  install -d "${pkgdir}/usr/share/man/man3"
+  for manpages in ${_mandirs[@]}; do
+    cd "${srcdir}/${manpages}"
+    install -m644 *.3G "${pkgdir}/usr/share/man/man3/"
+  done
+  # license
+  install -D -m644 "${srcdir}/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 267643 2016-05-10 19:37:06Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+
+pkgname=gnome-todo
+pkgver=3.20.2
+pkgrel=1
+pkgdesc="Task manager for GNOME"
+url="https://wiki.gnome.org/Apps/Todo"
+arch=(i686 x86_64)
+license=(GPL)
+depends=(evolution-data-server libpeas)
+makedepends=(intltool gobject-introspection)
+groups=(gnome-extra)
+source=(http://download.gnome.org/sources/$pkgname/${pkgver:0:4}/$pkgname-$pkgver.tar.xz
+        buildfix.patch)
+sha256sums=('6e0452733789b0a4d2f44f9870bdba6aa4c4190615627bacf6e40e8ec9a47519'
+            'ab88726d81ba076dd30067c0ccb08fe946b76b06c6e8664648d2ac1ff496f821')
+
+prepare() {
+  cd $pkgname-$pkgver
+  patch -Np1 -i ../buildfix.patch
+  autoreconf -fvi
+}
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}
+
+# vim:set ts=2 sw=2 et:

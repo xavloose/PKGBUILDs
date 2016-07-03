@@ -1,0 +1,32 @@
+# $Id: PKGBUILD 264663 2016-04-11 15:23:31Z heftig $
+# Maintainer: Ionut Biru <ibiru@archlinux.org>
+
+pkgname=baobab
+pkgver=3.20.1
+pkgrel=1
+pkgdesc="A graphical directory tree analyzer"
+arch=(i686 x86_64)
+url="http://gnome.org"
+license=('GPL2')
+depends=('dconf' 'gtk3' 'gsettings-desktop-schemas' 'hicolor-icon-theme' 'desktop-file-utils' 'librsvg')
+makedepends=('intltool' 'itstool' 'vala' 'gobject-introspection')
+groups=('gnome')
+install=$pkgname.install
+source=(http://download.gnome.org/sources/$pkgname/${pkgver:0:4}/$pkgname-$pkgver.tar.xz)
+sha256sums=('e9dff12a76b0d730ce224215860512eb0188280c622faf186937563b96249d1f')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+
+  # https://bugs.archlinux.org/task/31861
+  sed -i '/MimeType/d' "$pkgdir/usr/share/applications/org.gnome.baobab.desktop"
+}
+
+# vim:set ts=2 sw=2 et:

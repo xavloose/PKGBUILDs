@@ -1,0 +1,36 @@
+# $Id: PKGBUILD 176105 2016-05-22 19:18:35Z jleclanche $
+pkgname=wlc
+pkgver=0.0.3
+pkgrel=1
+pkgdesc="Wayland Compositor Library"
+url="https://github.com/Cloudef/wlc"
+arch=("i686" "x86_64")
+license=("MIT")
+depends=(
+	"libdrm" "pixman" "xcb-util-image" "xcb-util-wm"
+	"wayland" "wayland-protocols" "libxkbcommon" "libinput" "libgl"
+)
+makedepends=("cmake")
+source=("https://github.com/Cloudef/$pkgname/releases/download/v$pkgver/$pkgname-$pkgver.tar.bz2")
+sha256sums=("086556f97e635469afd1f73e191ac57c888925f4480d526346946350273ebb3f")
+
+build() {
+	mkdir -p build
+	cd build
+	cmake "$srcdir/$pkgname-$pkgver" \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_INSTALL_LIBDIR=/usr/lib \
+		-DCMAKE_INSTALL_PREFIX=/usr
+	make
+}
+
+check() {
+	cd build
+	make test
+}
+
+package() {
+	cd build
+	make DESTDIR="$pkgdir" install
+	install -Dm644 "$srcdir/$pkgname-$pkgver/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

@@ -1,0 +1,31 @@
+# $Id: PKGBUILD 178646 2016-06-08 16:21:04Z farseerfc $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: jeneshicc <jeneshicc@gmail.com>
+
+pkgname=skk-jisyo
+pkgver=20160515
+pkgrel=2
+pkgdesc="Dictionaries for the SKK Japanese input method"
+arch=('any')
+url="http://openlab.ring.gr.jp/skk/"
+optdepends=('skktools: Dictionary maintenance tools')
+license=('GPL')
+install=${pkgname}.install
+source=(SKK-JISYO.L.$pkgver.gz::http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.L.gz
+        SKK-JISYO.jinmei.$pkgver.gz::http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.jinmei.gz
+        SKK-JISYO.geo.$pkgver.gz::http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.geo.gz
+        SKK-JISYO.propernoun.$pkgver.gz::http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.propernoun.gz
+        SKK-JISYO.station.$pkgver.gz::http://openlab.ring.gr.jp/skk/dic/SKK-JISYO.station.gz)
+md5sums=('4eb7b73f7df6d45dbe941e68268e98d9'
+         'e24063430ffc2b7bc85ea297ee134f5d'
+         '8f8b9ddbdb2f3bcfb68876cbfa921cf4'
+         '53407c1d74036759a7db1fa07dd8e5d4'
+         '8a7d5efefea00655b4c178dff4c89070')
+
+package() {
+  cd "$srcdir"
+
+  for t in L jinmei geo propernoun station; do
+    install -D -m 644 "$srcdir/SKK-JISYO.$t.$pkgver" "$pkgdir/usr/share/skk/SKK-JISYO.$t"
+  done
+}

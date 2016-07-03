@@ -1,0 +1,33 @@
+# $Id: PKGBUILD 270399 2016-06-20 20:58:54Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Contributor: György Balló <ballogy@freestart.hu>
+
+pkgname=gssdp
+pkgver=0.14.16
+pkgrel=1
+pkgdesc="A GObject-based API for handling resource discovery and announcement over SSDP"
+arch=(i686 x86_64)
+url="http://gupnp.org/"
+license=(LGPL)
+depends=(libsoup)
+makedepends=(gobject-introspection gtk3 gtk-doc vala)
+optdepends=('gtk3: gssdp-device-sniffer')
+source=(https://download.gnome.org/sources/${pkgname}/${pkgver:0:4}/${pkgname}-${pkgver}.tar.xz)
+sha256sums=('54520bfb230b9c8c938eba88d87df44e04749682c95fb8aa381d13441345c5b2')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
+              --disable-static
+  make
+}
+
+check() {
+  cd $pkgname-$pkgver
+  make check
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}

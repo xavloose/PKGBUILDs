@@ -1,0 +1,30 @@
+# $Id: PKGBUILD 180791 2016-06-22 23:06:26Z tredaelli $
+# Maintainer: Timothy Redaelli <timothy.redaelli@gmail.com>
+# Contributor: sh0 <mee@sh0.org>
+# Contributor: Maxwel <msg.maxwel@gmail.com>
+
+pkgname=pax-utils
+pkgver=1.1.6
+pkgrel=1
+pkgdesc='ELF related utils for ELF 32/64 binaries that can check files for security relevant properties'
+url='http://hardened.gentoo.org/pax-utils.xml'
+arch=('i686' 'x86_64')
+license=('GPL')
+depends=('bash' 'libcap' 'python-pyelftools')
+source=("http://distfiles.gentoo.org/distfiles/${pkgname}-${pkgver}.tar.xz")
+sha256sums=('f5436c517bea40f7035ec29a6f34034c739b943f2e3a080d76df5dfd7fd41b12')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make USE_CAP='yes'
+}
+
+check() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  LD_LIBRARY_PATH="/usr/lib" make check
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make USE_PYTHON='yes' DESTDIR="${pkgdir}" install
+}

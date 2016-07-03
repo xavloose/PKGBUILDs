@@ -1,0 +1,29 @@
+#/bin/bash
+
+# arg 1:  the new package version
+post_install() {
+  systemd-sysusers backuppc.conf
+  systemd-tmpfiles --create backuppc.conf
+  :
+}
+
+# arg 1:  the new package version
+# arg 2:  the old package version
+post_upgrade() {
+  # change uid of old version
+  if (( $(vercmp $2 3.2.1-8) < 0 )); then
+    if pgrep -u backuppc >/dev/null; then
+      echo '==> backuppc user is running.'
+      echo '==> You must manually change uid and gid of backuppc!'
+      echo '==> e.g: usermod -u 126 -g 126 backuppc'
+    else
+      usermod -u 126 -g 126 backuppc
+      echo '==> backuppc uid/gid have changed. Check your filesystem permissions.'
+    fi
+  fi
+  # ensure /run/backuppc exists
+  systemd-tmpfiles --create backuppc.conf
+  :
+}
+
+# vim:set ts=2 sw=2 ft=sh et:

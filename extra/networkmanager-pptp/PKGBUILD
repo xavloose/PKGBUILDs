@@ -1,0 +1,31 @@
+# $Id: PKGBUILD 267807 2016-05-11 13:55:59Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Contributor: Ionut Biru <ibiru@archlinux.org>
+
+pkgname=networkmanager-pptp
+pkgver=1.2.2
+pkgrel=1
+pkgdesc="NetworkManager VPN plugin for PPTP"
+url="https://wiki.gnome.org/Projects/NetworkManager"
+arch=(i686 x86_64)
+license=(GPL)
+_pppver=2.4.7
+depends=(libnm-gtk libsecret "ppp=$_pppver" pptpclient)
+makedepends=(intltool python)
+source=(http://ftp.gnome.org/pub/GNOME/sources/NetworkManager-pptp/${pkgver::3}/NetworkManager-pptp-${pkgver}.tar.xz)
+sha256sums=('a72cb88ecc0a9edec836e8042c592d68b8b290c0d78082e6b25cf08b46c6be5d')
+
+build() {
+  cd NetworkManager-pptp-$pkgver
+  ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
+    --libexecdir=/usr/lib/networkmanager \
+    --with-pppd-plugin-dir=/usr/lib/pppd/$_pppver \
+    --enable-more-warnings=yes \
+    --disable-static
+  make
+}
+
+package() {
+  cd NetworkManager-pptp-$pkgver
+  make DESTDIR="$pkgdir" install
+}

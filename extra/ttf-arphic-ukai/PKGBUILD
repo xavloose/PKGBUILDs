@@ -1,0 +1,23 @@
+# $Id: PKGBUILD 228614 2015-01-05 15:24:26Z bisson $
+# Maintainer: Gaetan Bisson <bisson@archlinux.org>
+# Contributor: Damir Perisa <damir.perisa@bluewin.ch>
+# Contributor: Firmicus <francois.archlinux.org> 
+
+pkgname=ttf-arphic-ukai
+pkgver=0.2.20080216.1
+pkgrel=5
+pkgdesc='CJK Unicode font Kaiti style'
+url='http://www.freedesktop.org/wiki/Software/CJKUnifonts'
+license=('custom:Arphic_Public_License')
+arch=('any')
+depends=('fontconfig' 'xorg-font-utils')
+source=("http://archive.ubuntu.com/ubuntu/pool/main/t/ttf-arphic-ukai/ttf-arphic-ukai_${pkgver}.orig.tar.gz")
+sha1sums=('70f9489e7e15241c13d7eb6496a38736b49024e6')
+
+install=install
+
+package() {
+	cd "${srcdir}"
+	install -D -m644 ukai.ttc "${pkgdir}"/usr/share/fonts/TTF/ukai.ttc
+	install -D -m644 license/english/ARPHICPL.TXT "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
+}

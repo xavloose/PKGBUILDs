@@ -1,0 +1,50 @@
+# $Id: PKGBUILD 172822 2016-04-29 19:16:49Z alucryd $
+# Maintainer: Maxime Gauduin <alucryd@archlinux.org>
+# Contributor: Ner0 <darkelfdarkelf666@yahoo.co.uk>
+
+pkgname=scratch-text-editor
+pkgver=2.2.1
+pkgrel=2
+pkgdesc='The Pantheon Text Editor'
+arch=('i686' 'x86_64')
+url='https://launchpad.net/scratch'
+license=('GPL3')
+depends=('desktop-file-utils' 'glib2' 'glibc' 'gtk3' 'gtksourceview3' 'libgee'
+         'libpeas' 'pango' 'zeitgeist'
+         'libgranite.so')
+makedepends=('cmake' 'gobject-introspection' 'gtkspell3' 'vala' 'vte3'
+             'webkitgtk')
+optdepends=('gtkspell3: Spell Check extension'
+            'vala: Outline extension'
+            'vte3: Terminal extension'
+            'webkitgtk: Browser Preview extension')
+source=("https://launchpad.net/scratch/2.x/${pkgver}/+download/scratch-text-editor-${pkgver}.tar.xz")
+sha256sums=('d852bac83a5a7b9b14d62134838bae41ecb08fb1eb0f12f7f61164fb880c0305')
+
+prepare() {
+  cd scratch-text-editor-${pkgver}
+
+  if [[ -d build ]]; then
+    rm -rf build
+  fi
+  mkdir build
+}
+
+build() {
+  cd scratch-text-editor-${pkgver}/build
+
+  cmake .. \
+    -DCMAKE_BUILD_TYPE='Release' \
+    -DCMAKE_INSTALL_PREFIX='/usr' \
+    -DCMAKE_INSTALL_LIBDIR='/usr/lib' \
+    -DGSETTINGS_COMPILE='FALSE'
+  make
+}
+
+package() {
+  cd scratch-text-editor-${pkgver}/build
+
+  make DESTDIR="${pkgdir}" install
+}
+
+# vim: ts=2 sw=2 et:

@@ -1,0 +1,24 @@
+# $Id: PKGBUILD 256069 2015-12-14 20:08:13Z heftig $
+# Maintainer: Jan de Groot <jgc@archlinxu.org>
+
+pkgname=mobile-broadband-provider-info
+pkgver=20151214
+pkgrel=1
+pkgdesc="Network Management daemon"
+arch=('any')
+license=('custom')
+url="http://git.gnome.org/browse/mobile-broadband-provider-info/"
+source=(http://download.gnome.org/sources/${pkgname}/${pkgver}/${pkgname}-${pkgver}.tar.xz)
+sha256sums=('8ae45d6f10fed9750e259935804c4f40a4372bb119f0504187e4221896b205a4')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -D -m644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

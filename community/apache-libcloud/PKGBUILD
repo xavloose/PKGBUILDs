@@ -1,0 +1,37 @@
+# $Id: PKGBUILD 180479 2016-06-20 07:28:20Z felixonmars $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Daniel Wallace <danielwallace at gtmanfred dot com>
+# Contributor: Lex Black <autumn-wind at web dot de>
+# Contributor: Alasdair Haswell <ali at arhaswell dot co dot uk>
+
+pkgbase=apache-libcloud
+pkgname=(python{,2}-$pkgbase)
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Apache Libcloud is a standard Python library that abstracts away differences among multiple cloud provider APIs"
+arch=('any')
+url="https://libcloud.apache.org"
+license=('Apache')
+makedepends=('python-setuptools' 'python2-setuptools')
+source=("https://pypi.io/packages/source/a/apache-libcloud/apache-libcloud-${pkgver}.tar.gz")
+sha256sums=('a04278781250fbb7d448203daedb4a3428183ef05b4d72cbbf28971775404df2')
+
+prepare() {
+    cp -a "$srcdir/$pkgbase-$pkgver" "$srcdir/${pkgbase}2-$pkgver"
+}
+
+package_python-apache-libcloud() {
+  depends=('python')
+
+  cd "$srcdir/$pkgbase-$pkgver"
+  python setup.py install --root="$pkgdir"
+}
+
+package_python2-apache-libcloud() {
+  depends=('python2')
+  replaces=('apache-libcloud')
+  conflicts=('apache-libcloud')
+
+  cd "$srcdir/${pkgbase}2-$pkgver"
+  python2 setup.py install --root="$pkgdir"
+}

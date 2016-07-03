@@ -1,0 +1,38 @@
+# $Id: PKGBUILD 267948 2016-05-14 10:50:45Z heftig $
+# Maintainer: Ionut Biru <ibiru@archlinux.org>
+
+pkgname=empathy
+pkgver=3.12.12
+pkgrel=1
+pkgdesc="A GNOME instant messaging client using the Telepathy framework"
+url="https://wiki.gnome.org/Apps/Empathy"
+arch=(i686 x86_64)
+license=(GPL2)
+depends=(clutter-gst2 clutter-gtk folks gcr iso-codes libcanberra libpulse webkitgtk
+         telepathy-farstream telepathy-glib telepathy-logger telepathy-mission-control geoclue2
+         geocode-glib cheese libchamplain libgudev)
+makedepends=(intltool itstool docbook-xsl python python2)
+optdepends=('telepathy-gabble: XMPP/Jabber support'
+            'telepathy-idle: IRC support'
+            'telepathy-salut: Link-local XMPP support'
+            'telepathy-rakia: SIP support'
+            'telepathy-haze: libpurple support')
+options=(!makeflags)
+groups=(gnome)
+source=(http://ftp.gnome.org/pub/GNOME/sources/$pkgname/${pkgver:0:4}/$pkgname-$pkgver.tar.xz)
+sha256sums=('dda22adf38772d85cd7ff611bcc1a036a6b8625bc7d146c95d4bfcdbc3ecf7cb')
+
+build() {
+  cd $pkgname-$pkgver
+  PYTHON=/usr/bin/python2 ./configure --prefix=/usr \
+      --sysconfdir=/etc  \
+      --libexecdir=/usr/lib/empathy \
+      --disable-static
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+}

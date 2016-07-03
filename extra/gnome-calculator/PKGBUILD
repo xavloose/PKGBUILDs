@@ -1,0 +1,30 @@
+# $Id: PKGBUILD 267222 2016-05-08 20:57:26Z heftig $
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Contributor: Jan de Groot <jgc@archlinux.org>
+
+pkgname=gnome-calculator
+pkgver=3.20.1
+pkgrel=1
+pkgdesc="GNOME Scientific calculator"
+url="https://wiki.gnome.org/Apps/Calculator"
+arch=(i686 x86_64)
+license=(GPL)
+depends=(gtk3 dconf gtksourceview3 mpfr)
+makedepends=(intltool yelp-tools vala)
+groups=(gnome)
+options=(!emptydirs)
+source=(https://download.gnome.org/sources/${pkgname}/${pkgver:0:4}/${pkgname}-${pkgver}.tar.xz)
+sha256sums=('02edcf99857599ac10ecd2faaf33ad20a9f11f7c5a89a52ee1b511d99b594b90')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=/usr --sysconfdir=/etc --disable-schemas-compile \
+      --localstatedir=/var --libexecdir=/usr/lib/gnome-calculator
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+  make
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="${pkgdir}" install
+}

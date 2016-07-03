@@ -1,0 +1,65 @@
+# $Id: PKGBUILD 269396 2016-06-12 14:49:17Z arojas $
+# Maintainer: Antonio Rojas <arojas@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+# Contributor: Ionut Biru <ibiru@archlinux.org>
+
+pkgbase=telepathy-qt
+pkgname=(telepathy-qt4 telepathy-qt5)
+pkgver=0.9.7
+pkgrel=1
+arch=(i686 x86_64)
+url="http://telepathy.freedesktop.org/wiki/"
+license=(LGPL)
+makedepends=(qt4 telepathy-farstream libxslt python2 cmake doxygen qt5-base)
+options=(staticlibs)
+source=("http://telepathy.freedesktop.org/releases/$pkgbase/$pkgbase-$pkgver.tar.gz"{,.asc})
+md5sums=('86470dd3d7f6de8b8f4f36165486d42f'
+         'SKIP')
+validpgpkeys=('AA33B0D27868E36C151780F0FE0B6D736B1195ED') # Alexandr Akulich
+
+prepare() {
+  mkdir build{,-qt4}
+}
+
+build() {
+  cd build
+  cmake ../$pkgbase-$pkgver \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DPYTHON_EXECUTABLE=/usr/bin/python2 \
+    -DDESIRED_QT_VERSION=5 \
+    -DENABLE_EXAMPLES=OFF \
+    -DENABLE_TESTS=OFF
+  make
+  cd ..
+
+  cd build-qt4
+  cmake ../$pkgbase-$pkgver \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DPYTHON_EXECUTABLE=/usr/bin/python2 \
+    -DDESIRED_QT_VERSION=4 \
+    -DQT_QMAKE_EXECUTABLE=/usr/bin/qmake-qt4 \
+    -DENABLE_EXAMPLES=OFF \
+    -DENABLE_TESTS=OFF
+  make
+}
+
+package_telepathy-qt4() {
+  pkgdesc="A library for Qt4-based Telepathy clients"
+  depends=(qt4 telepathy-farstream)
+  conflicts=(telepathy-qt)
+  replaces=(telepathy-qt)
+  provides=(telepathy-qt)
+
+  cd build-qt4
+  make DESTDIR="$pkgdir" install
+}
+
+package_telepathy-qt5() {
+  pkgdesc="A library for Qt5-based Telepathy clients"
+  depends=(qt5-base telepathy-farstream)
+
+  cd build
+  make DESTDIR="$pkgdir" install
+}

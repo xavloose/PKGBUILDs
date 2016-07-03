@@ -1,0 +1,33 @@
+# $Id: PKGBUILD 228883 2015-01-10 09:36:40Z andrea $
+# Maintainer: Andrea Scarpino <andrea@archlinux.org>
+# Contributor: Jan Hambrecht <jaham at gmx dot net>
+
+pkgname=libspnav
+pkgver=0.2.3
+pkgrel=1
+pkgdesc="Alternative to the proprietary 3Dconnexion device driver and SDK for their 3D input devices"
+arch=('i686' 'x86_64')
+url='http://spacenav.sourceforge.net/'
+license=('GPL')
+depends=('libx11')
+source=("http://downloads.sourceforge.net/spacenav/$pkgname-$pkgver.tar.gz"
+        'Makefile.patch')
+md5sums=('44d840540d53326d4a119c0f1aa7bf0a'
+         '74661fdaa2c4bca8f226a83951458228')
+
+prepare() {
+  cd ${pkgname}-${pkgver}
+  patch -p1 -i "${srcdir}"/Makefile.patch
+}
+
+build() {
+  cd ${pkgname}-${pkgver}
+  ./configure --prefix=/usr \
+    --disable-debug
+  make
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  make DESTDIR="${pkgdir}" install
+}

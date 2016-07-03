@@ -1,0 +1,25 @@
+# $Id: PKGBUILD 147097 2015-11-18 17:44:01Z tredaelli $
+# Maintainer: Timothy Redaelli <timothy.redaelli@gmail.com>
+# Contributor: Florian Loitsch <archlinux@florian.loitsch.com>
+pkgname=miniupnpc
+pkgver=1.9.20151026
+pkgrel=1
+pkgdesc="A small UPnP client library/tool to access Internet Gateway Devices"
+arch=('i686' 'x86_64')
+url="http://miniupnp.free.fr"
+license=('BSD')
+depends=('sh')
+source=("http://miniupnp.free.fr/files/$pkgname-$pkgver.tar.gz")
+sha256sums=('f3cf9a5a31588a917d4d9237e5bc50f84d00c5aa48e27ed50d9b88dfa6a25d47')
+
+build() {
+  cd "$pkgname-$pkgver"
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make PREFIX="$pkgdir/" install
+  install -Dm644 man3/miniupnpc.3 "${pkgdir}"/usr/share/man/man3/miniupnpc.3
+  install -Dm644 LICENSE "${pkgdir}"/usr/share/licenses/${pkgname}/LICENSE
+}

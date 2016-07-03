@@ -1,0 +1,22 @@
+# $Id: PKGBUILD 168694 2016-03-28 13:12:04Z arodseth $
+# Maintainer: Alexander F Rødseth <xyproto@archlinux.org>
+
+pkgname=setconf
+pkgver=0.7.2
+pkgrel=1
+pkgdesc='Utility for easily changing settings in configuration files'
+arch=('any')
+url='http://setconf.roboticoverlords.org/'
+license=('GPL2')
+depends=('python')
+source=("http://setconf.roboticoverlords.org/$pkgname-$pkgver.tar.xz")
+sha256sums=('9ae89ead0e8dda1b22cfc120b37328fb3f62ca86e11886ace8e514f48d13a545')
+
+package() {
+  cd "$pkgname-$pkgver"
+
+  install -Dm755 "$pkgname.py" "$pkgdir/usr/bin/$pkgname"
+  install -Dm644 "$pkgname.1.gz" "$pkgdir/usr/share/man/man1/$pkgname.1.gz"
+}
+
+# vim:set ts=2 sw=2 et:
