@@ -1,0 +1,45 @@
+# This file is part of BlackArch Linux ( http://blackarch.org ).
+# See COPYING for license details.
+
+pkgname='bokken'
+pkgver=1.8
+pkgrel=1
+epoch=1
+pkgdesc='GUI for radare2 and pyew.'
+arch=('any')
+groups=('blackarch' 'blackarch-misc' 'blackarch-reversing'
+        'blackarch-disassembler')
+url='http://inguma.eu/projects/bokken/'
+license=('GPL')
+depends=('python2' 'pygtksourceview2' 'graphviz' 'r2-bindings' 'pyew'
+         'gtksourceview2' 'python2-pillow' 'gtksourceview3' 'radare2'
+         'python2-cairo' 'pygtk' 'python2-xdot')
+makedepends=('mercurial')
+options=('!strip')
+source=("https://inguma.eu/attachments/download/212/bokken-${pkgver}.tar.gz")
+sha1sums=('SKIP')
+
+prepare() {
+  cd "$srcdir/bokken-$pkgver"
+
+  sed -e 's/env python$/env python2/g' -i ui/xdot.py lib/web/__init__.py \
+    lib/web/utils.py
+  sed -e 's|/usr/bin/python|/usr/bin/env python2|g' -i bokken.py
+}
+
+package() {
+  cd "$srcdir/bokken-$pkgver"
+
+  mkdir -p "$pkgdir/usr/bin"
+  mkdir -p "$pkgdir/usr/share/bokken"
+
+  cp -a --no-preserve=ownership * "$pkgdir/usr/share/bokken"
+
+  cat > "$pkgdir/usr/bin/bokken" << EOF
+#!/bin/bash
+cd /usr/share/bokken/
+exec ./bokken "\$@"
+EOF
+
+  chmod +x "$pkgdir/usr/bin/bokken"
+}

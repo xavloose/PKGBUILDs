@@ -1,0 +1,35 @@
+# This file is part of BlackArch Linux ( http://blackarch.org ).
+# See COPYING for license details.
+
+pkgname='vega'
+pkgver='1.0'
+pkgrel=8
+groups=('blackarch' 'blackarch-webapp')
+pkgdesc='An open source platform to test the security of web applications.'
+url='https://github.com/subgraph/Vega/wiki'
+arch=('i686' 'x86_64' 'armv6h' 'armv7h')
+license=('GPL2')
+depends=('java-environment' 'webkitgtk2')
+if [[ $CARCH == "x86_64" ]]; then
+  source=('https://support.subgraph.com/downloads/VegaBuild-linux.gtk.x86_64.zip')
+  sha1sums=('1a7684c9dda96e3595d7e17fc5ec88072a1baf27')
+elif [[ $CARCH == "i686" ]]; then
+  source=('https://support.subgraph.com/downloads/VegaBuild-linux.gtk.x86.zip')
+  sha1sums=('f945ac3049a5c592e63b2aaf1e5d742ca231f45c')
+fi
+
+package() {
+  cd "$srcdir/vega"
+
+  mkdir -p "$pkgdir/usr/bin"
+  mkdir -p "$pkgdir/usr/share/vega"
+
+  cp -a * "$pkgdir/usr/share/vega"
+
+cat > "$pkgdir/usr/bin/vega" << EOF
+#!/bin/sh
+exec /usr/share/vega/Vega "\$@"
+EOF
+
+  chmod +x "$pkgdir/usr/bin/vega"
+}

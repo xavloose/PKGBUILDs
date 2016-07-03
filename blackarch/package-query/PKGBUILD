@@ -1,0 +1,29 @@
+# This file is part of BlackArch Linux ( http://blackarch.org ).
+# See COPYING for license details.
+
+pkgname='package-query'
+pkgver='1.8'
+pkgrel=1
+pkgdesc='Query ALPM and AUR.'
+arch=('i686' 'x86_64' 'armv6h' 'armv7h')
+url='http://gitweb.archlinux.fr/package-query.git/'
+license=('GPL')
+depends=('pacman' 'curl' 'yajl>=2.0')
+source=("http://mir.archlinux.fr/~tuxce/releases/package-query/package-query-${pkgver}.tar.gz")
+sha1sums=('5945d1e4f682803e4cfea7e78ae09e4110ac6078')
+
+build() {
+  cd "$srcdir/package-query-$pkgver"
+
+  ./configure --localstatedir=/var --prefix=/usr --sysconfdir=/etc \
+    --with-aur-url=https://aur.archlinux.org
+
+  make
+}
+
+package ()
+{
+  cd "$srcdir/package-query-$pkgver"
+
+  make DESTDIR="$pkgdir" install
+}

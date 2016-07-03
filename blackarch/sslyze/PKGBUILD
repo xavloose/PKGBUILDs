@@ -1,0 +1,32 @@
+# This file is part of BlackArch Linux ( http://blackarch.org ).
+# See COPYING for license details.
+
+pkgname='sslyze'
+pkgver='0.13.5'
+pkgrel=1
+groups=('blackarch' 'blackarch-misc')
+pkgdesc='Python tool for analyzing the configuration of SSL servers and for identifying misconfigurations.'
+arch=('any')
+url='https://github.com/nabla-c0d3/sslyze/'
+license=('GPL2')
+depends=('python2' 'python2-nassl')
+makedepends=('python2-setuptools')
+source=("https://github.com/nabla-c0d3/sslyze/archive/${pkgver}.tar.gz")
+sha1sums=('410b50bfaf66a75d810628e9afa1a3d619e73645')
+
+build() {
+  cd "$srcdir/sslyze-$pkgver"
+
+  python2 setup.py build
+}
+
+package() {
+  cd "$srcdir/sslyze-$pkgver"
+
+  python2 setup.py install --root="$pkgdir" --optimize=1
+
+  mv "$pkgdir/usr/bin/sslyze_cli.py" "$pkgdir/usr/bin/sslyze"
+
+  install -Dm644 README.md "$pkgdir/usr/share/doc/sslyze/README.md"
+  install -Dm644 LICENSE.txt "$pkgdir/usr/share/licenses/sslyze/LICENSE.txt"
+}

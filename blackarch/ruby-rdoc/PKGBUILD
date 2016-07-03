@@ -1,0 +1,28 @@
+# This file is part of BlackArch Linux ( http://blackarch.org ).
+# See COPYING for license details.
+
+pkgname='ruby-rdoc'
+pkgver='4.2.2'
+pkgrel=1
+pkgdesc='RDoc produces HTML and command-line documentation for Ruby projects.'
+arch=('any')
+license=('RUBY')
+depends=('ruby' 'ruby-json>=1.4')
+url='http://docs.seattlerb.org/rdoc'
+source=("http://rubygems.org/downloads/rdoc-${pkgver}.gem")
+sha1sums=('1b1d47bb203a3cecf53e8cd4d363405227419076')
+noextract=("rdoc-${pkgver}.gem")
+
+package() {
+  cd "$srcdir"
+
+  local _gemdir=$(ruby -e 'puts Gem.default_dir')
+
+  if [[ $CARCH == arm* ]] ; then
+    gem install --no-user-install --ignore-dependencies --no-rdoc --no-ri \
+      -i "$pkgdir$_gemdir" rdoc-$pkgver.gem
+  else
+    gem install --no-user-install --ignore-dependencies -i "$pkgdir$_gemdir" \
+      rdoc-$pkgver.gem
+  fi
+}

@@ -1,0 +1,26 @@
+# This file is part of BlackArch Linux ( http://blackarch.org ).
+# See COPYING for license details.
+
+pkgname='python2-pyvirtualdisplay'
+pkgver='0.2'
+pkgrel=1
+pkgdesc='Python wrapper for Xvfb, Xephyr and Xvnc.'
+url='https://github.com/ponty/pyvirtualdisplay'
+depends=('python2')
+makedepends=('python2-distribute')
+license=('BSD')
+arch=('any')
+source=("https://pypi.python.org/packages/source/P/PyVirtualDisplay/PyVirtualDisplay-${pkgver}.tar.gz")
+sha1sums=('16d406b47f03c2fe2303b573839fa88dfa0e06c7')
+
+build() {
+  cd "$srcdir/PyVirtualDisplay-$pkgver"
+
+  python2 setup.py build
+}
+
+package() {
+  cd "$srcdir/PyVirtualDisplay-$pkgver"
+
+  python2 setup.py install --root="$pkgdir" --optimize=1
+}

@@ -1,0 +1,20 @@
+# This file is part of BlackArch Linux ( http://blackarch.org ).
+# See COPYING for license details.
+
+pkgname='python2-cement'
+pkgver='2.8.2'
+pkgrel=1
+pkgdesc='CLI Application Framework for Python.'
+arch=('any')
+url='https://pypi.python.org/pypi/cement/'
+license=('BSD')
+depends=('python2')
+makedepends=('python2-setuptools')
+source=("https://pypi.python.org/packages/source/c/cement/cement-${pkgver}.tar.gz")
+sha1sums=('aa589d66de725682837ab6603db35666b7bc00e7')
+
+package() {
+  cd "$srcdir/cement-$pkgver"
+
+  python2 setup.py install --root="$pkgdir" --optimize=1
+}

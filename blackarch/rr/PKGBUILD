@@ -1,0 +1,45 @@
+# This file is part of BlackArch Linux ( http://blackarch.org ).
+# See COPYING for license details.
+
+pkgname='rr'
+pkgver='4.2.0'
+pkgrel=1
+groups=('blackarch' 'blackarch-debugger' 'blackarch-misc')
+pkgdesc='A Record and Replay Framework.'
+arch=('i686' 'x86_64' 'armv6h' 'armv7h')
+url='https://github.com/mozilla/rr'
+license=('custom')
+if [[ ${CARCH} == "x86_64" ]]; then
+  depends=('libpfm4' 'lib32-gcc-libs' 'zlib' 'python2-pexpect' 'man-pages')
+  makedepends=('cmake' 'gcc-multilib' 'gdb')
+else
+  depends=('libpfm4' 'zlib' 'python2-pexpect' 'man-pages')
+  makedepends=('cmake' 'gcc' 'gdb')
+fi
+source=("https://github.com/mozilla/rr/archive/${pkgver}.tar.gz")
+sha1sums=('625148bcdbf27a1b94ddf1cb1737bcf0176deb1d')
+
+build(){
+  cd "$srcdir/rr-$pkgver"
+
+  export CFLAGS="$CFLAGS -fPIC"
+
+  mkdir build
+
+  cd build
+
+  cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_INSTALL_PREFIX=/usr ..
+
+  make
+}
+
+
+package() {
+  cd "$srcdir/rr-$pkgver"
+
+  cd build
+
+  make DESTDIR=$pkgdir install
+
+  install -Dm644 ../LICENSE "$pkgdir/usr/share/licenses/rr/LICENSE"
+}
